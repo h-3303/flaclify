@@ -66,7 +66,6 @@ window {
 headerbar {
   box-shadow: none;
   border-bottom: 3px double #b3a683;
-  min-height: 52px;
 }
 headerbar .title,
 headerbar windowtitle > .title {
@@ -74,10 +73,6 @@ headerbar windowtitle > .title {
 }
 
 /* Sidebar with a single hairline instead of a tinted pane. */
-.sidebar-pane,
-.flaclify-sidebar {
-  border-right: 1px solid #c8bc9f;
-}
 .sidebar-btn {
   border-radius: 0;
   padding-top: 7px;
@@ -185,3 +180,31 @@ listview > row:selected:hover,
   background: rgb(107 74 35 / 12%);
   color: #221b0f;
 }
+
+/* ---- Corner geometry ------------------------------------------------------
+ * One vertical rule only, owned by the sidebar page edge (.light-right-edge);
+ * libadwaita's own inset sidebar line and the pane border are switched off so
+ * nothing doubles it. Both header bars are pinned to the same height so the
+ * horizontal rules meet the vertical one in a single cross. The two values
+ * differ because the content header carries ~3px more chrome than the sidebar
+ * one; they were measured, not derived. */
+:root {
+  --sidebar-border-color: transparent;
+  --secondary-sidebar-border-color: transparent;
+}
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: none;
+  box-shadow: none;
+}
+.light-right-edge { border-right: 1px solid #c8bc9f; }
+.light-left-edge { border-left: 1px solid #c8bc9f; }
+headerbar { min-height: 52px; }
+.sidebar-pane headerbar { min-height: 55px; }
+/* The raised top-bar shadow and the scroll undershoot both paint a soft line just
+ * under the content header; a printed rule wants neither. */
+toolbarview > revealer.top-bar,
+toolbarview > .top-bar,
+.top-bar > box,
+.top-bar { box-shadow: none; }
+undershoot.top { background-image: none; box-shadow: none; }

@@ -72,11 +72,6 @@ headerbar windowtitle > .title {
   text-shadow: 0 0 10px rgb(255 122 192 / 55%);
 }
 
-.sidebar-pane,
-.flaclify-sidebar {
-  border-right: none;
-  box-shadow: inset -1px 0 0 rgb(255 79 163 / 20%);
-}
 .sidebar-btn {
   border-radius: 999px;
   margin-top: 2px;
@@ -198,3 +193,31 @@ gridview > child:selected {
   background: rgb(255 79 163 / 22%);
   border-radius: 12px;
 }
+
+/* ---- Corner geometry ------------------------------------------------------
+ * One vertical rule only, owned by the sidebar page edge (.light-right-edge);
+ * libadwaita's own inset sidebar line and the pane border are switched off so
+ * nothing doubles it. Both header bars are pinned to the same height so the
+ * horizontal rules meet the vertical one in a single cross. The two values
+ * differ because the content header carries ~3px more chrome than the sidebar
+ * one; they were measured, not derived. */
+:root {
+  --sidebar-border-color: transparent;
+  --secondary-sidebar-border-color: transparent;
+}
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: none;
+  box-shadow: none;
+}
+.light-right-edge { border-right: 1px solid rgb(255 79 163 / 20%); }
+.light-left-edge { border-left: 1px solid rgb(255 79 163 / 20%); }
+headerbar { min-height: 47px; }
+.sidebar-pane headerbar { min-height: 51px; }
+/* The raised top-bar shadow and the scroll undershoot both paint a soft line just
+ * under the content header; a printed rule wants neither. */
+toolbarview > revealer.top-bar,
+toolbarview > .top-bar,
+.top-bar > box,
+.top-bar { box-shadow: none; }
+undershoot.top { background-image: none; box-shadow: none; }
