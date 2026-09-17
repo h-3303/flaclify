@@ -7,6 +7,7 @@
  *     @name: Folio
  *     @scheme: light          (light | dark | follow — optional)
  *     @auto-accent: off       (off | on — optional; off suppresses album-art accents)
+ *     @art-background: off    (off | on — optional; off hides the blurred album-art wash)
  *
  * inside the leading comment block, followed by ordinary rules such as
  *     :root { --window-bg-color: #ece3cc; ... }
@@ -40,6 +41,8 @@ pub struct Theme {
     pub scheme: Option<ColorScheme>,
     /// `Some(false)` means the theme owns its accent and album-art accents are suppressed.
     pub auto_accent: Option<bool>,
+    /// `Some(false)` means the blurred album-art background is hidden while this theme is on.
+    pub art_background: Option<bool>,
     pub css: String,
     pub user: bool,
 }
@@ -51,6 +54,7 @@ impl Theme {
             name: "Adwaita".to_owned(),
             scheme: None,
             auto_accent: None,
+            art_background: None,
             css: String::new(),
             user: false,
         }
@@ -60,6 +64,7 @@ impl Theme {
         let mut name = fallback_name.to_owned();
         let mut scheme = None;
         let mut auto_accent = None;
+        let mut art_background = None;
 
         // Only the leading comment block is inspected.
         if let Some(start) = css.find("/*") {
@@ -90,6 +95,13 @@ impl Theme {
                             _ => None,
                         }
                     }
+                    "art-background" | "album-art-bg" => {
+                        art_background = match value {
+                            "off" | "false" | "no" => Some(false),
+                            "on" | "true" | "yes" => Some(true),
+                            _ => None,
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -100,6 +112,7 @@ impl Theme {
             name,
             scheme,
             auto_accent,
+            art_background,
             css,
             user,
         }
@@ -112,6 +125,11 @@ impl Theme {
     /// True when album-art / system accent injection must not override this theme.
     pub fn suppresses_auto_accent(&self) -> bool {
         self.auto_accent == Some(false)
+    }
+
+    /// True when the blurred album-art background must stay hidden under this theme.
+    pub fn suppresses_art_background(&self) -> bool {
+        self.art_background == Some(false)
     }
 }
 

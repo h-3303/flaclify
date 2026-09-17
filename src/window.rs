@@ -404,8 +404,11 @@ mod imp {
                 #[weak(rename_to = this)]
                 obj,
                 move |_| {
-                    // The theme may have changed the colour scheme or taken over the accent.
+                    // The theme may have changed the colour scheme, taken over the accent,
+                    // or switched the album-art wash off/on.
                     this.imp().update_accent_color();
+                    this.update_background_css_classes();
+                    this.queue_new_background();
                     if let Some(sender) = this.imp().sender_to_bg.get() {
                         let _ = sender.send_blocking(WindowMessage::UpdateAccent(
                             adw::StyleManager::default().is_dark(),
@@ -730,7 +733,7 @@ mod imp {
         fn snapshot(&self, snapshot: &gtk::Snapshot) {
             let widget = self.obj();
             // Statically-cached blur
-            if self.use_album_art_bg.get() {
+            if self.art_bg_enabled() {
                 // Check if window has been resized (will need reblur)
                 let new_size = (widget.width() as u32, widget.height() as u32);
                 if new_size != self.prev_size.get() {
@@ -835,6 +838,11 @@ mod imp {
                 }
                 self.obj().notify("auto-accent");
             }
+        }
+
+        /// The user setting, unless the active theme forbids the album-art wash.
+        pub fn art_bg_enabled(&self) -> bool {
+            self.use_album_art_bg.get() && !theme_manager().current().suppresses_art_background()
         }
 
         pub fn fill_theme_menu(menu: &gio::Menu) {
@@ -1258,7 +1266,7 @@ mod imp {
         /// Fade to the new texture, or to nothing if playing song has no album art.
         pub fn push_tex(&self, tex: Option<gdk::MemoryTexture>, do_fade: bool) {
             let bg_paintable = self.bg_paintable.clone();
-            if self.use_album_art_bg.get() && tex.is_some() {
+            if self.art_bg_enabled() && tex.is_some() {
                 if !self.content.has_css_class("no-shading") {
                     self.content.add_css_class("no-shading");
                 }
@@ -1549,7 +1557,7 @@ impl EuphonicaWindow {
     }
 
     pub fn update_background_css_classes(&self) {
-        if self.imp().use_album_art_bg.get() || self.imp().use_visualizer.get() {
+        if self.imp().art_bg_enabled() || self.imp().use_visualizer.get() {
             if !self.imp().content.has_css_class("no-shading") {
                 self.imp().content.add_css_class("no-shading");
             }

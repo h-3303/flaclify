@@ -12,7 +12,10 @@ Additions over upstream:
 ## Themes
 
 Pick one from the primary menu (**Theme** submenu) or cycle with `Ctrl+T` / `Ctrl+Shift+T`.
-Bundled: Adwaita (stock), Folio, Terminal, Neon, Bauhaus.
+Bundled: Adwaita (stock), Broadsheet, Folio, Terminal, Neon, Bauhaus. Broadsheet is the
+"Euphonica × Moirai Digital" direction from the Death to the World design system: toner on
+paper, typewriter labels, blackletter masthead. Its five typefaces ship in `data/fonts/` and
+install to `share/fonts/flaclify` (OFL, Special Elite under Apache 2.0).
 
 A theme is one GTK CSS file. Drop your own into `~/.config/flaclify/themes/`; the directory is
 watched, so saving the file re-applies it while the app runs. Metadata goes in the leading
@@ -23,6 +26,8 @@ comment:
  * @scheme: dark          light | dark | follow  (optional; forces the colour scheme)
  * @auto-accent: off      off | on               (optional; off stops album-art accents
  *                                                overriding the theme's own accent)
+ * @art-background: off   off | on               (optional; off hides the blurred album-art
+ *                                                wash while the theme is active)
  */
 :root {
   --window-bg-color: #101418;
@@ -35,7 +40,9 @@ button { border-radius: 0; }
 ```
 
 The bundled themes in `src/themes/` are the reference for which selectors the app exposes
-(`.sidebar-btn`, `.player-bar`, `.cover-shadow`, `.border-radius-6`, and so on). Themes can
+(`.sidebar-btn`, `.player-bar`, `.cover-shadow`, `.border-radius-6`, and so on). One GTK
+quirk to know: ellipsized labels are measured without `letter-spacing`, so tracked text gets
+cut short. Keep tracking to buttons, tooltips and other labels that never ellipsize. Themes can
 also be switched from outside the app:
 
 ```sh

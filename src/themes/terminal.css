@@ -70,7 +70,6 @@ headerbar {
 headerbar .title,
 headerbar windowtitle > .title {
   font-weight: 700;
-  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 headerbar .subtitle,
@@ -89,7 +88,6 @@ headerbar windowtitle > .subtitle {
 }
 .sidebar-btn label {
   font-size: 9pt;
-  letter-spacing: 0;
   text-transform: lowercase;
 }
 .sidebar-btn:hover {
@@ -124,6 +122,8 @@ scale > trough > slider,
 progressbar > trough,
 progressbar > trough > progress,
 checkbutton > check,
+gridview > child,
+listview > row,
 .avatar-tag,
 .plain-tag {
   border-radius: 0;
@@ -175,13 +175,11 @@ entry:focus-within {
 
 .caption,
 .caption-heading {
-  letter-spacing: 0;
   font-size: 8.5pt;
 }
 .heading,
 .title-1, .title-2, .title-3, .title-4 {
   font-weight: 700;
-  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
@@ -220,8 +218,7 @@ gridview > child:hover {
   background: rgb(57 255 136 / 10%);
 }
 
-*:focus-visible,
-*:focus(visible) {
+*:focus-visible {
   outline: 1px solid #39ff88;
   outline-offset: -1px;
 }

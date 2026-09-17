@@ -1,0 +1,463 @@
+/* @name: Broadsheet
+ * @scheme: light
+ * @auto-accent: off
+ * @art-background: off
+ *
+ * Euphonica × Moirai Digital, direction 1a "Quiet broadsheet": toner on paper,
+ * assembled by hand. Two inks only, 1px line-ink rules, no rounding, no blur,
+ * hard paste-up shadows. Red is one gesture, held to the seekbar.
+ *
+ * Voices: Pirata One for the masthead, Old Standard TT for titles and body,
+ * Special Elite for labels and furniture, IM Fell English SC for numerals.
+ * The typefaces ship with the app (data/fonts) and install to
+ * share/fonts/flaclify, so they resolve on a fresh machine.
+ */
+
+:root {
+  /* SURFACES */
+  --window-bg-color: #e8e5dc;          /* paper */
+  --window-fg-color: #141412;          /* toner */
+  --view-bg-color: #e8e5dc;
+  --view-fg-color: #141412;
+
+  --headerbar-bg-color: #e8e5dc;
+  --headerbar-fg-color: #141412;
+  --headerbar-backdrop-color: #e8e5dc;
+  --headerbar-border-color: #1a1a18;   /* line ink */
+  --headerbar-shade-color: rgb(20 20 18 / 18%);
+  --headerbar-darker-shade-color: rgb(20 20 18 / 28%);
+
+  --sidebar-bg-color: #e8e5dc;
+  --sidebar-fg-color: #141412;
+  --sidebar-backdrop-color: #e8e5dc;
+  --sidebar-border-color: #1a1a18;
+  --sidebar-shade-color: rgb(232 229 220 / 82%);
+  --secondary-sidebar-bg-color: #e8e5dc;
+  --secondary-sidebar-fg-color: #141412;
+  --secondary-sidebar-backdrop-color: #e8e5dc;
+  --secondary-sidebar-border-color: #1a1a18;
+  --secondary-sidebar-shade-color: rgb(232 229 220 / 82%);
+
+  --card-bg-color: #e8e5dc;
+  --card-fg-color: #141412;
+  --card-shade-color: rgb(20 20 18 / 18%);
+  --dialog-bg-color: #e8e5dc;
+  --dialog-fg-color: #141412;
+  --popover-bg-color: #e8e5dc;
+  --popover-fg-color: #141412;
+  --popover-shade-color: rgb(20 20 18 / 18%);
+  --thumbnail-bg-color: #d9d4c6;       /* 2nd-gen photocopy */
+  --thumbnail-fg-color: #141412;
+
+  /* Accent is toner: knockouts, never a tint. The red lives on the seekbar only. */
+  --accent-bg-color: #141412;
+  --accent-fg-color: #e8e5dc;
+  --accent-color: #141412;
+  --destructive-bg-color: #141412;
+  --destructive-fg-color: #e8e5dc;
+  --destructive-color: #b3202c;
+  --success-color: #141412;
+  --warning-color: #4a463c;
+  --error-color: #b3202c;
+
+  --shade-color: rgb(20 20 18 / 12%);
+  --border-color: #1a1a18;
+  --scrollbar-outline-color: #e8e5dc;
+  --dim-opacity: 0.72;
+}
+
+/* ---- Voices ---------------------------------------------------------- */
+
+window {
+  font-family: "Old Standard TT", "Liberation Serif", serif;
+  font-size: 12.5px;
+}
+
+/* Sidebar masthead: Voice I blackletter, typewriter tagline beneath.
+ * No letter-spacing anywhere a label can ellipsize: GTK measures ellipsized
+ * labels without tracking, so tracked text gets cut short. */
+.sidebar-pane headerbar .title,
+.sidebar-pane headerbar windowtitle > .title {
+  font-family: "Pirata One", serif;
+  font-size: 24px;
+  font-weight: 400;
+  text-transform: none;
+}
+.sidebar-pane headerbar .subtitle,
+.sidebar-pane headerbar windowtitle > .subtitle {
+  font-family: "Special Elite", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  color: #4a463c;
+}
+
+/* Content header: typewriter furniture, tracked. */
+headerbar .title,
+headerbar windowtitle > .title {
+  font-family: "Special Elite", monospace;
+  font-size: 10px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #4a463c;
+}
+headerbar .subtitle,
+headerbar windowtitle > .subtitle {
+  font-family: "Special Elite", monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #6a6558;
+}
+
+/* Voice II: liturgical caps. */
+.title-1, .title-2, .title-3, .title-4, .heading {
+  font-family: "Old Standard TT", serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.player-bar .heading {
+  text-transform: none;                /* now-playing title stays serif bold, mixed case */
+}
+.title-1 { font-size: 27px; }
+.title-2 { font-size: 24px; }
+.title-3 { font-size: 21px; }
+.title-4 { font-size: 16px; }
+
+/* Voice IV: typewriter labels, muted label ink. Album titles stay serif bold. */
+.caption,
+.dim-label,
+.dimmed {
+  font-family: "Special Elite", monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  color: #4a463c;
+}
+.caption-heading {
+  font-family: "Old Standard TT", serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: none;
+}
+
+/* Voice VI: Fell SC for numerals and folios (seek times, counts). */
+.numeric,
+.count-badge,
+.seekbar2 label {
+  font-family: "IM Fell English SC", serif;
+  font-size: 11px;
+  text-transform: none;
+}
+
+/* Voice V: the hand, for lyrics only. */
+.lyrics-box label {
+  font-family: "La Belle Aurore", cursive;
+  font-size: 17px;
+}
+
+/* ---- Rules and edges -------------------------------------------------- */
+
+headerbar {
+  box-shadow: none;
+  border-bottom: 1px solid #1a1a18;
+  min-height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: 1px solid #1a1a18;
+}
+.light-right-edge { border-right: 1px solid #1a1a18; }
+.light-left-edge { border-left: 1px solid #1a1a18; }
+.player-bar {
+  border-top: 1px solid #1a1a18;
+}
+
+/* Nothing rounded, anywhere. */
+button,
+button.circular,
+button.pill,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd,
+switch,
+switch > slider,
+scale > trough,
+scale > trough > highlight,
+scale > trough > slider,
+progressbar > trough,
+progressbar > trough > progress,
+checkbutton > check,
+checkbutton > radio,
+gridview > child,
+listview > row,
+.avatar-tag,
+.plain-tag,
+spinner,
+.toast {
+  border-radius: 0;
+}
+
+/* ---- Sidebar nav: typewriter caps, knockout when current ------------- */
+
+.sidebar-btn {
+  border-radius: 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  margin: 0;
+}
+.sidebar-btn label {
+  font-family: "Special Elite", monospace;
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.sidebar-btn:hover {
+  background: #c9c4b6;                 /* grey-1, the only hover tint */
+}
+.sidebar-btn:checked,
+.sidebar-btn:checked:hover {
+  background: #141412;
+  color: #e8e5dc;
+}
+.sidebar-btn:checked label,
+.sidebar-btn:checked image {
+  color: #e8e5dc;
+}
+.flaclify-sidebar separator {
+  background: #bfb9aa;                 /* grey-2 hairlines between sections */
+  min-height: 1px;
+}
+
+/* ---- Buttons: bordered slips, toner knockouts for the primary action --- */
+
+button:not(.flat) {
+  background: transparent;
+  border: 1px solid #1a1a18;
+  box-shadow: none;
+  color: #141412;
+  font-family: "Special Elite", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+button:not(.flat):hover {
+  background: #c9c4b6;
+}
+button:not(.flat):active,
+button:not(.flat):checked {
+  background: #141412;
+  color: #e8e5dc;
+}
+button.flat:hover {
+  background: #c9c4b6;
+}
+button.flat:checked,
+button.flat:active {
+  background: #141412;
+  color: #e8e5dc;
+}
+button.suggested-action,
+button.suggested-action:hover,
+.play-button,
+.play-button:hover {
+  background: #141412;
+  color: #e8e5dc;
+  border: 1px solid #1a1a18;
+}
+button.suggested-action:hover,
+.play-button:hover {
+  opacity: 0.85;
+}
+button.destructive-action {
+  background: transparent;
+  color: #b3202c;
+  border: 1px solid #b3202c;
+}
+
+/* ---- Plates: 1px line ink, paste shadow only where the mockup has one -- */
+
+.cover-shadow {
+  box-shadow: 0 0 0 1px #1a1a18;
+}
+.card,
+.boxed-list {
+  border: 1px solid #1a1a18;
+  box-shadow: 3px 3px 0 rgb(20 20 18 / 18%);
+}
+popover > contents {
+  border: 1px solid #1a1a18;
+  box-shadow: 3px 3px 0 rgb(20 20 18 / 18%);
+  padding: 0;
+}
+popover modelbutton {
+  border-radius: 0;
+  font-family: "Special Elite", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+popover modelbutton:hover {
+  background: #c9c4b6;
+}
+tooltip {
+  background: #141412;
+  color: #e8e5dc;
+  border: none;
+  font-family: "Special Elite", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+entry {
+  background: #e8e5dc;
+  border: 1px solid #1a1a18;
+  box-shadow: none;
+  font-family: "Special Elite", monospace;
+  font-size: 10.5px;
+}
+entry:focus-within {
+  outline: none;
+  box-shadow: 3px 3px 0 rgb(20 20 18 / 18%);
+}
+searchbar > revealer > box {
+  background: #e8e5dc;
+  border-bottom: 1px solid #1a1a18;
+  box-shadow: none;
+}
+
+/* ---- Lists: ledger rhythm, knockout for the selected line -------------- */
+
+listview > row,
+.boxed-list > row {
+  border-bottom: 1px solid #bfb9aa;
+}
+listview > row:hover,
+gridview > child:hover,
+.navigation-sidebar > row:hover {
+  background: #c9c4b6;
+}
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected,
+gridview > child:selected {
+  background: #141412;
+  color: #e8e5dc;
+}
+listview > row:selected label,
+gridview > child:selected label {
+  color: #e8e5dc;
+}
+
+/* ---- Seekbar: the one red gesture --------------------------------------- */
+
+scale > trough {
+  background: #bfb9aa;                 /* grey-2 */
+  border: none;
+  min-height: 3px;
+  min-width: 3px;
+}
+scale > trough > highlight {
+  background: #141412;
+}
+scale > trough > slider {
+  background: #141412;
+  border: none;
+  box-shadow: none;
+  min-width: 5px;
+  min-height: 9px;
+  margin: -3px;
+}
+.seekbar2 scale > trough > highlight {
+  background: #b3202c;                 /* cardinal, seekbar only */
+}
+progressbar > trough {
+  background: #bfb9aa;
+}
+progressbar > trough > progress {
+  background: #141412;
+}
+.discography-line {
+  border-radius: 0;
+  background: #141412;
+  min-height: 1px;
+}
+
+/* ---- Furniture ----------------------------------------------------------- */
+
+switch {
+  background: #e8e5dc;
+  border: 1px solid #1a1a18;
+}
+switch:checked {
+  background: #141412;
+}
+switch > slider {
+  background: #141412;
+  border: none;
+  box-shadow: none;
+  min-width: 14px;
+  min-height: 14px;
+  margin: 2px;
+}
+switch:checked > slider {
+  background: #e8e5dc;
+}
+checkbutton > check,
+checkbutton > radio {
+  background: #e8e5dc;
+  border: 1px solid #1a1a18;
+  box-shadow: none;
+  -gtk-icon-source: none;
+}
+checkbutton > check:checked,
+checkbutton > radio:checked {
+  background: #141412;
+}
+scrollbar > range > trough {
+  background: transparent;
+}
+scrollbar > range > trough > slider {
+  background: #141412;
+  border-radius: 0;
+  min-width: 4px;
+  min-height: 4px;
+}
+separator {
+  background: #1a1a18;
+}
+.spacer {
+  background: transparent;
+}
+.rating {
+  font-family: "Old Standard TT", serif;
+  letter-spacing: 0.2em;
+}
+.toast {
+  background: #141412;
+  color: #e8e5dc;
+  box-shadow: 3px 3px 0 rgb(20 20 18 / 18%);
+  font-family: "Special Elite", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.osd {
+  background: #141412;
+  color: #e8e5dc;
+  box-shadow: none;
+}
+*:focus-visible {
+  outline: 1px solid #141412;
+  outline-offset: 1px;
+}

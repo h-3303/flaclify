@@ -65,6 +65,7 @@
     <file alias="terminal.css">themes/terminal.css</file>
     <file alias="neon.css">themes/neon.css</file>
     <file alias="bauhaus.css">themes/bauhaus.css</file>
+    <file alias="broadsheet.css">themes/broadsheet.css</file>
   </gresource>
   <gresource prefix="/io/github/h3303/Flaclify/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">gtk/icons/brush-symbolic.svg</file>

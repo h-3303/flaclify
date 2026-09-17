@@ -70,7 +70,6 @@ headerbar {
 headerbar .title,
 headerbar windowtitle > .title {
   font-weight: 900;
-  letter-spacing: 0.10em;
   text-transform: uppercase;
 }
 
@@ -87,7 +86,6 @@ headerbar windowtitle > .title {
 }
 .sidebar-btn label {
   font-weight: 800;
-  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .sidebar-btn:hover {
@@ -123,6 +121,8 @@ scale > trough > slider,
 progressbar > trough,
 progressbar > trough > progress,
 checkbutton > check,
+gridview > child,
+listview > row,
 .avatar-tag,
 .plain-tag {
   border-radius: 0;
@@ -180,14 +180,12 @@ entry:focus-within {
 .caption,
 .caption-heading {
   font-weight: 700;
-  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 8.5pt;
 }
 .heading,
 .title-1, .title-2, .title-3, .title-4 {
   font-weight: 900;
-  letter-spacing: 0.02em;
 }
 
 /* Blue block for the transport. */
