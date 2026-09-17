@@ -577,7 +577,7 @@ where
 }
 
 /// Spawn `flacli --compact <args>` off the main thread and parse its JSON.
-async fn run<T>(args: Vec<String>) -> Result<T, Error>
+pub(super) async fn run<T>(args: Vec<String>) -> Result<T, Error>
 where
     T: for<'de> Deserialize<'de> + Send + 'static,
 {
@@ -586,7 +586,7 @@ where
         .unwrap_or(Err(Error::Thread))
 }
 
-fn args(list: &[&str]) -> Vec<String> {
+pub(super) fn args(list: &[&str]) -> Vec<String> {
     list.iter().map(|s| s.to_string()).collect()
 }
 

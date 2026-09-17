@@ -1,8 +1,9 @@
-//! The "Get music" dialog (Tier 2): search MusicBrainz for songs, albums and artists, tick what
-//! is wanted, and hand the names to `flacli get`. MusicBrainz supplies names only; flacli finds
-//! the files on Soulseek and files them.
+//! The search panel of the Get view (Tier 2): search MusicBrainz for songs, albums and artists,
+//! tick what is wanted, and hand the names to `flacli get`; or name the music directly, as
+//! `flacli get` takes it. MusicBrainz supplies names only; flacli finds the files on Soulseek
+//! and files them.
 //!
-//! This replaces the blind "Search Soulseek" fetch, which handed a bare term to flacli. flacli
+//! This replaced the blind "Search Soulseek" fetch, which handed a bare term to flacli. flacli
 //! reads a bare term as a song title, so "black box recorder" fetched whichever recording bore
 //! that title rather than the band's music. Here nothing is fetched until it has been named.
 
@@ -30,6 +31,7 @@ const PAUSE: Duration = Duration::from_millis(1100);
 const SONGS: &str = "songs";
 const ALBUMS: &str = "albums";
 const ARTISTS: &str = "artists";
+const ASK: &str = "ask";
 
 const PLACEHOLDER: &str = "Search MusicBrainz for a song, an album or an artist, or type “Artist - Title”. Tick what you want; flacli fetches it.";
 
@@ -52,9 +54,7 @@ impl Pick {
             }
         }
     }
-}
 
-impl Pick {
     /// One line of the confirmation: "Artist – Title" or "Artist – Album (whole album)".
     fn describe(&self) -> String {
         match self {
@@ -68,6 +68,8 @@ impl Pick {
 
 type Basket = Rc<RefCell<BTreeMap<String, Pick>>>;
 type Changed = Rc<dyn Fn()>;
+/// Every tick box made, so a Get can clear them all.
+type Checks = Rc<RefCell<Vec<glib::WeakRef<gtk::CheckButton>>>>;
 
 /// "2 songs and 1 album".
 fn describe_picks(songs: usize, albums: usize) -> String {
@@ -147,11 +149,19 @@ impl Page {
     }
 }
 
+/// What every row builder needs: the basket, the change callback and the tick registry.
+#[derive(Clone)]
+struct Ctx {
+    basket: Basket,
+    changed: Changed,
+    checks: Checks,
+}
+
 /// A row with a tick box that puts `pick` in the basket under `key`.
-fn check_row(title: &str, subtitle: &str, suffix: &str, key: String, pick: Pick, basket: &Basket, changed: &Changed) -> (adw::ActionRow, gtk::CheckButton) {
+fn check_row(title: &str, subtitle: &str, suffix: &str, key: String, pick: Pick, ctx: &Ctx) -> (adw::ActionRow, gtk::CheckButton) {
     let check = gtk::CheckButton::builder()
         .valign(gtk::Align::Center)
-        .active(basket.borrow().contains_key(&key))
+        .active(ctx.basket.borrow().contains_key(&key))
         .build();
     let row = adw::ActionRow::builder()
         .title(title)
@@ -169,24 +179,20 @@ fn check_row(title: &str, subtitle: &str, suffix: &str, key: String, pick: Pick,
                 .build(),
         );
     }
-    check.connect_toggled(clone!(
-        #[strong]
-        basket,
-        #[strong]
-        changed,
-        move |check| {
-            if check.is_active() {
-                basket.borrow_mut().insert(key.clone(), pick.clone());
-            } else {
-                basket.borrow_mut().remove(&key);
-            }
-            changed();
+    let (basket, changed) = (ctx.basket.clone(), ctx.changed.clone());
+    check.connect_toggled(move |check| {
+        if check.is_active() {
+            basket.borrow_mut().insert(key.clone(), pick.clone());
+        } else {
+            basket.borrow_mut().remove(&key);
         }
-    ));
+        changed();
+    });
+    ctx.checks.borrow_mut().push(check.downgrade());
     (row, check)
 }
 
-fn song_row(song: &FoundSong, basket: &Basket, changed: &Changed) -> adw::ActionRow {
+fn song_row(song: &FoundSong, ctx: &Ctx) -> adw::ActionRow {
     let mut subtitle = song.artist.clone();
     if !song.album.is_empty() {
         subtitle.push_str(" · ");
@@ -201,13 +207,13 @@ fn song_row(song: &FoundSong, basket: &Basket, changed: &Changed) -> adw::Action
         title: song.title.clone(),
         album: song.album.clone(),
     };
-    check_row(&song.title, &subtitle, &format_length(song.length_ms), format!("song:{}", song.mbid), pick, basket, changed).0
+    check_row(&song.title, &subtitle, &format_length(song.length_ms), format!("song:{}", song.mbid), pick, ctx).0
 }
 
 /// An album row: open it to tick tracks, or tick its first inner row for the whole album. The
 /// tracklist is fetched on the first opening. While the whole album is ticked its tracks are
 /// greyed out, since flacli's album mode fetches the whole folder.
-fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::ExpanderRow {
+fn album_row(album: &FoundAlbum, ctx: &Ctx) -> adw::ExpanderRow {
     let key = format!("album:{}", album.mbid);
     let row = adw::ExpanderRow::builder()
         .title(&album.title)
@@ -226,8 +232,7 @@ fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::Exp
             artist: album.artist.clone(),
             title: album.title.clone(),
         },
-        basket,
-        changed,
+        ctx,
     );
     whole_row.add_css_class("property");
     row.add_row(&whole_row);
@@ -247,11 +252,8 @@ fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::Exp
 
     let loaded = Rc::new(Cell::new(false));
     let album = album.clone();
+    let ctx = ctx.clone();
     row.connect_expanded_notify(clone!(
-        #[strong]
-        basket,
-        #[strong]
-        changed,
         #[strong]
         track_checks,
         #[weak]
@@ -271,9 +273,7 @@ fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::Exp
                 #[weak]
                 row,
                 #[strong]
-                basket,
-                #[strong]
-                changed,
+                ctx,
                 #[strong]
                 track_checks,
                 #[weak]
@@ -308,8 +308,7 @@ fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::Exp
                             &format_length(track.length_ms),
                             format!("track:{mbid}:{}", track.position),
                             pick,
-                            &basket,
-                            &changed,
+                            &ctx,
                         );
                         check.set_sensitive(!whole);
                         row.add_row(&track_row);
@@ -343,363 +342,496 @@ enum Kind {
     Artists,
 }
 
-/// Search MusicBrainz for songs, albums and artists, tick what is wanted, and let flacli fetch
-/// it. `term` prefills and runs the search, as from the album view's empty-search line.
+/// The "Ask flacli" page: name the music as `flacli get` takes it, one item a line.
+fn ask_page(window: &EuphonicaWindow) -> gtk::Box {
+    let intro = gtk::Label::builder()
+        .label("Name the music as flacli takes it, one item a line. flacli resolves each on MusicBrainz, skips what the library holds and fetches the rest from Soulseek, confident matches at once; doubtful ones wait in Incoming for review.")
+        .wrap(true)
+        .xalign(0.0)
+        .css_classes(["dim-label"])
+        .build();
+    let forms = gtk::Label::builder()
+        .label("Artist - Title\nArtist - Album (album)\nalbum: Artist - Album")
+        .xalign(0.0)
+        .selectable(true)
+        .css_classes(["monospace", "dim-label"])
+        .build();
+    let text = gtk::TextView::builder()
+        .monospace(true)
+        .top_margin(8)
+        .bottom_margin(8)
+        .left_margin(8)
+        .right_margin(8)
+        .accepts_tab(false)
+        .wrap_mode(gtk::WrapMode::WordChar)
+        .build();
+    let frame = gtk::ScrolledWindow::builder()
+        .child(&text)
+        .min_content_height(160)
+        .vexpand(true)
+        .css_classes(["card"])
+        .build();
+    let get_btn = gtk::Button::builder()
+        .label("Ask flacli")
+        .halign(gtk::Align::End)
+        .css_classes(["suggested-action"])
+        .sensitive(false)
+        .build();
+    text.buffer().connect_changed(clone!(
+        #[weak]
+        get_btn,
+        move |buffer| {
+            let (start, end) = buffer.bounds();
+            let has_line = buffer.text(&start, &end, false).lines().any(|l| !l.trim().is_empty());
+            get_btn.set_sensitive(has_line);
+        }
+    ));
+    get_btn.connect_clicked(clone!(
+        #[weak]
+        window,
+        #[weak]
+        text,
+        move |_| {
+            let buffer = text.buffer();
+            let (start, end) = buffer.bounds();
+            let items: Vec<String> = buffer
+                .text(&start, &end, false)
+                .lines()
+                .map(str::trim)
+                .filter(|l| !l.is_empty())
+                .map(str::to_owned)
+                .collect();
+            if items.is_empty() {
+                return;
+            }
+            let label = format!("{} item{}", items.len(), if items.len() == 1 { "" } else { "s" });
+            buffer.set_text("");
+            fetch(&window, items, label);
+        }
+    ));
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(12)
+        .margin_top(12)
+        .margin_bottom(12)
+        .margin_start(12)
+        .margin_end(12)
+        .build();
+    content.append(&intro);
+    content.append(&forms);
+    content.append(&frame);
+    content.append(&get_btn);
+    let clamp = adw::Clamp::builder().maximum_size(900).child(&content).build();
+    let outer = gtk::Box::builder().orientation(gtk::Orientation::Vertical).vexpand(true).build();
+    outer.append(&clamp);
+    outer
+}
+
+/// The search panel: entry, the four pages, and the basket bar. Lives in the Get view.
+pub struct Finder {
+    /// The whole panel, to place in a view.
+    pub root: gtk::Box,
+    /// The page switcher, for a header bar's title slot.
+    pub switcher: adw::ViewSwitcher,
+    entry: gtk::SearchEntry,
+    view: adw::ViewStack,
+    search: Rc<dyn Fn(String)>,
+}
+
+impl Finder {
+    pub fn new(window: &EuphonicaWindow) -> Rc<Self> {
+        let basket: Basket = Rc::new(RefCell::new(BTreeMap::new()));
+        let checks: Checks = Rc::new(RefCell::new(Vec::new()));
+        let counter = gtk::Label::builder()
+            .label(describe_picks(0, 0))
+            .xalign(0.0)
+            .hexpand(true)
+            .css_classes(["dim-label"])
+            .build();
+        let get_btn = gtk::Button::builder()
+            .label("Get")
+            .css_classes(["suggested-action"])
+            .sensitive(false)
+            .tooltip_text("Hand the ticked songs and albums to flacli")
+            .build();
+        let changed: Changed = Rc::new(clone!(
+            #[strong]
+            basket,
+            #[weak]
+            counter,
+            #[weak]
+            get_btn,
+            move || {
+                let picks = basket.borrow();
+                let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
+                counter.set_label(&describe_picks(songs, picks.len() - songs));
+                get_btn.set_sensitive(!picks.is_empty());
+            }
+        ));
+        let ctx = Ctx {
+            basket: basket.clone(),
+            changed,
+            checks: checks.clone(),
+        };
+
+        let songs = Page::new();
+        let albums = Page::new();
+        let artists = Page::new();
+        let view = adw::ViewStack::new();
+        view.add_titled(&songs.stack, Some(SONGS), "Songs");
+        view.add_titled(&albums.stack, Some(ALBUMS), "Albums");
+        view.add_titled(&artists.stack, Some(ARTISTS), "Artists");
+        view.add_titled(&ask_page(window), Some(ASK), "Ask flacli");
+        let switcher = adw::ViewSwitcher::builder()
+            .stack(&view)
+            .policy(adw::ViewSwitcherPolicy::Wide)
+            .build();
+
+        let entry = gtk::SearchEntry::builder()
+            .placeholder_text("Song, album or artist · “Artist - Title” for one song")
+            .hexpand(true)
+            .build();
+        let spinner = gtk::Spinner::builder().spinning(true).visible(false).build();
+        let search_btn = gtk::Button::builder().label("Search").build();
+        let search_line = gtk::Box::builder()
+            .spacing(6)
+            .margin_top(6)
+            .margin_bottom(6)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        search_line.append(&entry);
+        search_line.append(&spinner);
+        search_line.append(&search_btn);
+        // The search line has no place on the Ask page.
+        view.connect_visible_child_name_notify(clone!(
+            #[weak]
+            search_line,
+            move |view| search_line.set_visible(view.visible_child_name().as_deref() != Some(ASK))
+        ));
+
+        // Opening an artist lists their studio albums and EPs on the Albums page.
+        let open_artist: Rc<dyn Fn(FoundArtist)> = Rc::new(clone!(
+            #[strong]
+            albums,
+            #[weak]
+            view,
+            #[weak]
+            spinner,
+            #[strong]
+            ctx,
+            move |artist: FoundArtist| {
+                albums.clear();
+                albums.set_status(&format!("Asking MusicBrainz for the albums of {}…", artist.name));
+                view.set_visible_child_name(ALBUMS);
+                spinner.set_visible(true);
+                glib::spawn_future_local(clone!(
+                    #[strong]
+                    albums,
+                    #[weak]
+                    spinner,
+                    #[strong]
+                    ctx,
+                    async move {
+                        let mbid = artist.mbid.clone();
+                        let groups = gio::spawn_blocking(move || browse_release_groups(&mbid)).await;
+                        spinner.set_visible(false);
+                        let groups = match groups {
+                            Ok(Ok(groups)) => groups,
+                            Ok(Err(e)) => {
+                                albums.set_status(&format!("MusicBrainz did not answer: {e}"));
+                                return;
+                            }
+                            Err(_) => return,
+                        };
+                        if groups.is_empty() {
+                            albums.set_status(&format!("MusicBrainz lists no studio album or EP for {}.", artist.name));
+                            return;
+                        }
+                        albums.clear();
+                        albums.set_heading(Some(&format!("Albums and EPs by {}, newest first", artist.name)));
+                        for group in groups {
+                            let album = FoundAlbum {
+                                mbid: group.mbid.clone(),
+                                title: group.title.clone(),
+                                artist: artist.name.clone(),
+                                kind: group.kind.to_owned(),
+                                year: group.year.clone(),
+                            };
+                            albums.list.append(&album_row(&album, &ctx));
+                        }
+                        albums.show_list();
+                    }
+                ));
+            }
+        ));
+
+        // One search fills the three pages in turn, the visible one first, a second apart as
+        // MusicBrainz asks. A newer search makes an older one's late results fall on the floor.
+        let generation = Rc::new(Cell::new(0u32));
+        let search: Rc<dyn Fn(String)> = Rc::new(clone!(
+            #[strong]
+            songs,
+            #[strong]
+            albums,
+            #[strong]
+            artists,
+            #[weak]
+            view,
+            #[weak]
+            spinner,
+            #[strong]
+            ctx,
+            #[strong]
+            open_artist,
+            #[strong]
+            generation,
+            move |term: String| {
+                let term = term.trim().to_owned();
+                if term.is_empty() {
+                    return;
+                }
+                generation.set(generation.get().wrapping_add(1));
+                let this_search = generation.get();
+                for page in [&songs, &albums, &artists] {
+                    page.clear();
+                    page.set_status(&format!("Searching MusicBrainz for “{term}”…"));
+                }
+                spinner.set_visible(true);
+                let order = match view.visible_child_name().as_deref() {
+                    Some(ALBUMS) => [Kind::Albums, Kind::Songs, Kind::Artists],
+                    Some(ARTISTS) => [Kind::Artists, Kind::Songs, Kind::Albums],
+                    Some(ASK) => {
+                        view.set_visible_child_name(SONGS);
+                        [Kind::Songs, Kind::Albums, Kind::Artists]
+                    }
+                    _ => [Kind::Songs, Kind::Albums, Kind::Artists],
+                };
+                glib::spawn_future_local(clone!(
+                    #[strong]
+                    songs,
+                    #[strong]
+                    albums,
+                    #[strong]
+                    artists,
+                    #[weak]
+                    spinner,
+                    #[strong]
+                    ctx,
+                    #[strong]
+                    open_artist,
+                    #[strong]
+                    generation,
+                    async move {
+                        for (step, kind) in order.into_iter().enumerate() {
+                            if step > 0 {
+                                glib::timeout_future(PAUSE).await;
+                            }
+                            if generation.get() != this_search {
+                                return;
+                            }
+                            let t = term.clone();
+                            match kind {
+                                Kind::Songs => {
+                                    let found = gio::spawn_blocking(move || search_songs(&t)).await;
+                                    if generation.get() != this_search {
+                                        return;
+                                    }
+                                    match found {
+                                        Ok(Ok(list)) if list.is_empty() => songs.set_status(&format!("No song on MusicBrainz matches “{term}”.")),
+                                        Ok(Ok(list)) => {
+                                            songs.clear();
+                                            for song in &list {
+                                                songs.list.append(&song_row(song, &ctx));
+                                            }
+                                            songs.show_list();
+                                        }
+                                        Ok(Err(e)) => songs.set_status(&format!("MusicBrainz did not answer: {e}")),
+                                        Err(_) => return,
+                                    }
+                                }
+                                Kind::Albums => {
+                                    let found = gio::spawn_blocking(move || search_albums(&t)).await;
+                                    if generation.get() != this_search {
+                                        return;
+                                    }
+                                    match found {
+                                        Ok(Ok(list)) if list.is_empty() => albums.set_status(&format!("No album on MusicBrainz matches “{term}”.")),
+                                        Ok(Ok(list)) => {
+                                            albums.clear();
+                                            for album in &list {
+                                                albums.list.append(&album_row(album, &ctx));
+                                            }
+                                            albums.show_list();
+                                        }
+                                        Ok(Err(e)) => albums.set_status(&format!("MusicBrainz did not answer: {e}")),
+                                        Err(_) => return,
+                                    }
+                                }
+                                Kind::Artists => {
+                                    let found = gio::spawn_blocking(move || search_artists(&t)).await;
+                                    if generation.get() != this_search {
+                                        return;
+                                    }
+                                    match found {
+                                        Ok(Ok(list)) if list.is_empty() => artists.set_status(&format!("No artist on MusicBrainz matches “{term}”.")),
+                                        Ok(Ok(list)) => {
+                                            artists.clear();
+                                            for artist in &list {
+                                                artists.list.append(&artist_row(artist, open_artist.clone()));
+                                            }
+                                            artists.show_list();
+                                        }
+                                        Ok(Err(e)) => artists.set_status(&format!("MusicBrainz did not answer: {e}")),
+                                        Err(_) => return,
+                                    }
+                                }
+                            }
+                        }
+                        if generation.get() == this_search {
+                            spinner.set_visible(false);
+                        }
+                    }
+                ));
+            }
+        ));
+        entry.connect_activate(clone!(
+            #[strong]
+            search,
+            move |entry| search(entry.text().to_string())
+        ));
+        search_btn.connect_clicked(clone!(
+            #[strong]
+            search,
+            #[weak]
+            entry,
+            move |_| search(entry.text().to_string())
+        ));
+
+        let bottom = gtk::Box::builder()
+            .spacing(12)
+            .margin_top(6)
+            .margin_bottom(6)
+            .margin_start(12)
+            .margin_end(12)
+            .build();
+        bottom.append(&counter);
+        bottom.append(&get_btn);
+        // The basket bar belongs to the search pages; the Ask page has its own button.
+        view.connect_visible_child_name_notify(clone!(
+            #[weak]
+            bottom,
+            move |view| bottom.set_visible(view.visible_child_name().as_deref() != Some(ASK))
+        ));
+
+        // Show exactly what goes to flacli before it goes: a whole album is a whole folder.
+        get_btn.connect_clicked(clone!(
+            #[weak]
+            window,
+            #[strong]
+            basket,
+            #[strong]
+            checks,
+            move |_| {
+                let (label, lines, items) = {
+                    let picks = basket.borrow();
+                    if picks.is_empty() {
+                        return;
+                    }
+                    let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
+                    (
+                        describe_picks(songs, picks.len() - songs),
+                        picks.values().map(Pick::describe).collect::<Vec<String>>(),
+                        picks.values().map(Pick::item).collect::<Vec<String>>(),
+                    )
+                };
+                let confirm = adw::AlertDialog::builder()
+                    .heading(format!("Get {label}?"))
+                    .body(format!(
+                        "{}\n\nflacli searches Soulseek for each line, fetches the confident matches and files them as Artist/Album/NN - Title. Doubtful ones wait in Incoming for review.",
+                        lines.join("\n")
+                    ))
+                    .build();
+                confirm.add_response("back", "_Back");
+                confirm.add_response("get", "_Get");
+                confirm.set_response_appearance("get", adw::ResponseAppearance::Suggested);
+                confirm.set_default_response(Some("get"));
+                confirm.set_close_response("back");
+                glib::spawn_future_local(clone!(
+                    #[weak]
+                    window,
+                    #[strong]
+                    checks,
+                    async move {
+                        if confirm.choose_future(Some(&window)).await != "get" {
+                            return;
+                        }
+                        // Untick everything; each tick's own handler empties the basket.
+                        let live: Vec<gtk::CheckButton> = checks.borrow().iter().filter_map(|c| c.upgrade()).collect();
+                        for check in live {
+                            check.set_active(false);
+                        }
+                        checks.borrow_mut().retain(|c| c.upgrade().is_some());
+                        fetch(&window, items, label);
+                    }
+                ));
+            }
+        ));
+
+        let root = gtk::Box::builder()
+            .orientation(gtk::Orientation::Vertical)
+            .vexpand(true)
+            .build();
+        root.append(&search_line);
+        root.append(&view);
+        root.append(&bottom);
+
+        Rc::new(Self {
+            root,
+            switcher,
+            entry,
+            view,
+            search,
+        })
+    }
+
+    /// Put the term in the entry and run it.
+    pub fn search_for(&self, term: &str) {
+        let term = term.trim();
+        if term.is_empty() {
+            return;
+        }
+        if self.view.visible_child_name().as_deref() == Some(ASK) {
+            self.view.set_visible_child_name(SONGS);
+        }
+        self.entry.set_text(term);
+        (self.search)(term.to_owned());
+    }
+
+    pub fn focus_entry(&self) {
+        self.entry.grab_focus();
+    }
+}
+
+/// Open the Get view on the term, or on what it last showed. Called from the app action, the
+/// album view's empty-search line, and anywhere else that used to open a dialog.
 pub fn get_music(window: &EuphonicaWindow, term: Option<&str>) {
     let ctl = flacli();
     if !ctl.state().available() {
         window.show_dialog(
             "flacli is not set up",
-            "Get music hands what you tick to flacli, which is not usable from here. Preferences → Integrations → flacli says what is missing.",
+            "Get hands what you tick to flacli, which is not usable from here. Preferences → Integrations → flacli says what is missing.",
         );
         return;
     }
     if !musicbrainz_enabled() {
         window.show_dialog(
             "MusicBrainz is switched off",
-            "Get music asks MusicBrainz for the names of songs, albums and artists. Switch it on under Preferences → Metadata.",
+            "Get asks MusicBrainz for the names of songs, albums and artists. Switch it on under Preferences → Metadata.",
         );
         return;
     }
-
-    let basket: Basket = Rc::new(RefCell::new(BTreeMap::new()));
-    let counter = gtk::Label::builder()
-        .label(describe_picks(0, 0))
-        .xalign(0.0)
-        .hexpand(true)
-        .css_classes(["dim-label"])
-        .build();
-    let get_btn = gtk::Button::builder()
-        .label("Get")
-        .css_classes(["suggested-action"])
-        .sensitive(false)
-        .tooltip_text("Hand the ticked songs and albums to flacli")
-        .build();
-    let changed: Changed = Rc::new(clone!(
-        #[strong]
-        basket,
-        #[weak]
-        counter,
-        #[weak]
-        get_btn,
-        move || {
-            let picks = basket.borrow();
-            let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
-            counter.set_label(&describe_picks(songs, picks.len() - songs));
-            get_btn.set_sensitive(!picks.is_empty());
-        }
-    ));
-
-    let songs = Page::new();
-    let albums = Page::new();
-    let artists = Page::new();
-    let view = adw::ViewStack::new();
-    view.add_titled(&songs.stack, Some(SONGS), "Songs");
-    view.add_titled(&albums.stack, Some(ALBUMS), "Albums");
-    view.add_titled(&artists.stack, Some(ARTISTS), "Artists");
-    let switcher = adw::ViewSwitcher::builder()
-        .stack(&view)
-        .policy(adw::ViewSwitcherPolicy::Wide)
-        .build();
-
-    let entry = gtk::SearchEntry::builder()
-        .placeholder_text("Song, album or artist · “Artist - Title” for one song")
-        .hexpand(true)
-        .build();
-    let spinner = gtk::Spinner::builder().spinning(true).visible(false).build();
-    let search_btn = gtk::Button::builder().label("Search").build();
-    let search_line = gtk::Box::builder()
-        .spacing(6)
-        .margin_top(6)
-        .margin_bottom(6)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    search_line.append(&entry);
-    search_line.append(&spinner);
-    search_line.append(&search_btn);
-
-    // Opening an artist lists their studio albums and EPs on the Albums page.
-    let open_artist: Rc<dyn Fn(FoundArtist)> = Rc::new(clone!(
-        #[strong]
-        albums,
-        #[weak]
-        view,
-        #[weak]
-        spinner,
-        #[strong]
-        basket,
-        #[strong]
-        changed,
-        move |artist: FoundArtist| {
-            albums.clear();
-            albums.set_status(&format!("Asking MusicBrainz for the albums of {}…", artist.name));
-            view.set_visible_child_name(ALBUMS);
-            spinner.set_visible(true);
-            glib::spawn_future_local(clone!(
-                #[strong]
-                albums,
-                #[weak]
-                spinner,
-                #[strong]
-                basket,
-                #[strong]
-                changed,
-                async move {
-                    let mbid = artist.mbid.clone();
-                    let groups = gio::spawn_blocking(move || browse_release_groups(&mbid)).await;
-                    spinner.set_visible(false);
-                    let groups = match groups {
-                        Ok(Ok(groups)) => groups,
-                        Ok(Err(e)) => {
-                            albums.set_status(&format!("MusicBrainz did not answer: {e}"));
-                            return;
-                        }
-                        Err(_) => return,
-                    };
-                    if groups.is_empty() {
-                        albums.set_status(&format!("MusicBrainz lists no studio album or EP for {}.", artist.name));
-                        return;
-                    }
-                    albums.clear();
-                    albums.set_heading(Some(&format!("Albums and EPs by {}, newest first", artist.name)));
-                    for group in groups {
-                        let album = FoundAlbum {
-                            mbid: group.mbid.clone(),
-                            title: group.title.clone(),
-                            artist: artist.name.clone(),
-                            kind: group.kind.to_owned(),
-                            year: group.year.clone(),
-                        };
-                        albums.list.append(&album_row(&album, &basket, &changed));
-                    }
-                    albums.show_list();
-                }
-            ));
-        }
-    ));
-
-    // One search fills the three pages in turn, the visible one first, a second apart as
-    // MusicBrainz asks. A newer search makes an older one's late results fall on the floor.
-    let generation = Rc::new(Cell::new(0u32));
-    let search: Rc<dyn Fn(String)> = Rc::new(clone!(
-        #[strong]
-        songs,
-        #[strong]
-        albums,
-        #[strong]
-        artists,
-        #[weak]
-        view,
-        #[weak]
-        spinner,
-        #[strong]
-        basket,
-        #[strong]
-        changed,
-        #[strong]
-        open_artist,
-        #[strong]
-        generation,
-        move |term: String| {
-            let term = term.trim().to_owned();
-            if term.is_empty() {
-                return;
-            }
-            generation.set(generation.get().wrapping_add(1));
-            let this_search = generation.get();
-            for page in [&songs, &albums, &artists] {
-                page.clear();
-                page.set_status(&format!("Searching MusicBrainz for “{term}”…"));
-            }
-            spinner.set_visible(true);
-            let order = match view.visible_child_name().as_deref() {
-                Some(ALBUMS) => [Kind::Albums, Kind::Songs, Kind::Artists],
-                Some(ARTISTS) => [Kind::Artists, Kind::Songs, Kind::Albums],
-                _ => [Kind::Songs, Kind::Albums, Kind::Artists],
-            };
-            glib::spawn_future_local(clone!(
-                #[strong]
-                songs,
-                #[strong]
-                albums,
-                #[strong]
-                artists,
-                #[weak]
-                spinner,
-                #[strong]
-                basket,
-                #[strong]
-                changed,
-                #[strong]
-                open_artist,
-                #[strong]
-                generation,
-                async move {
-                    for (step, kind) in order.into_iter().enumerate() {
-                        if step > 0 {
-                            glib::timeout_future(PAUSE).await;
-                        }
-                        if generation.get() != this_search {
-                            return;
-                        }
-                        let t = term.clone();
-                        match kind {
-                            Kind::Songs => {
-                                let found = gio::spawn_blocking(move || search_songs(&t)).await;
-                                if generation.get() != this_search {
-                                    return;
-                                }
-                                match found {
-                                    Ok(Ok(list)) if list.is_empty() => songs.set_status(&format!("No song on MusicBrainz matches “{term}”.")),
-                                    Ok(Ok(list)) => {
-                                        songs.clear();
-                                        for song in &list {
-                                            songs.list.append(&song_row(song, &basket, &changed));
-                                        }
-                                        songs.show_list();
-                                    }
-                                    Ok(Err(e)) => songs.set_status(&format!("MusicBrainz did not answer: {e}")),
-                                    Err(_) => return,
-                                }
-                            }
-                            Kind::Albums => {
-                                let found = gio::spawn_blocking(move || search_albums(&t)).await;
-                                if generation.get() != this_search {
-                                    return;
-                                }
-                                match found {
-                                    Ok(Ok(list)) if list.is_empty() => albums.set_status(&format!("No album on MusicBrainz matches “{term}”.")),
-                                    Ok(Ok(list)) => {
-                                        albums.clear();
-                                        for album in &list {
-                                            albums.list.append(&album_row(album, &basket, &changed));
-                                        }
-                                        albums.show_list();
-                                    }
-                                    Ok(Err(e)) => albums.set_status(&format!("MusicBrainz did not answer: {e}")),
-                                    Err(_) => return,
-                                }
-                            }
-                            Kind::Artists => {
-                                let found = gio::spawn_blocking(move || search_artists(&t)).await;
-                                if generation.get() != this_search {
-                                    return;
-                                }
-                                match found {
-                                    Ok(Ok(list)) if list.is_empty() => artists.set_status(&format!("No artist on MusicBrainz matches “{term}”.")),
-                                    Ok(Ok(list)) => {
-                                        artists.clear();
-                                        for artist in &list {
-                                            artists.list.append(&artist_row(artist, open_artist.clone()));
-                                        }
-                                        artists.show_list();
-                                    }
-                                    Ok(Err(e)) => artists.set_status(&format!("MusicBrainz did not answer: {e}")),
-                                    Err(_) => return,
-                                }
-                            }
-                        }
-                    }
-                    if generation.get() == this_search {
-                        spinner.set_visible(false);
-                    }
-                }
-            ));
-        }
-    ));
-    entry.connect_activate(clone!(
-        #[strong]
-        search,
-        move |entry| search(entry.text().to_string())
-    ));
-    search_btn.connect_clicked(clone!(
-        #[strong]
-        search,
-        #[weak]
-        entry,
-        move |_| search(entry.text().to_string())
-    ));
-
-    let bottom = gtk::Box::builder()
-        .spacing(12)
-        .margin_top(6)
-        .margin_bottom(6)
-        .margin_start(12)
-        .margin_end(12)
-        .build();
-    bottom.append(&counter);
-    bottom.append(&get_btn);
-
-    let header = adw::HeaderBar::new();
-    header.set_title_widget(Some(&switcher));
-    let toolbar = adw::ToolbarView::new();
-    toolbar.add_top_bar(&header);
-    toolbar.add_top_bar(&search_line);
-    toolbar.add_bottom_bar(&bottom);
-    toolbar.set_content(Some(&view));
-    let dialog = adw::Dialog::builder()
-        .title("Get music")
-        .content_width(880)
-        .content_height(640)
-        .child(&toolbar)
-        .build();
-
-    // Show exactly what goes to flacli before it goes: a whole album is a whole folder.
-    get_btn.connect_clicked(clone!(
-        #[weak]
-        window,
-        #[weak]
-        dialog,
-        #[strong]
-        basket,
-        move |_| {
-            let (label, lines, items) = {
-                let picks = basket.borrow();
-                if picks.is_empty() {
-                    return;
-                }
-                let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
-                (
-                    describe_picks(songs, picks.len() - songs),
-                    picks.values().map(Pick::describe).collect::<Vec<String>>(),
-                    picks.values().map(Pick::item).collect::<Vec<String>>(),
-                )
-            };
-            let confirm = adw::AlertDialog::builder()
-                .heading(format!("Get {label}?"))
-                .body(format!(
-                    "{}\n\nflacli searches Soulseek for each line, fetches the confident matches and files them as Artist/Album/NN - Title. Doubtful ones wait in Incoming for review.",
-                    lines.join("\n")
-                ))
-                .build();
-            confirm.add_response("back", "_Back");
-            confirm.add_response("get", "_Get");
-            confirm.set_response_appearance("get", adw::ResponseAppearance::Suggested);
-            confirm.set_default_response(Some("get"));
-            confirm.set_close_response("back");
-            glib::spawn_future_local(clone!(
-                #[weak]
-                window,
-                #[weak]
-                dialog,
-                async move {
-                    if confirm.choose_future(Some(&dialog)).await != "get" {
-                        return;
-                    }
-                    dialog.close();
-                    fetch(&window, items, label);
-                }
-            ));
-        }
-    ));
-
-    dialog.present(Some(window));
-    entry.grab_focus();
-    if let Some(term) = term.map(str::trim).filter(|t| !t.is_empty()) {
-        entry.set_text(term);
-        search(term.to_owned());
-    }
+    window.show_get_view(term);
 }
 
 #[cfg(test)]

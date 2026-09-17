@@ -96,6 +96,30 @@
 						</child>
 
 						<child>
+							<!-- flacli's own pages (roadmap Tier 2): Get music by name, Tidy the library.
+							     Shown only when flacli is on the PATH and files into the folder MPD serves. -->
+							<object class="GtkBox" id="flacli_section">
+								<property name="visible">false</property>
+								<property name="orientation">1</property>
+								<property name="spacing">6</property>
+								<child>
+									<object class="GtkSeparator"></object>
+								</child>
+								<child>
+									<object class="EuphonicaSidebarButton" id="get_btn">
+										<property name="group">recent_btn</property>
+										<property name="label" translatable="true">Get</property>
+									</object>
+								</child>
+								<child>
+									<object class="EuphonicaSidebarButton" id="tidy_btn">
+										<property name="group">recent_btn</property>
+										<property name="label" translatable="true">Tidy</property>
+									</object>
+								</child>
+							</object>
+						</child>
+						<child>
 							<!-- What flacli is fetching (roadmap Tier 1). Shown only when flacli is on the PATH,
 							     files into the library MPD serves, and has a playlist under way or awaiting review. -->
 							<object class="GtkBox" id="incoming_section">

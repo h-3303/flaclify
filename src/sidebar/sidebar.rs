@@ -169,6 +169,12 @@ mod imp {
         #[template_child]
         pub incoming_list: TemplateChild<gtk::ListBox>,
         #[template_child]
+        pub flacli_section: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub get_btn: TemplateChild<SidebarButton>,
+        #[template_child]
+        pub tidy_btn: TemplateChild<SidebarButton>,
+        #[template_child]
         pub queue_btn: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub queue_len: TemplateChild<gtk::Label>,
@@ -294,6 +300,26 @@ impl Sidebar {
             move |btn| {
                 if btn.is_active() {
                     stack.set_visible_child_name("folders");
+                }
+            }
+        ));
+
+        // flacli's pages
+        self.imp().get_btn.connect_toggled(clone!(
+            #[weak]
+            stack,
+            move |btn| {
+                if btn.is_active() {
+                    stack.set_visible_child_name("get");
+                }
+            }
+        ));
+        self.imp().tidy_btn.connect_toggled(clone!(
+            #[weak]
+            stack,
+            move |btn| {
+                if btn.is_active() {
+                    stack.set_visible_child_name("tidy");
                 }
             }
         ));
@@ -531,6 +557,10 @@ impl Sidebar {
         let flacli_ctl = flacli();
         let flacli_state = flacli_ctl.state();
         flacli_state
+            .bind_property("available", &self.imp().flacli_section.get(), "visible")
+            .sync_create()
+            .build();
+        flacli_state
             .bind_property("active", &self.imp().incoming_spinner.get(), "visible")
             .sync_create()
             .build();
@@ -673,6 +703,8 @@ impl Sidebar {
             "dyn-playlists" => self.imp().dyn_playlists_btn.set_active(true),
             "recent" => self.imp().recent_btn.set_active(true),
             "queue" => self.imp().queue_btn.set_active(true),
+            "get" => self.imp().get_btn.set_active(true),
+            "tidy" => self.imp().tidy_btn.set_active(true),
             _ => {
                 eprintln!("Unknown view: {}", view_name);
             }

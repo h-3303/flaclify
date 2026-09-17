@@ -120,12 +120,19 @@ local socket). Preferences → Integrations → *flacli* shows the verdict.
 
 From the same surfaces the player drives the shell, still through the CLI (`flacli get`, `sync`,
 `queue`, `review`, `approve`, `skip`, `cancel`; D-Bus comes when polling gets clumsy or Flatpak
-needs it). The shell's rules hold. Naming the music is the yes: **Get music** (menu, Ctrl+Shift+G,
-or **Get it…** under an album search that matches nothing) searches MusicBrainz for songs, albums
-and artists, an artist opens onto their albums and an album onto its tracklist, and every tick
-is one name handed to `flacli get`, which fetches the confident matches at once. **Get this** on a
-missing release does the same for one album. MusicBrainz supplies names only; nothing is fetched
-that has not been ticked. A playlist is never queued until the totals have been
+needs it). The shell's rules hold. Naming the music is the yes. Two pages of their own sit in the
+sidebar while flacli is set up:
+
+- **Get** (also the menu, Ctrl+Shift+G, and **Get it…** under an album search that matches
+  nothing) searches MusicBrainz for songs, albums and artists; an artist opens onto their albums,
+  an album onto its tracklist, and every tick is one name handed to `flacli get` after a
+  confirmation that lists them. Its **Ask flacli** page takes the names directly, one a line, as
+  the shell does. **Get this** on a missing release does the same for one album. MusicBrainz
+  supplies names only; nothing is fetched that has not been named.
+- **Tidy** runs `flacli tidy` as a dry run, shows the plan and the report, and applies it on the
+  yes with every deletion named first; files new arrivals; and fills what the player shows but the
+  library lacks (artist bios and album wikis, artist pictures, album covers), with the missing
+  counts per kind and a log of what each run did. A playlist is never queued until the totals have been
 seen: the **import** button in the playlist view takes a TIDAL, Deezer or YouTube Music link and
 matches it in the background, then Incoming offers **Queue**, which shows tracks, folders, size
 and users before the yes, and **Review**, a dialog that lists each doubtful match with flacli's

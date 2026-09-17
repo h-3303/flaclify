@@ -44,7 +44,7 @@ use gtk::{
 use image::{DynamicImage, imageops::FilterType};
 use libblur::{FastBlurChannels, ThreadingPolicy, stack_blur};
 use mpd::Subsystem;
-use std::{cell::RefCell, ops::Deref, path::PathBuf, thread, time::Duration};
+use std::{cell::RefCell, ops::Deref, path::PathBuf, rc::Rc, thread, time::Duration};
 use std::{
     cell::{Cell, OnceCell},
     sync::{Arc, Mutex},
@@ -195,6 +195,9 @@ mod imp {
         pub playlist_view: TemplateChild<PlaylistView>,
         #[template_child]
         pub queue_view: TemplateChild<QueueView>,
+        // flacli views (Tier 2), built in code and added to the stack at setup.
+        pub get_view: OnceCell<Rc<crate::flacli::GetView>>,
+        pub tidy_view: OnceCell<Rc<crate::flacli::TidyView>>,
 
         #[template_child]
         pub menu_btn: TemplateChild<gtk::MenuButton>,
@@ -1364,6 +1367,27 @@ impl EuphonicaWindow {
             &win,
         );
         win.imp().sidebar.setup(&win, &app);
+        // flacli views: Get and Tidy, pages of the main stack beside the library views.
+        {
+            let stack = win.get_stack();
+            let get_view = crate::flacli::GetView::new(&win);
+            stack.add_named(&get_view.widget, Some("get"));
+            let _ = win.imp().get_view.set(get_view);
+            let tidy_view = crate::flacli::TidyView::new(&win);
+            stack.add_named(&tidy_view.widget, Some("tidy"));
+            let _ = win.imp().tidy_view.set(tidy_view);
+            stack.connect_visible_child_name_notify(clone!(
+                #[weak]
+                win,
+                move |stack| {
+                    if stack.visible_child_name().as_deref() == Some("tidy") {
+                        if let Some(view) = win.imp().tidy_view.get() {
+                            view.shown();
+                        }
+                    }
+                }
+            ));
+        }
         win.imp()
             .player_bar
             .setup(app.get_player(), app.get_cache());
@@ -1563,6 +1587,17 @@ impl EuphonicaWindow {
             }
         } else if self.imp().content.has_css_class("no-shading") {
             self.imp().content.remove_css_class("no-shading");
+        }
+    }
+
+    /// Switch to the Get view, searching for `term` when given.
+    pub fn show_get_view(&self, term: Option<&str>) {
+        self.imp().sidebar.set_view("get");
+        if let Some(view) = self.imp().get_view.get() {
+            match term {
+                Some(term) => view.search_for(term),
+                None => view.focus(),
+            }
         }
     }
 
@@ -2227,12 +2262,10 @@ impl EuphonicaWindow {
             .set_int("last-window-height", height)
             .expect("Unable to stop last-window-height");
         if let Some(visible_child_name) = self.imp().stack.visible_child_name() {
-            let _ = state.set_enum(
-                "last-view",
-                View::try_from(visible_child_name.as_str())
-                    .unwrap()
-                    .as_idx() as i32,
-            );
+            // The flacli views are not in the enum; they are simply not remembered.
+            if let Ok(view) = View::try_from(visible_child_name.as_str()) {
+                let _ = state.set_enum("last-view", view.as_idx() as i32);
+            }
         }
     }
 
