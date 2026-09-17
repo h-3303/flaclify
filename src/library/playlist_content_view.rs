@@ -1498,6 +1498,7 @@ mod tests {
 
     fn missing(position: u32, title: &str) -> MissingTrack {
         MissingTrack {
+            track_id: position as u64,
             position,
             artist: Some("A".to_owned()),
             title: title.to_owned(),
