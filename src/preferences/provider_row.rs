@@ -15,7 +15,7 @@ mod imp {
 
     #[derive(Properties, Default, CompositeTemplate)]
     #[properties(wrapper_type = super::ProviderRow)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/preferences/provider-row.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/provider-row.ui")]
     pub struct ProviderRow {
         #[template_child]
         pub enabled: TemplateChild<gtk::Switch>,

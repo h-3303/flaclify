@@ -116,7 +116,7 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate, Derivative)]
     #[derivative(Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/playlist-content-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/playlist-content-view.ui")]
     pub struct PlaylistContentView {
         #[template_child]
         pub infobox_revealer: TemplateChild<gtk::Revealer>,

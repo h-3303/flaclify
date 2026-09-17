@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="euphonica">
-	<enum id="io.github.htkhiem.Euphonica.sortby">
+<schemalist gettext-domain="flaclify">
+	<enum id="io.github.h3303.Flaclify.sortby">
 		<value nick="song-title" value="1"/>
 		<value nick="artist" value="2"/>
 		<value nick="album-title" value="3"/>
@@ -11,28 +11,28 @@
 		<value nick="rating" value="8"/>
 	</enum>
 
-	<enum id="io.github.htkhiem.Euphonica.sortdir">
+	<enum id="io.github.h3303.Flaclify.sortdir">
 		<value nick="asc" value="1"/>
 		<value nick="desc" value="0"/>  <!-- Works as boolean too -->
 	</enum>
 
-	<enum id="io.github.htkhiem.Euphonica.pcmsource">
+	<enum id="io.github.h3303.Flaclify.pcmsource">
 		<value nick="pipewire" value="1"/>
 		<value nick="fifo" value="0"/>
 	</enum>
 
-	<enum id="io.github.htkhiem.Euphonica.volumeunit">
+	<enum id="io.github.h3303.Flaclify.volumeunit">
 		<value nick="percents" value="0"/>
 		<value nick="decibels" value="1"/>  <!-- Works as boolean too -->
 	</enum>
 
-	<enum id="io.github.htkhiem.Euphonica.titlewrapmode">
+	<enum id="io.github.h3303.Flaclify.titlewrapmode">
 		<value nick="ellipsis" value="0"/>
 		<value nick="scroll" value="1"/>
 		<value nick="wrap" value="2"/>
 	</enum>
 
-	<enum id="io.github.htkhiem.Euphonica.onexitaction">
+	<enum id="io.github.h3303.Flaclify.onexitaction">
 		<value nick="nothing" value="0"/>
 		<value nick="pause" value="1"/>
 		<value nick="stop" value="2"/>
@@ -40,7 +40,7 @@
 	</enum>
 
 	<!-- Order matches combobox in Preferences/UI tab, while nick matches stackpage name. -->
-	<enum id="io.github.htkhiem.Euphonica.view">
+	<enum id="io.github.h3303.Flaclify.view">
 		<value nick="last" value="0"/>
 		<value nick="recent" value="1"/>
 		<value nick="albums" value="2"/>
@@ -52,25 +52,25 @@
 	</enum>
 
 	<!-- Unused, but kept for compatibility -->
-	<enum id="io.github.htkhiem.Euphonica.imageformat">
+	<enum id="io.github.h3303.Flaclify.imageformat">
 		<value nick="jpeg" value="0"/>
 		<value nick="png" value="1"/>
 	</enum>
 
-	<schema id="io.github.htkhiem.Euphonica" path="/io/github/htkhiem/Euphonica/">
-		<child schema="io.github.htkhiem.Euphonica.ui" name="ui"/>
-		<child schema="io.github.htkhiem.Euphonica.state" name="state"/>
-		<child schema="io.github.htkhiem.Euphonica.library" name="library"/>
-		<child schema="io.github.htkhiem.Euphonica.metaprovider" name="metaprovider"/>
-		<child schema="io.github.htkhiem.Euphonica.player" name="player"/>
-		<child schema="io.github.htkhiem.Euphonica.client" name="client"/>
+	<schema id="io.github.h3303.Flaclify" path="/io/github/h3303/Flaclify/">
+		<child schema="io.github.h3303.Flaclify.ui" name="ui"/>
+		<child schema="io.github.h3303.Flaclify.state" name="state"/>
+		<child schema="io.github.h3303.Flaclify.library" name="library"/>
+		<child schema="io.github.h3303.Flaclify.metaprovider" name="metaprovider"/>
+		<child schema="io.github.h3303.Flaclify.player" name="player"/>
+		<child schema="io.github.h3303.Flaclify.client" name="client"/>
 
 		<key name="background-portal-available" type="b">
 			<default>true</default>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.client" path="/io/github/htkhiem/Euphonica/client/">
+	<schema id="io.github.h3303.Flaclify.client" path="/io/github/h3303/Flaclify/client/">
 		<key name="mpd-auto-reconnect" type="b">
 			<default>true</default>
 		</key>
@@ -89,7 +89,7 @@
 		<key name="mpd-ping-interval-s" type="u">
 			<summary>Ping interval for main client</summary>
 			<description>
-			Euphonica relies on a secondary background client that's always in "idle mode" to
+			Flaclify relies on a secondary background client that's always in "idle mode" to
 			synchronise itself with changes made by other frontend apps. Its main client does not
 			poll the daemon unless needed (e.g. to update the seekbar). Due to this, it still
 			needs to occasionally ping the daemon to keep the connection alive. Set this to
@@ -105,7 +105,7 @@
 			<summary>Attempt to back up album and artist metadata docs to MPD's sticker DB</summary>
 		</key>
 
-		<key name="mpd-visualizer-pcm-source" enum='io.github.htkhiem.Euphonica.pcmsource'>
+		<key name="mpd-visualizer-pcm-source" enum='io.github.h3303.Flaclify.pcmsource'>
 			<default>'pipewire'</default>
 		</key>
 
@@ -127,7 +127,7 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.library" path="/io/github/htkhiem/Euphonica/library/">
+	<schema id="io.github.h3303.Flaclify.library" path="/io/github/h3303/Flaclify/library/">
 		<key name="artist-tag-delims" type="as">
 			<default>[",", ";", ":", "&amp;", "/", "//", "\\", "\\\\", " X ", "feat.", " ft.", "(ft.", ",ft.", "duet with", "special guest"]</default>
 		</key>
@@ -194,7 +194,7 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.metaprovider" path="/io/github/htkhiem/Euphonica/metaprovider/">
+	<schema id="io.github.h3303.Flaclify.metaprovider" path="/io/github/h3303/Flaclify/metaprovider/">
 		<key name="delay-between-requests-s" type="d">
 			<default>1.5</default>
 			<summary>How long to wait between metadata provider API calls</summary>
@@ -225,12 +225,12 @@
 			</description>
 		</key>
 
-		<child schema="io.github.htkhiem.Euphonica.metaprovider.lastfm" name="lastfm"/>
-		<child schema="io.github.htkhiem.Euphonica.metaprovider.musicbrainz" name="musicbrainz"/>
-		<child schema="io.github.htkhiem.Euphonica.metaprovider.lrclib" name="lrclib"/>
+		<child schema="io.github.h3303.Flaclify.metaprovider.lastfm" name="lastfm"/>
+		<child schema="io.github.h3303.Flaclify.metaprovider.musicbrainz" name="musicbrainz"/>
+		<child schema="io.github.h3303.Flaclify.metaprovider.lrclib" name="lrclib"/>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.metaprovider.lastfm" path="/io/github/htkhiem/Euphonica/metaprovider/lastfm/">
+	<schema id="io.github.h3303.Flaclify.metaprovider.lastfm" path="/io/github/h3303/Flaclify/metaprovider/lastfm/">
 		<key name="name" type="s">
 			<default>'Last.fm'</default>
 		</key>
@@ -245,7 +245,7 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.metaprovider.lrclib" path="/io/github/htkhiem/Euphonica/metaprovider/lrclib/">
+	<schema id="io.github.h3303.Flaclify.metaprovider.lrclib" path="/io/github/h3303/Flaclify/metaprovider/lrclib/">
 		<key name="name" type="s">
 			<default>'LRCLIB'</default>
 		</key>
@@ -254,7 +254,7 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.metaprovider.musicbrainz" path="/io/github/htkhiem/Euphonica/metaprovider/musicbrainz/">
+	<schema id="io.github.h3303.Flaclify.metaprovider.musicbrainz" path="/io/github/h3303/Flaclify/metaprovider/musicbrainz/">
 		<key name="name" type="s">
 			<default>'MusicBrainz'</default>
 		</key>
@@ -269,7 +269,7 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.player" path="/io/github/htkhiem/Euphonica/player/">
+	<schema id="io.github.h3303.Flaclify.player" path="/io/github/h3303/Flaclify/player/">
 		<key name="enable-mpris" type="b">
 			<default>true</default>
 		</key>
@@ -302,9 +302,13 @@
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.ui" path="/io/github/htkhiem/Euphonica/ui/">
+	<schema id="io.github.h3303.Flaclify.ui" path="/io/github/h3303/Flaclify/ui/">
 		<key name="colorscheme" type="s">
 			<default>'follow'</default>
+		</key>
+		<key name="theme" type="s">
+			<default>'default'</default>
+			<summary>Active theme id (default, a bundled theme's file stem, or user/&lt;stem&gt;)</summary>
 		</key>
 		<key name="use-hires-for-album-cells" type="b">
 			<default>true</default>
@@ -327,7 +331,7 @@
 		<key name="vol-knob-sensitivity" type="d">
 			<default>1.0</default>
 		</key>
-		<key name="vol-knob-unit" enum='io.github.htkhiem.Euphonica.volumeunit'>
+		<key name="vol-knob-unit" enum='io.github.h3303.Flaclify.volumeunit'>
 			<default>'percents'</default>
 		</key>
 		<key name="use-visualizer" type="b">
@@ -374,7 +378,7 @@
 			<default>1.0</default>
 			<summary>Album art rotation speed</summary>
 		</key>
-		<key name="title-wrap-mode" enum='io.github.htkhiem.Euphonica.titlewrapmode'>
+		<key name="title-wrap-mode" enum='io.github.h3303.Flaclify.titlewrapmode'>
 			<default>'ellipsis'</default>
 		</key>
 		<key name="max-columns" type="u">
@@ -402,13 +406,13 @@
         </key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state" path="/io/github/htkhiem/Euphonica/state/">
-		<child schema="io.github.htkhiem.Euphonica.state.albumview" name="albumview"/>
-		<child schema="io.github.htkhiem.Euphonica.state.artistview" name="artistview"/>
-		<child schema="io.github.htkhiem.Euphonica.state.folderview" name="folderview"/>
-		<child schema="io.github.htkhiem.Euphonica.state.playlistview" name="playlistview"/>
-		<child schema="io.github.htkhiem.Euphonica.state.dynplaylistview" name="dynplaylistview"/>
-		<child schema="io.github.htkhiem.Euphonica.state.queueview" name="queueview"/>
+	<schema id="io.github.h3303.Flaclify.state" path="/io/github/h3303/Flaclify/state/">
+		<child schema="io.github.h3303.Flaclify.state.albumview" name="albumview"/>
+		<child schema="io.github.h3303.Flaclify.state.artistview" name="artistview"/>
+		<child schema="io.github.h3303.Flaclify.state.folderview" name="folderview"/>
+		<child schema="io.github.h3303.Flaclify.state.playlistview" name="playlistview"/>
+		<child schema="io.github.h3303.Flaclify.state.dynplaylistview" name="dynplaylistview"/>
+		<child schema="io.github.h3303.Flaclify.state.queueview" name="queueview"/>
 
 		<key name="onboarded" type="b">
 			<default>false</default>
@@ -421,11 +425,11 @@
 		<key name="last-window-height" type="i">
 			<default>400</default>
 		</key>
-		<key name="last-view" enum='io.github.htkhiem.Euphonica.view'>
+		<key name="last-view" enum='io.github.h3303.Flaclify.view'>
 			<summary>Must never be set to 'last'</summary>
 			<default>'recent'</default>
 		</key>
-		<key name="startup-view" enum='io.github.htkhiem.Euphonica.view'>
+		<key name="startup-view" enum='io.github.h3303.Flaclify.view'>
 			<default>'last'</default>
 		</key>
 
@@ -439,28 +443,28 @@
 		<key name="start-minimized" type="b">
 			<default>true</default>
 		</key>
-		<key name="on-exit-action" enum='io.github.htkhiem.Euphonica.onexitaction'>
+		<key name="on-exit-action" enum='io.github.h3303.Flaclify.onexitaction'>
 			<default>'nothing'</default>
-			<summary>Action to perform on MPD when Euphonica exits</summary>
+			<summary>Action to perform on MPD when Flaclify exits</summary>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.albumview" path="/io/github/htkhiem/Euphonica/state/albumview/">
+	<schema id="io.github.h3303.Flaclify.state.albumview" path="/io/github/h3303/Flaclify/state/albumview/">
 		<!-- Album view state -->
-		<key name='sort-by' enum='io.github.htkhiem.Euphonica.sortby'>
+		<key name='sort-by' enum='io.github.h3303.Flaclify.sortby'>
 			<default>'album-title'</default>
 			<summary>Album View sort criterion</summary>
 		</key>
 
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Album View sort direction</summary>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.artistview" path="/io/github/htkhiem/Euphonica/state/artistview/">
+	<schema id="io.github.h3303.Flaclify.state.artistview" path="/io/github/h3303/Flaclify/state/artistview/">
 		<!-- Artist view state -->
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Artist View sort direction</summary>
         </key>
@@ -471,46 +475,46 @@
         </key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.folderview" path="/io/github/htkhiem/Euphonica/state/folderview/">
+	<schema id="io.github.h3303.Flaclify.state.folderview" path="/io/github/h3303/Flaclify/state/folderview/">
 		<!-- Folder view state -->
-		<key name='sort-by' enum='io.github.htkhiem.Euphonica.sortby'>
+		<key name='sort-by' enum='io.github.h3303.Flaclify.sortby'>
 			<default>'filename'</default>
 			<summary>Folder View sort criterion</summary>
 		</key>
 
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Folder View sort direction</summary>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.playlistview" path="/io/github/htkhiem/Euphonica/state/playlistview/">
+	<schema id="io.github.h3303.Flaclify.state.playlistview" path="/io/github/h3303/Flaclify/state/playlistview/">
 		<!-- Folder view state -->
-		<key name='sort-by' enum='io.github.htkhiem.Euphonica.sortby'>
+		<key name='sort-by' enum='io.github.h3303.Flaclify.sortby'>
 			<default>'filename'</default>
 			<summary>Playlist View sort criterion</summary>
 		</key>
 
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Playlist View sort direction</summary>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.dynplaylistview" path="/io/github/htkhiem/Euphonica/state/dynplaylistview/">
+	<schema id="io.github.h3303.Flaclify.state.dynplaylistview" path="/io/github/h3303/Flaclify/state/dynplaylistview/">
 		<!-- Folder view state -->
-		<key name='sort-by' enum='io.github.htkhiem.Euphonica.sortby'>
+		<key name='sort-by' enum='io.github.h3303.Flaclify.sortby'>
 			<default>'filename'</default>
 			<summary>Dynamic Playlist View sort criterion</summary>
 		</key>
 
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Dynamic Playlist View sort direction</summary>
 		</key>
 	</schema>
 
-	<schema id="io.github.htkhiem.Euphonica.state.queueview" path="/io/github/htkhiem/Euphonica/state/queueview/">
+	<schema id="io.github.h3303.Flaclify.state.queueview" path="/io/github/h3303/Flaclify/state/queueview/">
 		<!-- Queue view & player pane state -->
 		<key name='show-lyrics' type='b'>
 			<default>true</default>
@@ -524,7 +528,7 @@
 			<default>false</default>
 		</key>
 
-		<key name="sort-direction" enum='io.github.htkhiem.Euphonica.sortdir'>
+		<key name="sort-direction" enum='io.github.h3303.Flaclify.sortdir'>
 			<default>'asc'</default>
 			<summary>Album View sort direction</summary>
 		</key>

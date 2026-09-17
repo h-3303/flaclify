@@ -17,19 +17,19 @@
         <child>
           <object class="AdwSwitchRow" id="run_in_background">
             <property name="title" translatable="true">Run in background</property>
-            <property name="subtitle" translatable="true">Allow Euphonica to keep running after its window is closed. If Euphonica is installed via Flatpak and your shell supports the XDG Background protocol, Euphonica can additionally show up in your shell's background apps section.</property>
+            <property name="subtitle" translatable="true">Allow Flaclify to keep running after its window is closed. If Flaclify is installed via Flatpak and your shell supports the XDG Background protocol, Flaclify can additionally show up in your shell's background apps section.</property>
           </object>
         </child>
         <child>
           <object class="AdwSwitchRow" id="autostart">
             <property name="title" translatable="true">Autostart</property>
-            <property name="subtitle" translatable="true">Start Euphonica on shell login. This option only works when installed via Flatpak and on shells supporting the XDG Background protocol. For other setups, please use their preferred autostarting mechanisms.</property>
+            <property name="subtitle" translatable="true">Start Flaclify on shell login. This option only works when installed via Flatpak and on shells supporting the XDG Background protocol. For other setups, please use their preferred autostarting mechanisms.</property>
           </object>
         </child>
         <child>
           <object class="AdwSwitchRow" id="start_minimized">
             <property name="title" translatable="true">Autostart minimised</property>
-            <property name="subtitle" translatable="true">You may also launch Euphonica minimised using the --minimized command-line argument.</property>
+            <property name="subtitle" translatable="true">You may also launch Flaclify minimised using the --minimized command-line argument.</property>
           </object>
         </child>
         <child>
@@ -89,7 +89,7 @@
     <child>
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="true">MusicBrainz</property>
-        <property name="description" translatable="true">MusicBrainz provides detailed information on releases (albums) and artists. Euphonica also supports fetching artist avatars as long as they are Wikimedia links listed as a "picture" relation.</property>
+        <property name="description" translatable="true">MusicBrainz provides detailed information on releases (albums) and artists. Flaclify also supports fetching artist avatars as long as they are Wikimedia links listed as a "picture" relation.</property>
         <child>
           <object class="AdwSwitchRow" id="musicbrainz_download_album_art">
             <property name="title" translatable="true">Download album arts</property>
@@ -107,7 +107,7 @@
     <child>
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="true">Metadata provider priority</property>
-        <property name="description" translatable="true">Metadata providers can be daisy-chained. Providers earlier in the chain take precedence, filling in fields first. Later providers can fill in the blanks or add to list-type fields (e.g., tags). Results from earlier providers can also help improve the accuracy &amp;amp; hit rate of later ones. Changes take effect after restarting Euphonica.</property>
+        <property name="description" translatable="true">Metadata providers can be daisy-chained. Providers earlier in the chain take precedence, filling in fields first. Later providers can fill in the blanks or add to list-type fields (e.g., tags). Results from earlier providers can also help improve the accuracy &amp;amp; hit rate of later ones. Changes take effect after restarting Flaclify.</property>
         <child>
           <object class="GtkListBox" id="order_box">
             <property name="hexpand">true</property>

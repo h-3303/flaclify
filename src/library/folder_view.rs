@@ -41,7 +41,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, CompositeTemplate, Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/folder-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/folder-view.ui")]
     pub struct FolderView {
         #[template_child]
         pub show_sidebar: TemplateChild<gtk::Button>,
@@ -247,7 +247,7 @@ mod imp {
 
                     // Vary behaviour depending on sort menu
                     match state.enum_("sort-by") {
-                        // Refer to the io.github.htkhiem.Euphonica.sortby enum the gschema
+                        // Refer to the io.github.h3303.Flaclify.sortby enum the gschema
                         6 => {
                             // Filename
                             g_cmp_str_options(

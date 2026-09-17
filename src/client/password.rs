@@ -5,13 +5,14 @@ use gtk::{
 use libsecret::*;
 use std::collections::HashMap;
 
-use crate::config::APPLICATION_ID;
 
 pub fn get_mpd_password_schema() -> Schema {
     let mut attributes = HashMap::new();
     attributes.insert("type", SchemaAttributeType::String);
 
-    Schema::new(APPLICATION_ID, SchemaFlags::NONE, attributes)
+    // Pinned to the upstream Euphonica ID on purpose so Flaclify and Euphonica share
+    // the same stored MPD password instead of each prompting for it.
+    Schema::new("io.github.htkhiem.Euphonica", SchemaFlags::NONE, attributes)
 }
 
 pub fn get_mpd_password() -> Result<Option<String>, GError> {
@@ -52,7 +53,7 @@ pub async fn set_mpd_password(maybe_password: Option<&str>) -> Result<(), GError
             Some(&schema),
             attributes,
             None,
-            "Euphonica MPD password",
+            "Flaclify MPD password",
             password,
         )
         .await {

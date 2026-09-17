@@ -66,7 +66,7 @@ mod imp {
 
     #[derive(Default, CompositeTemplate, Properties)]
     #[properties(wrapper_type = super::Marquee)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/marquee.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/marquee.ui")]
     pub struct Marquee {
         #[template_child]
         pub child: TemplateChild<gtk::Label>,

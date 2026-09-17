@@ -7,7 +7,7 @@ use gtk::{
 use std::cell::{Cell, RefCell};
 
 // Background paintable implementation.
-// Euphonica can optionally use the currently-playing track's album art as its
+// Flaclify can optionally use the currently-playing track's album art as its
 // background. This is always scaled to fill the whole window and can be further
 // blurred. When the next song has a different album art, a fade animation will
 // be played.

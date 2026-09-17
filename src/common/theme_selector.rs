@@ -15,7 +15,7 @@ mod imp {
     use gtk::CompositeTemplate;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/theme-selector.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/theme-selector.ui")]
     pub struct ThemeSelector {
         #[template_child]
         pub follow: TemplateChild<gtk::CheckButton>,

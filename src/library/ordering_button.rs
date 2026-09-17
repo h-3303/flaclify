@@ -9,7 +9,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/ordering-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/ordering-button.ui")]
     pub struct OrderingButton {
         #[template_child]
         pub label: TemplateChild<gtk::Label>,

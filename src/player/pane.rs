@@ -31,7 +31,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/pane.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/pane.ui")]
     pub struct PlayerPane {
         // Song info
         #[template_child]

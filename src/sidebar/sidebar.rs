@@ -57,7 +57,7 @@ mod imp {
 
     #[derive(Debug, Properties, Default, CompositeTemplate)]
     #[properties(wrapper_type = super::Sidebar)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/sidebar.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/sidebar.ui")]
     pub struct Sidebar {
         #[template_child]
         pub recent_btn: TemplateChild<SidebarButton>,

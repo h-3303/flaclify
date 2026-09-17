@@ -32,7 +32,7 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate, Derivative)]
     #[derivative(Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/album-content-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/album-content-view.ui")]
     pub struct AlbumContentView {
         #[template_child]
         pub cover: TemplateChild<ImageStack>,

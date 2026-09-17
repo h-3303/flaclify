@@ -28,7 +28,7 @@ mod imp {
 
     #[derive(CompositeTemplate, Derivative)]
     #[derivative(Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/album-cell.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/album-cell.ui")]
     pub struct AlbumCell {
         #[template_child]
         pub inner: TemplateChild<gtk::Box>,

@@ -16,7 +16,7 @@ mod imp {
 
     #[derive(Default, CompositeTemplate, Properties)]
     #[properties(wrapper_type = super::Rating)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/rating.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/rating.ui")]
     pub struct Rating {
         #[template_child]
         pub s1: TemplateChild<gtk::Image>,

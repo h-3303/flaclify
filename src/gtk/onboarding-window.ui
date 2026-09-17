@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.0"/>
   <requires lib="Adw" version="1.4"/>
   <template class="EuphonicaOnboardingWindow" parent="AdwApplicationWindow">
-    <property name="title" translatable="true">Euphonica</property>
+    <property name="title" translatable="true">Flaclify</property>
     <property name="default-width">400</property>
     <property name="default-height">640</property>
     <property name="height-request">640</property>
@@ -228,7 +228,7 @@
                                 <property name="activatable">false</property>
                                 <child>
                                   <object class="GtkLabel">
-                                    <property name="label" translatable="true">Knowing the folder layout lets Euphonica optimise cover art loading.&#10;&#10;If every folder contains tracks from only one release, Euphonica loads its cover art once and applies it to all tracks. It first checks for &lt;tt&gt;cover.png&lt;/tt&gt;, &lt;tt&gt;cover.webp&lt;/tt&gt;, or &lt;tt&gt;cover.jpg&lt;/tt&gt;, then uses the first embedded image it finds.&#10;&#10;If a folder contains multiple releases, shared cover art could be applied to the wrong tracks. Choose &lt;b&gt;Other/mixed&lt;/b&gt; for these libraries. Cover files still take priority; without one, Euphonica loads embedded art per track.&#10;&#10;For single-release folders, add a cover file to avoid duplicate downloads. For mixed folders, remove it to use per-track embedded art.</property>
+                                    <property name="label" translatable="true">Knowing the folder layout lets Flaclify optimise cover art loading.&#10;&#10;If every folder contains tracks from only one release, Flaclify loads its cover art once and applies it to all tracks. It first checks for &lt;tt&gt;cover.png&lt;/tt&gt;, &lt;tt&gt;cover.webp&lt;/tt&gt;, or &lt;tt&gt;cover.jpg&lt;/tt&gt;, then uses the first embedded image it finds.&#10;&#10;If a folder contains multiple releases, shared cover art could be applied to the wrong tracks. Choose &lt;b&gt;Other/mixed&lt;/b&gt; for these libraries. Cover files still take priority; without one, Flaclify loads embedded art per track.&#10;&#10;For single-release folders, add a cover file to avoid duplicate downloads. For mixed folders, remove it to use per-track embedded art.</property>
                                     <property name="use-markup">true</property>
                                     <property name="wrap">true</property>
                                     <property name="xalign">0</property>
@@ -253,7 +253,7 @@
                           <class name="pill"/>
                           <class name="suggested-action"/>
                         </style>
-                        <property name="label" translatable="true">Start using Euphonica</property>
+                        <property name="label" translatable="true">Start using Flaclify</property>
                       </object>
                     </child>
                   </object>

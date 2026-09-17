@@ -1,4 +1,4 @@
-application_id = 'io.github.htkhiem.Euphonica'
+application_id = 'io.github.h3303.Flaclify'
 
 scalable_dir = 'hicolor' / 'scalable' / 'apps'
 install_data(

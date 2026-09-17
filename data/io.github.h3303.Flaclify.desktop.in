@@ -2,11 +2,11 @@
 Version=1.0
 Type=Application
 
-Name=Euphonica
+Name=Flaclify
 Comment=GTK4 libadwaita MPD client
 Categories=AudioVideo;Player;
 Keywords=Music;Player;MPD
 
-Icon=io.github.htkhiem.Euphonica
-Exec=euphonica
+Icon=io.github.h3303.Flaclify
+Exec=flaclify
 Terminal=false

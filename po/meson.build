@@ -1,1 +1,1 @@
-i18n.gettext('euphonica', preset: 'glib')
+i18n.gettext('flaclify', preset: 'glib')

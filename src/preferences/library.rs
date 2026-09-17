@@ -11,7 +11,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/preferences/library.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/library.ui")]
     pub struct LibraryPreferences {
         #[template_child]
         pub sort_nulls_first: TemplateChild<adw::SwitchRow>,

@@ -18,7 +18,7 @@ mod imp {
 
     #[derive(Derivative, CompositeTemplate)]
     #[derivative(Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/discography-year.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/discography-year.ui")]
     pub struct DiscographyYear {
         #[template_child]
         pub release_year: TemplateChild<gtk::Label>,

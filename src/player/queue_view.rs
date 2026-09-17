@@ -28,7 +28,7 @@ mod imp {
 
     #[derive(Debug, Properties, Default, CompositeTemplate)]
     #[properties(wrapper_type = super::QueueView)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/queue-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/queue-view.ui")]
     pub struct QueueView {
         #[template_child]
         pub show_sidebar: TemplateChild<gtk::Button>,

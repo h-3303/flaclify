@@ -337,7 +337,7 @@ pub enum Rule {
 /// - Search by query. This includes searching by tags, creation time, etc. Multiple clauses can be
 ///   ANDed together. Does not support filtering by sticker values.
 ///
-/// Euphonica's approach to DPs combines both types, allowing for multiple stickers-
+/// Flaclify's approach to DPs combines both types, allowing for multiple stickers-
 /// based conditions alongside a traditional query in the same DP. In other words,
 /// there is NO distinction made between the above two types in the UI.
 ///

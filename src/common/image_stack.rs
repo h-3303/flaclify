@@ -15,7 +15,7 @@ mod imp {
     use super::*;
 
     #[derive(CompositeTemplate, Default, Properties)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/image-stack.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/image-stack.ui")]
     #[properties(wrapper_type = super::ImageStack)]
     pub struct ImageStack {
         #[template_child]

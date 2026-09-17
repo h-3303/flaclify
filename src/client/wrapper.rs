@@ -469,7 +469,7 @@ impl MpdWrapper {
 
     /// Fetch stickers commonly used by other MPD clients, such as myMPD, and parse them into
     /// a Stickers object.
-    /// This does NOT fetch Euphonica-specific stickers, such as album and artist metadata.
+    /// This does NOT fetch Flaclify-specific stickers, such as album and artist metadata.
     pub async fn get_common_stickers(
         &self,
         typ: &'static str,
@@ -1712,7 +1712,7 @@ impl MpdWrapper {
         Ok(Some(meta))
     }
 
-    /// Sync metadata document to MPD's sticker database. Other Euphonica clients connected to the same
+    /// Sync metadata document to MPD's sticker database. Other Flaclify clients connected to the same
     /// server will be able to reuse this metadata document.
     /// Uses atomic command list to write both the document and last-modified stickers together,
     /// preventing partial syncs that would leave a document with a stale or missing timestamp.

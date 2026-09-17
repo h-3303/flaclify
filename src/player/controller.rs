@@ -680,7 +680,7 @@ impl Player {
         self.imp()
             .mpris_server
             .get_or_try_init(|| async {
-                let server = LocalServer::new("io.github.htkhiem.Euphonica", self.clone()).await?;
+                let server = LocalServer::new("io.github.h3303.Flaclify", self.clone()).await?;
                 glib::spawn_future_local(server.run());
                 Ok(server)
             })
@@ -2168,7 +2168,7 @@ impl LocalPlayerInterface for Player {
     }
 
     /// Use MPD's queue ID to construct track_id in this format:
-    /// io/github/htkhiem/Euphonica/<queue_id>
+    /// io/github/h3303/Flaclify/<queue_id>
     async fn set_position(&self, track_id: TrackId, position: Time) -> fdo::Result<()> {
         let should_seek;
         {
@@ -2190,7 +2190,7 @@ impl LocalPlayerInterface for Player {
 
     async fn open_uri(&self, _uri: String) -> fdo::Result<()> {
         Err(fdo::Error::NotSupported(
-            "Euphonica currently does not support playing local files via MPD".to_owned(),
+            "Flaclify currently does not support playing local files via MPD".to_owned(),
         ))
     }
 
@@ -2217,7 +2217,7 @@ impl LocalPlayerInterface for Player {
 
     async fn set_rate(&self, _rate: PlaybackRate) -> zbus::Result<()> {
         Err(zbus::Error::from(fdo::Error::NotSupported(
-            "Euphonica currently does not support changing playback rate".to_owned(),
+            "Flaclify currently does not support changing playback rate".to_owned(),
         )))
     }
 

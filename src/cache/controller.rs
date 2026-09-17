@@ -96,7 +96,7 @@ mod tests {
     #[test]
     fn distinguishes_missing_files_from_load_failures() {
         let path = std::env::temp_dir().join(format!(
-            "euphonica-invalid-texture-{}.webp",
+            "flaclify-invalid-texture-{}.webp",
             uuid::Uuid::new_v4().simple()
         ));
 

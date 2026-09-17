@@ -11,7 +11,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/seekbar2.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/seekbar2.ui")]
     pub struct Seekbar {
         pub adjustment: gtk::Adjustment,
         #[template_child]

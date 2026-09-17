@@ -16,7 +16,7 @@ mod imp {
     use once_cell::sync::Lazy;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/artist-tag-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/artist-tag-button.ui")]
     pub struct ArtistTagButton {
         #[template_child]
         pub avatar: TemplateChild<adw::Avatar>, // Use high-resolution version

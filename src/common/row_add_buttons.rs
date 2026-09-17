@@ -12,7 +12,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/row-add-buttons.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/row-add-buttons.ui")]
     pub struct RowAddButtons {
         #[template_child]
         pub replace_queue: TemplateChild<gtk::Button>,

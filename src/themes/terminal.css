@@ -1,0 +1,227 @@
+/* @name: Terminal
+ * @scheme: dark
+ * @auto-accent: off
+ *
+ * Phosphor on black. Monospace, one-pixel rules, no rounding, no shadows.
+ * Hover and selection invert instead of tinting.
+ */
+
+:root {
+  --window-bg-color: #0b0f0c;
+  --window-fg-color: #c9d6c9;
+  --view-bg-color: #070a08;
+  --view-fg-color: #c9d6c9;
+
+  --headerbar-bg-color: #0b0f0c;
+  --headerbar-fg-color: #c9d6c9;
+  --headerbar-backdrop-color: #0b0f0c;
+  --headerbar-border-color: rgb(57 255 136 / 30%);
+  --headerbar-shade-color: rgb(0 0 0 / 40%);
+  --headerbar-darker-shade-color: rgb(0 0 0 / 60%);
+
+  --sidebar-bg-color: #0e1310;
+  --sidebar-fg-color: #c9d6c9;
+  --sidebar-backdrop-color: #0e1310;
+  --sidebar-border-color: rgb(57 255 136 / 30%);
+  --sidebar-shade-color: rgb(14 19 16 / 80%);
+  --secondary-sidebar-bg-color: #0b0f0c;
+  --secondary-sidebar-fg-color: #c9d6c9;
+  --secondary-sidebar-backdrop-color: #0b0f0c;
+  --secondary-sidebar-border-color: rgb(57 255 136 / 30%);
+  --secondary-sidebar-shade-color: rgb(11 15 12 / 80%);
+
+  --card-bg-color: #101612;
+  --card-fg-color: #c9d6c9;
+  --card-shade-color: rgb(0 0 0 / 40%);
+  --dialog-bg-color: #0e1310;
+  --dialog-fg-color: #c9d6c9;
+  --popover-bg-color: #0e1310;
+  --popover-fg-color: #c9d6c9;
+  --popover-shade-color: rgb(0 0 0 / 40%);
+  --thumbnail-bg-color: #101612;
+  --thumbnail-fg-color: #c9d6c9;
+
+  --accent-bg-color: #39ff88;
+  --accent-fg-color: #04140a;
+  --accent-color: #39ff88;
+  --destructive-bg-color: #ff4d4d;
+  --destructive-fg-color: #140404;
+  --destructive-color: #ff6b6b;
+  --success-color: #39ff88;
+  --warning-color: #ffd23f;
+  --error-color: #ff6b6b;
+
+  --shade-color: rgb(0 0 0 / 40%);
+  --border-color: rgb(57 255 136 / 28%);
+  --scrollbar-outline-color: rgb(0 0 0 / 60%);
+  --dim-opacity: 0.55;
+}
+
+window {
+  font-family: "JetBrains Mono", "Adwaita Mono", "Fira Code", "DejaVu Sans Mono", monospace;
+  font-size: 9.5pt;
+}
+
+headerbar {
+  box-shadow: none;
+  border-bottom: 1px solid var(--border-color);
+  min-height: 40px;
+}
+headerbar .title,
+headerbar windowtitle > .title {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+headerbar .subtitle,
+headerbar windowtitle > .subtitle {
+  color: #39ff88;
+}
+
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: 1px solid var(--border-color);
+}
+.sidebar-btn {
+  border-radius: 0;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.sidebar-btn label {
+  font-size: 9pt;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+.sidebar-btn:hover {
+  background: rgb(57 255 136 / 12%);
+}
+.sidebar-btn:checked {
+  background: #39ff88;
+  color: #04140a;
+}
+
+/* Kill every radius, including the transport buttons. */
+button,
+button.circular,
+button.pill,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd,
+switch,
+switch > slider,
+scale > trough,
+scale > trough > highlight,
+scale > trough > slider,
+progressbar > trough,
+progressbar > trough > progress,
+checkbutton > check,
+.avatar-tag,
+.plain-tag {
+  border-radius: 0;
+}
+
+button:not(.flat) {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  color: #c9d6c9;
+}
+button:not(.flat):hover,
+button.flat:hover {
+  background: rgb(57 255 136 / 14%);
+}
+button.suggested-action,
+button.suggested-action:hover {
+  background: #39ff88;
+  color: #04140a;
+  border: 1px solid #39ff88;
+}
+button.destructive-action {
+  background: transparent;
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+.card,
+.boxed-list {
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+.cover-shadow {
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+popover > contents {
+  border: 1px solid #39ff88;
+  box-shadow: none;
+}
+entry {
+  border: 1px solid var(--border-color);
+  background: #070a08;
+  caret-color: #39ff88;
+}
+entry:focus-within {
+  border-color: #39ff88;
+  outline: none;
+}
+
+.caption,
+.caption-heading {
+  letter-spacing: 0;
+  font-size: 8.5pt;
+}
+.heading,
+.title-1, .title-2, .title-3, .title-4 {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.player-bar {
+  border-top: 1px solid #39ff88;
+}
+.discography-line {
+  border-radius: 0;
+  background: #39ff88;
+}
+
+scale > trough {
+  background: #101612;
+  border: 1px solid var(--border-color);
+}
+scale > trough > highlight {
+  background: #39ff88;
+}
+scale > trough > slider {
+  background: #39ff88;
+  border: none;
+  box-shadow: none;
+  min-width: 8px;
+  min-height: 8px;
+}
+
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected,
+gridview > child:selected {
+  background: #39ff88;
+  color: #04140a;
+}
+listview > row:hover,
+gridview > child:hover {
+  background: rgb(57 255 136 / 10%);
+}
+
+*:focus-visible,
+*:focus(visible) {
+  outline: 1px solid #39ff88;
+  outline-offset: -1px;
+}

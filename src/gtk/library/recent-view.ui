@@ -35,7 +35,7 @@
                     <property name="placeholder">
                       <object class="AdwStatusPage">
                         <property name="title" translatable="true">No Recent Songs</property>
-                        <property name="description" translatable="true">Songs, albums and artists played while Euphonica is running will appear here.</property>
+                        <property name="description" translatable="true">Songs, albums and artists played while Flaclify is running will appear here.</property>
                         <property name="icon-name">recent-symbolic</property>
                       </object>
                     </property>

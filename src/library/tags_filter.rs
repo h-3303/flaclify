@@ -18,7 +18,7 @@ mod imp {
 
     #[derive(Default, CompositeTemplate, Properties)]
     #[properties(wrapper_type = super::TagsFilter)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/tags-filter.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/tags-filter.ui")]
     pub struct TagsFilter {
         #[template_child]
         pub dialog: TemplateChild<adw::Dialog>,

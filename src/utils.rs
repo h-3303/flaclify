@@ -30,7 +30,7 @@ use uuid::Uuid;
 
 static APP_CACHE_PATH: Lazy<PathBuf> = Lazy::new(|| {
     let mut res = glib::user_cache_dir();
-    res.push("euphonica");
+    res.push("flaclify");
     res
 });
 

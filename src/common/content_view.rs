@@ -9,7 +9,7 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate, Derivative)]
     #[derivative(Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/content-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/content-view.ui")]
     pub struct ContentView {
         #[template_child]
         pub header_bar: TemplateChild<adw::HeaderBar>,

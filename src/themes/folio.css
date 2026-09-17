@@ -1,0 +1,192 @@
+/* @name: Folio
+ * @scheme: light
+ * @auto-accent: off
+ *
+ * Laid paper, engraver's ink, a little gilt. Serif throughout, square corners,
+ * hairline and double rules instead of shadows. Nothing glows.
+ */
+
+:root {
+  --window-bg-color: #ece3cc;
+  --window-fg-color: #221b0f;
+  --view-bg-color: #f9f4e5;
+  --view-fg-color: #221b0f;
+
+  --headerbar-bg-color: #ece3cc;
+  --headerbar-fg-color: #221b0f;
+  --headerbar-backdrop-color: #ece3cc;
+  --headerbar-border-color: #b3a683;
+  --headerbar-shade-color: rgb(34 27 15 / 10%);
+  --headerbar-darker-shade-color: rgb(34 27 15 / 18%);
+
+  --sidebar-bg-color: #efe7d0;
+  --sidebar-fg-color: #221b0f;
+  --sidebar-backdrop-color: #efe7d0;
+  --sidebar-border-color: #c8bc9f;
+  --sidebar-shade-color: rgb(239 231 208 / 78%);
+  --secondary-sidebar-bg-color: #f6f0df;
+  --secondary-sidebar-fg-color: #221b0f;
+  --secondary-sidebar-backdrop-color: #f6f0df;
+  --secondary-sidebar-border-color: #c8bc9f;
+  --secondary-sidebar-shade-color: rgb(246 240 223 / 78%);
+
+  --card-bg-color: #f6f0df;
+  --card-fg-color: #221b0f;
+  --card-shade-color: rgb(34 27 15 / 8%);
+  --dialog-bg-color: #f6f0df;
+  --dialog-fg-color: #221b0f;
+  --popover-bg-color: #f9f4e5;
+  --popover-fg-color: #221b0f;
+  --popover-shade-color: rgb(34 27 15 / 8%);
+  --thumbnail-bg-color: #f6f0df;
+  --thumbnail-fg-color: #221b0f;
+
+  --accent-bg-color: #6b4a23;
+  --accent-fg-color: #f1e8d2;
+  --accent-color: #6b4a23;
+  --destructive-bg-color: #8a2d1c;
+  --destructive-fg-color: #f1e8d2;
+  --destructive-color: #8a2d1c;
+  --success-color: #4c6b2a;
+  --warning-color: #9a6b12;
+  --error-color: #8a2d1c;
+
+  --shade-color: rgb(34 27 15 / 8%);
+  --border-color: rgb(34 27 15 / 28%);
+  --scrollbar-outline-color: rgb(249 244 229 / 60%);
+  --dim-opacity: 0.62;
+}
+
+window {
+  font-family: "Cormorant Garamond", "EB Garamond", "Libre Baskerville", "Liberation Serif", "DejaVu Serif", serif;
+  font-size: 11.5pt;
+}
+
+/* Masthead: a double rule, no shadow. */
+headerbar {
+  box-shadow: none;
+  border-bottom: 3px double #b3a683;
+  min-height: 52px;
+}
+headerbar .title,
+headerbar windowtitle > .title {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Sidebar with a single hairline instead of a tinted pane. */
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: 1px solid #c8bc9f;
+}
+.sidebar-btn {
+  border-radius: 0;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+.sidebar-btn label {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.sidebar-btn:checked {
+  background: #f9f4e5;
+  box-shadow: inset 3px 0 0 #6b4a23;
+}
+
+/* Small labels in a sans hand, headings in the serif. Kept lowercase so
+ * album and artist names still fit their cells. */
+.caption,
+.caption-heading,
+.dim-label.caption {
+  font-family: "Libre Franklin", "Inter", "Cantarell", "DejaVu Sans", sans-serif;
+  font-size: 9pt;
+  letter-spacing: 0.03em;
+}
+.caption-heading {
+  font-weight: 600;
+}
+/* The uppercase tracked voice only where there is room: the masthead. */
+headerbar .subtitle,
+headerbar windowtitle > .subtitle {
+  font-family: "Libre Franklin", "Inter", "Cantarell", "DejaVu Sans", sans-serif;
+  font-size: 8pt;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.title-1, .title-2, .title-3, .title-4, .heading {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.title-1 { font-size: 26pt; }
+.title-2 { font-size: 20pt; }
+
+/* Square everything that is not deliberately round. */
+button,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd {
+  border-radius: 0;
+}
+button:not(.flat):not(.circular):not(.suggested-action):not(.destructive-action) {
+  background: #f9f4e5;
+  border: 1px solid #b3a683;
+  box-shadow: none;
+}
+button.suggested-action {
+  border: 1px solid #4a3216;
+}
+.card,
+.boxed-list {
+  border: 1px solid #c8bc9f;
+  box-shadow: none;
+}
+.cover-shadow {
+  box-shadow: 0 0 0 1px #b3a683;
+}
+popover > contents {
+  border: 1px solid #b3a683;
+  box-shadow: 2px 2px 0 rgb(34 27 15 / 12%);
+}
+entry {
+  border: 1px solid #b3a683;
+  background: #f9f4e5;
+}
+
+/* Player bar as a colophon rule. */
+.player-bar {
+  border-top: 3px double #b3a683;
+}
+.discography-line {
+  border-radius: 0;
+  background: #b3a683;
+}
+
+/* Scales and progress become ruled lines rather than pills. */
+scale > trough,
+scale > trough > highlight,
+progressbar > trough,
+progressbar > trough > progress {
+  border-radius: 0;
+}
+scale > trough > slider {
+  border-radius: 0;
+  border: 1px solid #4a3216;
+  background: #f9f4e5;
+  box-shadow: none;
+}
+
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected {
+  background: rgb(107 74 35 / 12%);
+  color: #221b0f;
+}

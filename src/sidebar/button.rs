@@ -8,7 +8,7 @@ mod imp {
 use super::*;
 
     #[derive(Properties, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/sidebar-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/sidebar-button.ui")]
     #[properties(wrapper_type = super::SidebarButton)]
     pub struct SidebarButton {
         #[template_child]

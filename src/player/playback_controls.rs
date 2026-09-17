@@ -20,7 +20,7 @@ mod imp {
 
     #[derive(Default, Properties, CompositeTemplate)]
     #[properties(wrapper_type = super::PlaybackControls)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/playback-controls.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/playback-controls.ui")]
     pub struct PlaybackControls {
         #[template_child]
         pub flow_btn: TemplateChild<gtk::Button>,

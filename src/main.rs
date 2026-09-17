@@ -28,6 +28,7 @@ mod meta_providers;
 mod player;
 mod preferences;
 mod sidebar;
+mod theme;
 mod utils;
 mod onboarding;
 mod window;
@@ -44,7 +45,7 @@ use gtk::{CssProvider, gdk, gio, glib};
 fn load_css() {
     // Load the CSS file and add it to the provider
     let provider = CssProvider::new();
-    provider.load_from_resource("/io/github/htkhiem/Euphonica/gtk/style.css");
+    provider.load_from_resource("/io/github/h3303/Flaclify/gtk/style.css");
 
     // Add the provider to the default screen
     gtk::style_context_add_provider_for_display(
@@ -52,6 +53,9 @@ fn load_css() {
         &provider,
         gtk::STYLE_PROVIDER_PRIORITY_APPLICATION,
     );
+
+    // Themes cascade over style.css and must be installed before any window exists.
+    theme::init();
 }
 
 fn main() -> glib::ExitCode {
@@ -62,7 +66,7 @@ fn main() -> glib::ExitCode {
     textdomain(GETTEXT_PACKAGE).expect("Unable to switch to the text domain");
 
     // Load resources
-    let resources = gio::Resource::load(PKGDATADIR.to_owned() + "/euphonica.gresource")
+    let resources = gio::Resource::load(PKGDATADIR.to_owned() + "/flaclify.gresource")
         .expect("Could not load resources");
     gio::resources_register(&resources);
 
@@ -70,7 +74,7 @@ fn main() -> glib::ExitCode {
     // application windows, integration with the window manager/compositor, and
     // desktop features such as file opening and single-instance applications.
     let app = EuphonicaApplication::new(
-        "io.github.htkhiem.Euphonica",
+        "io.github.h3303.Flaclify",
         &gio::ApplicationFlags::empty(),
     );
     app.connect_startup(|_| load_css());
@@ -79,7 +83,7 @@ fn main() -> glib::ExitCode {
         glib::Char::from(b'm'),
         glib::OptionFlags::IN_MAIN | glib::OptionFlags::OPTIONAL_ARG,
         glib::OptionArg::None,
-        "Start Euphonica without opening a window",
+        "Start Flaclify without opening a window",
         None,
     );
 

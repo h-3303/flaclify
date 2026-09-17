@@ -8,7 +8,7 @@
     <child>
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="true">Music Player Daemon</property>
-        <property name="description" translatable="true">Change how Euphonica connects to your Music Player Daemon instance. Click Reconnect to save these settings and initiate a new connection.</property>
+        <property name="description" translatable="true">Change how Flaclify connects to your Music Player Daemon instance. Click Reconnect to save these settings and initiate a new connection.</property>
         <child>
           <object class="AdwSwitchRow" id="mpd_use_unix_socket">
             <property name="title" translatable="true">Connect via local socket</property>
@@ -46,7 +46,7 @@
         <child>
           <object class="AdwSwitchRow" id="mpd_backup_meta_as_stickers">
             <property name="title" translatable="true">Automatically back up metadata as stickers</property>
-            <property name="subtitle" translatable="true">Metadata such as album wiki and artist bio can be uploaded to your MPD server's stickers DB and can be fetched by your other Euphonica instances. Does nothing if stickers DB is not available.</property>
+            <property name="subtitle" translatable="true">Metadata such as album wiki and artist bio can be uploaded to your MPD server's stickers DB and can be fetched by your other Flaclify instances. Does nothing if stickers DB is not available.</property>
           </object>
         </child>
         <child>
@@ -132,7 +132,7 @@
         <child>
           <object class="AdwSwitchRow" id="pipewire_restart_between_songs">
             <property name="title" translatable="true">Restart monitor thread between songs (experimental)</property>
-            <property name="subtitle" translatable="true">Allow PipeWire to vary sample rate and bit depth between songs by temporarily stopping the monitor thread ahead of song changes. Only works when songs are changed via Euphonica or by normal queue playback.</property>
+            <property name="subtitle" translatable="true">Allow PipeWire to vary sample rate and bit depth between songs by temporarily stopping the monitor thread ahead of song changes. Only works when songs are changed via Flaclify or by normal queue playback.</property>
           </object>
         </child>
         <child>

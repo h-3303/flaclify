@@ -27,7 +27,7 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate, Properties, Default)]
     #[properties(wrapper_type = super::RecentView)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/recent-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/recent-view.ui")]
     pub struct RecentView {
         #[template_child]
         pub nav_view: TemplateChild<adw::NavigationView>,

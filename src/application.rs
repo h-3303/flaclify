@@ -18,6 +18,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+use crate::theme::theme_manager;
 use crate::{
     EuphonicaWindow,
     cache::Cache,
@@ -52,13 +53,13 @@ pub fn update_xdg_background_request() {
 
     tokio_runtime().spawn(async move {
         let mut request = Background::request()
-            .reason("Run Euphonica in the background")
+            .reason("Run Flaclify in the background")
             .dbus_activatable(false);
 
         if autostart {
             request = request.auto_start(true);
             if start_minimized {
-                request = request.command(&["euphonica", "--minimized"])
+                request = request.command(&["flaclify", "--minimized"])
             }
         }
 
@@ -114,7 +115,7 @@ mod imp {
         fn new() -> Self {
             // Create cache folder. This is where the cached album arts go.
             let mut cache_path: PathBuf = glib::user_cache_dir();
-            cache_path.push("euphonica");
+            cache_path.push("flaclify");
             // println!("Cache path: {}", cache_path.to_str().unwrap());
             create_dir_all(&cache_path).expect("Could not create temporary directories!");
 
@@ -144,10 +145,10 @@ mod imp {
         // to do that, we'll just present any existing window.
         fn activate(&self) {
             if !self.initialized.get() {
-                println!("Creating a new Euphonica instance...");
+                println!("Creating a new Flaclify instance...");
                 // Put init logic here to ensure they're only called on the primary instance.
                 // This is to both avoid unneeded processing and creation of bogus child threads
-                // that stick around (only a problem now that Euphonica can be left running in
+                // that stick around (only a problem now that Flaclify can be left running in
                 // the background, and the the easiest way to call it back to foreground is to
                 // click on the desktop icon again, spawning another instance which should
                 // only live briefly to pass args to the primary one).
@@ -187,7 +188,7 @@ mod imp {
                     } else {
                         // Keep the onboarded flag at false and yell in stderr
                         eprintln!(
-                            "WARNING: not yet onboarded. Using default settings where possible. If this is your first time using Euphonica, the default settings might not be suitable for your MPD setup and might fail to connect."
+                            "WARNING: not yet onboarded. Using default settings where possible. If this is your first time using Flaclify, the default settings might not be suitable for your MPD setup and might fail to connect."
                         );
                         let _ = self.hold_guard.replace(Some(self.obj().hold()));
                         self.continue_startup();
@@ -227,8 +228,22 @@ mod imp {
 
             let obj = self.obj();
             obj.setup_gactions();
+            theme_manager().connect_applied(clone!(
+                #[weak]
+                obj,
+                move |theme| {
+                    if let Some(action) = obj
+                        .lookup_action("theme")
+                        .and_downcast::<gio::SimpleAction>()
+                    {
+                        action.set_state(&theme.id.to_variant());
+                    }
+                }
+            ));
             // See https://github.com/GNOME/gtk/blob/main/gdk/gdkkeysyms.h for key names
             obj.set_accels_for_action("app.quit", &["<primary>q"]);
+            obj.set_accels_for_action("app.cycle-theme", &["<Ctrl>t"]);
+            obj.set_accels_for_action("app.cycle-theme-back", &["<Ctrl><Shift>t"]);
             obj.set_accels_for_action("app.fullscreen", &["F11"]);
             obj.set_accels_for_action("app.refresh", &["F5"]);
             obj.set_accels_for_action("app.update-db", &["F6"]);
@@ -333,7 +348,7 @@ impl EuphonicaApplication {
         self.imp().client.get().unwrap().clone()
     }
 
-    /// Set up app-level shortcuts. These are shortcuts that will work regardless of which Euphonica window is being focused.
+    /// Set up app-level shortcuts. These are shortcuts that will work regardless of which Flaclify window is being focused.
     /// We currently only have a single window, but who knows, maybe in the future we can have multiple windows?
     fn setup_gactions(&self) {
         let toggle_fullscreen_action = gio::ActionEntry::builder("fullscreen")
@@ -599,6 +614,23 @@ impl EuphonicaApplication {
             })
             .build();
 
+        // Stateful radio action backing the Theme submenu; state is the theme id.
+        let theme_action = gio::ActionEntry::builder("theme")
+            .parameter_type(Some(glib::VariantTy::STRING))
+            .state(theme_manager().current().id.to_variant())
+            .activate(|_: &Self, _, param| {
+                if let Some(id) = param.and_then(|v| v.str()) {
+                    theme_manager().apply(id);
+                }
+            })
+            .build();
+        let cycle_theme_action = gio::ActionEntry::builder("cycle-theme")
+            .activate(|_: &Self, _, _| theme_manager().cycle(1))
+            .build();
+        let cycle_theme_back_action = gio::ActionEntry::builder("cycle-theme-back")
+            .activate(|_: &Self, _, _| theme_manager().cycle(-1))
+            .build();
+
         let toggle_visualizer_action = gio::ActionEntry::builder("toggle-visualizer")
             .activate(move |_, _, _| {
                 let settings = settings_manager().child("ui");
@@ -608,6 +640,9 @@ impl EuphonicaApplication {
 
         self.add_action_entries([
             toggle_fullscreen_action,
+            theme_action,
+            cycle_theme_action,
+            cycle_theme_back_action,
             refresh_action,
             update_db_action,
             quit_action,
@@ -755,8 +790,8 @@ impl EuphonicaApplication {
     pub fn show_about(&self) {
         let window = self.active_window().unwrap();
         let about = adw::AboutDialog::builder()
-            .application_name("Euphonica")
-            .application_icon("io.github.htkhiem.Euphonica")
+            .application_name("Flaclify")
+            .application_icon("io.github.h3303.Flaclify")
             .developer_name("htkhiem2000")
             .version(VERSION)
             .developers(vec!["htkhiem2000", "ShadiestGoat", "sonicv6"])
@@ -778,7 +813,7 @@ impl EuphonicaApplication {
         prefs.update();
     }
 
-    /// Quit Euphonica. Useful for when run-in-background is true. Otherwise just close the window.
+    /// Quit Flaclify. Useful for when run-in-background is true. Otherwise just close the window.
     pub fn quit_app(&self) {
         self.imp().hold_guard.take();
         if let Some(win) = self.active_window().and_downcast::<EuphonicaWindow>() {

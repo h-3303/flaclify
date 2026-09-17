@@ -12,7 +12,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/preferences/integrations.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/integrations.ui")]
     pub struct IntegrationsPreferences {
         #[template_child]
         pub enable_mpris: TemplateChild<adw::SwitchRow>,

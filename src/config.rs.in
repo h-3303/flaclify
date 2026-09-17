@@ -3,4 +3,4 @@ pub static GETTEXT_PACKAGE: &str = @GETTEXT_PACKAGE@;
 pub static LOCALEDIR: &str = @LOCALEDIR@;
 pub static PKGDATADIR: &str = @PKGDATADIR@;
 pub static APPLICATION_ID: &str = @APPLICATION_ID@;
-pub static APPLICATION_USER_AGENT: &str = "Euphonica/@VERSION@ ( https://github.com/htkhiem/euphonica )";
+pub static APPLICATION_USER_AGENT: &str = "Flaclify/@VERSION@ ( https://github.com/h-3303/flaclify )";

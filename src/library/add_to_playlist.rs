@@ -33,7 +33,7 @@ mod imp {
     use super::*;
 
     #[derive(Properties, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/add-to-playlist-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/add-to-playlist-button.ui")]
     #[properties(wrapper_type = super::AddToPlaylistButton)]
     pub struct AddToPlaylistButton {
         #[template_child]

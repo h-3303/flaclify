@@ -1,5 +1,5 @@
 {
-    "id" : "io.github.htkhiem.Euphonica",
+    "id" : "io.github.h3303.Flaclify",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "49",
     "sdk" : "org.gnome.Sdk",
@@ -7,7 +7,7 @@
         "org.freedesktop.Sdk.Extension.rust-stable",
         "org.freedesktop.Sdk.Extension.llvm21"
     ],
-    "command" : "euphonica",
+    "command" : "flaclify",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
@@ -23,7 +23,7 @@
         ],
         "env" : {
             "RUST_BACKTRACE" : "1",
-            "RUST_LOG" : "euphonica=debug"
+            "RUST_LOG" : "flaclify=debug"
         }
     },
     "cleanup" : [
@@ -39,7 +39,7 @@
     ],
     "modules" : [
         {
-            "name" : "euphonica",
+            "name" : "flaclify",
             "builddir" : true,
             "buildsystem" : "meson",
             "config-opts": [

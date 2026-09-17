@@ -1,5 +1,5 @@
 {
-  description = "Euphonica";
+  description = "Flaclify";
 
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
@@ -17,7 +17,7 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
-          euphonica = pkgs.euphonica.overrideAttrs (_: {
+          flaclify = pkgs.flaclify.overrideAttrs (_: {
             version = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version;
             src = self;
             cargoDeps = pkgs.rustPlatform.importCargoLock {
@@ -27,8 +27,8 @@
           });
         in
         {
-          inherit euphonica;
-          default = euphonica;
+          inherit flaclify;
+          default = flaclify;
         }
       );
 

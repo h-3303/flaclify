@@ -13,7 +13,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/output-controls.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/output-controls.ui")]
     pub struct OutputControls {
         #[template_child]
         pub prev_output: TemplateChild<gtk::Button>,

@@ -426,7 +426,7 @@ pub struct Connection {
     receiver: Receiver<Task>,
     // high_receiver: Receiver<Task<'a>>,
     client: Option<Client<StreamWrapper>>,
-    /// MPD inter-client channel for communication between Euphonica connections
+    /// MPD inter-client channel for communication between Flaclify connections
     wake_channel: Channel,
     /// For sending idle subsystem notifications to the wrapper.
     idle_sender: Option<Sender<Subsystem>>,

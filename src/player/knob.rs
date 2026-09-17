@@ -39,7 +39,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/volume-knob.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/volume-knob.ui")]
     pub struct VolumeKnob {
         // Stored here & bound to the settings manager so we can avoid having
         // to query the setting on every frame while scrolling.

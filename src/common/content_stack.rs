@@ -10,7 +10,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/content-stack.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/content-stack.ui")]
     pub struct ContentStack {
         #[template_child]
         pub stack: TemplateChild<gtk::Stack>,

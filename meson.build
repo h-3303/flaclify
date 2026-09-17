@@ -1,4 +1,4 @@
-project('euphonica', 'rust',
+project('flaclify', 'rust',
           version: '0.99.7',
     meson_version: '>= 0.62.0',
   default_options: [ 'warning_level=2', 'werror=false', ],
@@ -25,7 +25,7 @@ else
   version_suffix = ''
 endif
 
-application_id = 'io.github.htkhiem.Euphonica@0@'.format(profile)
+application_id = 'io.github.h3303.Flaclify@0@'.format(profile)
 
 subdir('data')
 subdir('src')

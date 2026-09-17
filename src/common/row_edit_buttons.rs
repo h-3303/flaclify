@@ -10,7 +10,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/row-edit-buttons.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/row-edit-buttons.ui")]
     pub struct RowEditButtons {
         #[template_child]
         pub raise: TemplateChild<gtk::Button>,

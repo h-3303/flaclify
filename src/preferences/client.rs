@@ -87,7 +87,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/preferences/client.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/client.ui")]
     pub struct ClientPreferences {
         // MPD
         #[template_child]

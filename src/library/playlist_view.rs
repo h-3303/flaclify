@@ -21,7 +21,7 @@ mod imp {
 
     #[derive(Debug, CompositeTemplate, Properties, Default)]
     #[properties(wrapper_type = super::PlaylistView)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/playlist-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/playlist-view.ui")]
     pub struct PlaylistView {
         #[template_child]
         pub nav_view: TemplateChild<adw::NavigationView>,
@@ -142,7 +142,7 @@ mod imp {
 
                     // Vary behaviour depending on sort menu
                     match state.enum_("sort-by") {
-                        // Refer to the io.github.htkhiem.Euphonica.sortby enum the gschema
+                        // Refer to the io.github.h3303.Flaclify.sortby enum the gschema
                         6 => {
                             // Filename
                             g_cmp_str_options(

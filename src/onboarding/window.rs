@@ -34,7 +34,7 @@ mod imp {
 
     #[derive(Debug, Default, Properties, gtk::CompositeTemplate)]
     #[properties(wrapper_type = super::EuphonicaOnboardingWindow)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/onboarding-window.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/onboarding-window.ui")]
     pub struct EuphonicaOnboardingWindow {
         // Top level widgets
         // TODO: actual wizard using carousels (for now there's just a single page)

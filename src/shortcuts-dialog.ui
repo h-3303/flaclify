@@ -200,6 +200,18 @@
             <property name="action-name">app.fullscreen</property>
           </object>
         </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Next Theme</property>
+            <property name="action-name">app.cycle-theme</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Previous Theme</property>
+            <property name="action-name">app.cycle-theme-back</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>

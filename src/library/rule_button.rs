@@ -19,7 +19,7 @@ mod imp {
 
     #[derive(Default, CompositeTemplate, Properties)]
     #[properties(wrapper_type = super::RuleButton)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/rule-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/rule-button.ui")]
     pub struct RuleButton {
         #[template_child]
         pub rule_type: TemplateChild<gtk::DropDown>,

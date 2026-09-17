@@ -20,7 +20,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/song-row.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/song-row.ui")]
     pub struct SongRow {
         #[template_child]
         pub playing_indicator: TemplateChild<gtk::Revealer>,

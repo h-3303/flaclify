@@ -1,0 +1,236 @@
+/* @name: Bauhaus
+ * @scheme: light
+ * @auto-accent: off
+ *
+ * Off-white ground, primary colour blocks, two-pixel black rules and hard
+ * offset shadows. No rounding anywhere. Loud on purpose.
+ */
+
+:root {
+  --window-bg-color: #f4f1ea;
+  --window-fg-color: #111111;
+  --view-bg-color: #ffffff;
+  --view-fg-color: #111111;
+
+  --headerbar-bg-color: #f4f1ea;
+  --headerbar-fg-color: #111111;
+  --headerbar-backdrop-color: #f4f1ea;
+  --headerbar-border-color: #111111;
+  --headerbar-shade-color: rgb(0 0 0 / 15%);
+  --headerbar-darker-shade-color: rgb(0 0 0 / 25%);
+
+  --sidebar-bg-color: #ffd23f;
+  --sidebar-fg-color: #111111;
+  --sidebar-backdrop-color: #ffd23f;
+  --sidebar-border-color: #111111;
+  --sidebar-shade-color: rgb(255 210 63 / 82%);
+  --secondary-sidebar-bg-color: #f4f1ea;
+  --secondary-sidebar-fg-color: #111111;
+  --secondary-sidebar-backdrop-color: #f4f1ea;
+  --secondary-sidebar-border-color: #111111;
+  --secondary-sidebar-shade-color: rgb(244 241 234 / 82%);
+
+  --card-bg-color: #ffffff;
+  --card-fg-color: #111111;
+  --card-shade-color: rgb(0 0 0 / 15%);
+  --dialog-bg-color: #ffffff;
+  --dialog-fg-color: #111111;
+  --popover-bg-color: #ffffff;
+  --popover-fg-color: #111111;
+  --popover-shade-color: rgb(0 0 0 / 15%);
+  --thumbnail-bg-color: #ffffff;
+  --thumbnail-fg-color: #111111;
+
+  --accent-bg-color: #d7263d;
+  --accent-fg-color: #ffffff;
+  --accent-color: #d7263d;
+  --destructive-bg-color: #111111;
+  --destructive-fg-color: #ffffff;
+  --destructive-color: #111111;
+  --success-color: #1b7f3b;
+  --warning-color: #b8860b;
+  --error-color: #d7263d;
+
+  --shade-color: rgb(0 0 0 / 12%);
+  --border-color: #111111;
+  --scrollbar-outline-color: #ffffff;
+  --dim-opacity: 0.6;
+}
+
+window {
+  font-family: "Inter", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif;
+  font-weight: 500;
+}
+
+headerbar {
+  box-shadow: none;
+  border-bottom: 3px solid #111111;
+  min-height: 48px;
+}
+headerbar .title,
+headerbar windowtitle > .title {
+  font-weight: 900;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: 3px solid #111111;
+}
+.sidebar-btn {
+  border-radius: 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+.sidebar-btn label {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.sidebar-btn:hover {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 2px #111111;
+}
+.sidebar-btn:checked {
+  background: #111111;
+  color: #ffd23f;
+}
+
+/* No rounding, anywhere. */
+button,
+button.circular,
+button.pill,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd,
+switch,
+switch > slider,
+scale > trough,
+scale > trough > highlight,
+scale > trough > slider,
+progressbar > trough,
+progressbar > trough > progress,
+checkbutton > check,
+.avatar-tag,
+.plain-tag {
+  border-radius: 0;
+}
+
+button:not(.flat) {
+  background: #ffffff;
+  border: 2px solid #111111;
+  box-shadow: 3px 3px 0 #111111;
+  color: #111111;
+  font-weight: 800;
+}
+button:not(.flat):hover {
+  background: #ffd23f;
+}
+button:not(.flat):active {
+  box-shadow: 1px 1px 0 #111111;
+  margin-top: 2px;
+  margin-left: 2px;
+}
+button.suggested-action,
+button.suggested-action:hover {
+  background: #d7263d;
+  color: #ffffff;
+}
+button.destructive-action {
+  background: #111111;
+  color: #ffffff;
+}
+button.flat:hover {
+  background: rgb(0 0 0 / 8%);
+}
+
+.card,
+.boxed-list {
+  border: 2px solid #111111;
+  box-shadow: 4px 4px 0 #111111;
+}
+.cover-shadow {
+  box-shadow: 4px 4px 0 #111111, 0 0 0 2px #111111;
+}
+popover > contents {
+  border: 2px solid #111111;
+  box-shadow: 6px 6px 0 #111111;
+}
+entry {
+  background: #ffffff;
+  border: 2px solid #111111;
+}
+entry:focus-within {
+  box-shadow: 3px 3px 0 #d7263d;
+  outline: none;
+}
+
+.caption,
+.caption-heading {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 8.5pt;
+}
+.heading,
+.title-1, .title-2, .title-3, .title-4 {
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+/* Blue block for the transport. */
+.player-bar {
+  border-top: 3px solid #111111;
+  background: #2f6fed;
+  color: #ffffff;
+}
+.player-bar .caption,
+.player-bar .dim-label {
+  color: #ffffff;
+  opacity: 0.85;
+}
+.discography-line {
+  border-radius: 0;
+  background: #111111;
+}
+
+scale > trough {
+  background: #ffffff;
+  border: 2px solid #111111;
+  min-height: 8px;
+}
+scale > trough > highlight {
+  background: #d7263d;
+}
+scale > trough > slider {
+  background: #ffd23f;
+  border: 2px solid #111111;
+  box-shadow: none;
+  min-width: 14px;
+  min-height: 14px;
+}
+
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected,
+gridview > child:selected {
+  background: #ffd23f;
+  color: #111111;
+  box-shadow: inset 4px 0 0 #d7263d;
+}
+listview > row:hover,
+gridview > child:hover {
+  background: rgb(0 0 0 / 6%);
+}

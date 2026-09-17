@@ -19,6 +19,7 @@
  */
 
 use crate::{
+    theme::theme_manager,
     application::EuphonicaApplication,
     cache::CacheState,
     client::{ClientState, ConnectionState, Result as ClientResult},
@@ -170,7 +171,7 @@ mod imp {
 
     #[derive(Debug, Default, Properties, gtk::CompositeTemplate)]
     #[properties(wrapper_type = super::EuphonicaWindow)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/window.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/window.ui")]
     pub struct EuphonicaWindow {
         // Top level widgets
         #[template_child]
@@ -382,6 +383,36 @@ mod imp {
                 .unwrap();
             let theme_selector = ThemeSelector::new();
             primary_menu.add_child(&theme_selector, "theme_selector");
+
+            // Theme submenu (radio items backed by the stateful app.theme action),
+            // rebuilt whenever user theme files appear or disappear.
+            let theme_menu = gio::Menu::new();
+            if let Some(section) = self
+                .menu_btn
+                .menu_model()
+                .and_then(|m| m.item_link(0, gio::MENU_LINK_SECTION))
+                .and_downcast::<gio::Menu>()
+            {
+                section.append_submenu(Some("Theme"), &theme_menu);
+            }
+            Self::fill_theme_menu(&theme_menu);
+            {
+                let theme_menu = theme_menu.clone();
+                theme_manager().connect_list_changed(move || Self::fill_theme_menu(&theme_menu));
+            }
+            theme_manager().connect_applied(clone!(
+                #[weak(rename_to = this)]
+                obj,
+                move |_| {
+                    // The theme may have changed the colour scheme or taken over the accent.
+                    this.imp().update_accent_color();
+                    if let Some(sender) = this.imp().sender_to_bg.get() {
+                        let _ = sender.send_blocking(WindowMessage::UpdateAccent(
+                            adw::StyleManager::default().is_dark(),
+                        ));
+                    }
+                }
+            ));
 
             theme_selector.connect_closure(
                 "changed",
@@ -806,7 +837,38 @@ mod imp {
             }
         }
 
+        pub fn fill_theme_menu(menu: &gio::Menu) {
+            menu.remove_all();
+            let bundled = gio::Menu::new();
+            let user = gio::Menu::new();
+            for t in theme_manager().themes() {
+                let item = gio::MenuItem::new(Some(&t.name), None);
+                item.set_action_and_target_value(Some("app.theme"), Some(&t.id.to_variant()));
+                if t.user {
+                    user.append_item(&item);
+                } else {
+                    bundled.append_item(&item);
+                }
+            }
+            menu.append_section(None, &bundled);
+            if user.n_items() > 0 {
+                menu.append_section(Some("Custom"), &user);
+            }
+        }
+
         pub fn update_accent_color(&self) {
+            let theme = theme_manager().current();
+            if theme.suppresses_auto_accent() {
+                // The theme owns its accent: inject nothing so its :root wins.
+                self.provider.load_from_string(
+                    "
+.fg-auto-accent {
+    color: var(--accent-color);
+}
+",
+                );
+                return;
+            }
             if let (Some(color), true) =
                 (self.accent_color.borrow().as_ref(), self.auto_accent.get())
             {
@@ -841,6 +903,16 @@ mod imp {
                         color.r, color.g, color.b, color.r, color.g, color.b
                     ));
                 }
+            } else if !theme.is_default() {
+                // A theme is active and nothing dynamic to show: let the theme's own
+                // accent (or libadwaita's default under it) stand.
+                self.provider.load_from_string(
+                    "
+.fg-auto-accent {
+    color: var(--accent-color);
+}
+",
+                );
             } else {
                 // If no accent colour is given, revert to system accent colour
                 let color = adw::StyleManager::default().accent_color_rgba();
@@ -1515,7 +1587,7 @@ impl EuphonicaWindow {
         let title = match (player.title(), player.artist()) {
             (Some(title), Some(artist)) => format!("{title} – {artist}"),
             (Some(title), None) => title,
-            (None, _) => "Euphonica".to_owned(),
+            (None, _) => "Flaclify".to_owned(),
         };
         self.set_title(Some(&title));
     }
@@ -1558,7 +1630,7 @@ impl EuphonicaWindow {
                 self.show_error_dialog(
                     "Connection refused",
                     &format!(
-                        "Euphonica could not connect to {}:{}. Please check your connection and network configuration and try again.",
+                        "Flaclify could not connect to {}:{}. Please check your connection and network configuration and try again.",
                         conn_settings.string("mpd-host").as_str(),
                         conn_settings.uint("mpd-port")
                     ),
@@ -1571,7 +1643,7 @@ impl EuphonicaWindow {
                 self.show_error_dialog(
                     "Socket not found",
                     &format!(
-                        "Euphonica couldn't connect to your socket at {}. Please ensure that MPD has been configured to bind to that socket and try again.",
+                        "Flaclify couldn't connect to your socket at {}. Please ensure that MPD has been configured to bind to that socket and try again.",
                         conn_settings.string("mpd-unix-socket").as_str(),
                     ),
                     true
@@ -1597,7 +1669,7 @@ impl EuphonicaWindow {
                 self.imp().title.set_subtitle("Unauthenticated");
                 self.show_error_dialog(
                     "Credential Store Error",
-                    "Your MPD instance requires a password, but Euphonica could not access your default credential store to retrieve it. Please ensure that it has been unlocked before starting Euphonica.",
+                    "Your MPD instance requires a password, but Flaclify could not access your default credential store to retrieve it. Please ensure that it has been unlocked before starting Flaclify.",
                     false
                 );
             }
@@ -1857,7 +1929,7 @@ impl EuphonicaWindow {
         self.imp().sidebar.get().set_view(view_name);
     }
 
-    /// These are view-related actions. In the rather unlikely case that we decide to allow multiple Euphonica windows
+    /// These are view-related actions. In the rather unlikely case that we decide to allow multiple Flaclify windows
     /// (not sure if there's even a need for that) these will only go off on the focused window.
     fn setup_gactions(&self) {
         let view_recent_action = gio::ActionEntry::builder("view-recent")

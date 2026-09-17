@@ -25,7 +25,7 @@ mod imp {
     use super::*;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/cover-fan.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/cover-fan.ui")]
     pub struct CoverFan {
         #[template_child]
         pub cover1_card: TemplateChild<gtk::Box>, // left

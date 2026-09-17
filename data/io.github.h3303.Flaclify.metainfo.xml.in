@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.htkhiem.Euphonica</id>
+  <id>io.github.h3303.Flaclify</id>
 
-  <name>Euphonica</name>
+  <name>Flaclify</name>
   <summary>MPD client with delusions of grandeur</summary>
-  <developer id="io.github.htkhiem">
+  <developer id="io.github.h3303">
     <name>Huynh Thien Khiem</name>
   </developer>
-  <url type="bugtracker">https://github.com/htkhiem/euphonica/issues</url>
-  <url type="homepage">https://github.com/htkhiem/euphonica</url>
-  <url type="vcs-browser">https://github.com/htkhiem/euphonica</url>  
+  <url type="bugtracker">https://github.com/h-3303/flaclify/issues</url>
+  <url type="homepage">https://github.com/h-3303/flaclify</url>
+  <url type="vcs-browser">https://github.com/h-3303/flaclify</url>  
   <content_rating type="oars-1.1" />
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-3.0-or-later</project_license>
@@ -41,10 +41,10 @@
       <li>myMPD-compatible stickers handling.</li>
     </ul>
     <p><em>PipeWire permissions</em></p>
-    <p>Euphonica requires PipeWire capture permissions for its PipeWire visualizer backend, but currently it is only possible to specify a "blanket" PipeWire permission that also allows screen recording, microphone access, etc. Euphonica does not make use of these extra permissions, and will be updated to use a more restricted "audio portal" when one becomes available.</p>
+    <p>Flaclify requires PipeWire capture permissions for its PipeWire visualizer backend, but currently it is only possible to specify a "blanket" PipeWire permission that also allows screen recording, microphone access, etc. Flaclify does not make use of these extra permissions, and will be updated to use a more restricted "audio portal" when one becomes available.</p>
     <p><em>Screenshot content copyright information &amp; disclaimer</em></p>
     <p>Album arts contained in the screenshots have been substituted with random photos from Pexel. All credits go to the original authors.</p>
-    <p>Euphonica is solely a music player programme and does not provide any media content or sources. Users must provide their own content or manually configure Euphonica to access third party online services.</p>
+    <p>Flaclify is solely a music player programme and does not provide any media content or sources. Users must provide their own content or manually configure Flaclify to access third party online services.</p>
   </description>
 
   <keywords>
@@ -56,7 +56,7 @@
     <keyword translate="no">mpc</keyword>
   </keywords>
 
-  <launchable type="desktop-id">io.github.htkhiem.Euphonica.desktop</launchable>
+  <launchable type="desktop-id">io.github.h3303.Flaclify.desktop</launchable>
   <screenshots>
     <screenshot type="default">
       <image>https://i.ibb.co/Mx4qJCHd/album-view.png</image>
@@ -156,7 +156,7 @@
       <description>
         <p>New: ncmpcpp-inspired keyboard shortcuts and new searchable Shortcuts dialog.</p>
         <p>New: More cache controls: image format, size and graceful clear-cache option.</p>
-        <p>Change: Euphonica now always tries to use folder-level cover art first, cutting down on duplicated downloads.</p>
+        <p>Change: Flaclify now always tries to use folder-level cover art first, cutting down on duplicated downloads.</p>
         <p>Change: New images are now stored as lossy WebP to vastly reduce cache size on disk. Quality loss should be pretty much imperceptible.</p>
         <p>Change: Reduced RAM usage and significantly sped up album art loads thanks to more intelligent screen visibility checks.</p>
         <p>Fix: Type-to-search now fully works! Previously they were intermittent (due to focus sometimes being stolen by the sidebar).</p>
@@ -171,7 +171,7 @@
         <p>New: Volume knob now supports angular dragging for touchscreen use.</p>
         <p>New: Queue View search by track name, artist or both.</p>
         <p>New: Queue View now automatically scroll to playing track.</p>
-        <p>New: Optional playback actions upon closing Euphonica (do nothing, pause, stop, stop and clear queue). Defaults to 'do nothing'.</p>
+        <p>New: Optional playback actions upon closing Flaclify (do nothing, pause, stop, stop and clear queue). Defaults to 'do nothing'.</p>
         <p>New: Cairo-based visualiser renderer in addition to the GSK one. Serves as the new default as it is usually more performant.</p>
         <p>New: Overall significant visualiser performance improvements for both renderers especially on 4K+ displays.</p>
         <p>Change: New, more compact seekbar design with animated wave-like lighting pattern. Volume knob also has a new gradients-based look.</p>
@@ -180,7 +180,7 @@
         <p>Change: Tweaked Now Playing pane to expose volume knob directly and symmetrically + use the new seekbar.</p>
         <p>Change: Visualiser now uses Catmull-Rom curves instead for smoother looks.</p>
         <p>Change: Default multi-artist tag delimiters adjusted to avoid splitting artists with '.ft' in their names.</p>
-        <p>Fix: Several memory leaks. Euphonica should now properly free a lot of memory upon backgrounding.</p>
+        <p>Fix: Several memory leaks. Flaclify should now properly free a lot of memory upon backgrounding.</p>
         <p>Fix: Queue View stuck at loading spinner upon resurfacing from background mode.</p>
       </description>
     </release>
@@ -269,7 +269,7 @@
         <p>Refactor: Lazy init for all views, should markedly improve startup smoothness.</p>
         <p>Refactor: Switched to libsecret to manage MPD password. Will require reentering your password if you use one.</p>
         <p>Refactor: Add more padding to Recent View row separators.</p>
-        <p>Fix: Many timeout-related crashes. Euphonica will now automatically attempt a reconnection instead.</p>
+        <p>Fix: Many timeout-related crashes. Flaclify will now automatically attempt a reconnection instead.</p>
         <p>Fix: Playlist editor apply button remaining disabled after one edit.</p>
       </description>
     </release>
@@ -311,7 +311,7 @@
         <p>New: "Queue Next" option that inserts selected songs after the current song in the queue. Currently available in the album content view only.</p>
         <p>New: Artist names in the album content view are now clickable (opens the corresponding artist content view).</p>
         <p>Fix: Current song position in queue desynced from daemon.</p>
-        <p>Fix: Crash after deleting cached images from .cache/euphonica</p>
+        <p>Fix: Crash after deleting cached images from .cache/flaclify</p>
         <p>Fix: Embedded art still being downloaded even with folder cover present</p>
         <p>Refactor: Updated to build against GTK 4.18 and LibAdwaita 1.7+</p>
       </description>
@@ -373,8 +373,8 @@
     <release version="0.92.0-alpha" date="2025-06-14">
       <url type="details">https://github.com/htkhiem/euphonica/releases/tag/v0.92.0-alpha</url>
       <description>
-        <p>New: Background mode. Euphonica can now run in the background, allowing it to serve as your MPRIS daemon. Visualisation backends and album art blur thread will be shut down upon entering background mode, reducing CPU usage to pretty much zero. Polling will still be performed to support shell applets with seekbars (GNOME does with an extension).</p>
-        <p>New: Command-line argument to start Euphonica minimised (--minimized). This allows setting up autostart scripts.</p>
+        <p>New: Background mode. Flaclify can now run in the background, allowing it to serve as your MPRIS daemon. Visualisation backends and album art blur thread will be shut down upon entering background mode, reducing CPU usage to pretty much zero. Polling will still be performed to support shell applets with seekbars (GNOME does with an extension).</p>
+        <p>New: Command-line argument to start Flaclify minimised (--minimized). This allows setting up autostart scripts.</p>
         <p>Fix: Playback controls are now properly centered instead of being forced to the right by long titles (which will scroll like a marquee instead).</p>
         <p>Fix: Album info and artist bio spinners not going away in case no metadata could be found.</p>
       </description>
@@ -426,7 +426,7 @@
     <release version="0.11.0-alpha" date="2025-02-02">
       <url type="details">https://github.com/htkhiem/euphonica/releases/tag/v0.11.0-alpha</url>
       <description>
-        <p>First public tagged release for Euphonica.</p>
+        <p>First public tagged release for Flaclify.</p>
         <ul>
           <li>New: customisable spectrum visualiser (reads from MPD FIFO output)</li>
           <li>Refactor: preferences panel reorganisation</li>

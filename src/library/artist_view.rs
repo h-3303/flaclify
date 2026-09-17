@@ -20,7 +20,7 @@ mod imp {
 
     #[derive(Default, Debug, CompositeTemplate, Properties)]
     #[properties(wrapper_type = super::ArtistView)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/artist-view.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/artist-view.ui")]
     pub struct ArtistView {
         #[template_child]
         pub nav_view: TemplateChild<adw::NavigationView>,

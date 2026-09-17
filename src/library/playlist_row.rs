@@ -17,7 +17,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/playlist-row.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/playlist-row.ui")]
     pub struct PlaylistRow {
         #[template_child]
         pub replace_queue: TemplateChild<gtk::Button>,

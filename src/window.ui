@@ -172,7 +172,7 @@
                     <style>
                       <class name="light-right-edge"/>
                     </style>
-                    <property name="title">Euphonica</property>
+                    <property name="title">Flaclify</property>
                     <property name="child">
                       <object class="AdwToolbarView">
                         <child type="top">
@@ -191,7 +191,7 @@
                             </child>
                             <property name="title-widget">
                               <object class="AdwWindowTitle" id="title">
-                                <property name="title">Euphonica</property>
+                                <property name="title">Flaclify</property>
                               </object>
                             </property>
                             <child type="end">
@@ -339,7 +339,7 @@
         <attribute name="action">app.shortcuts</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">_About Euphonica</attribute>
+        <attribute name="label" translatable="yes">_About Flaclify</attribute>
         <attribute name="action">app.about</attribute>
       </item>
       <item>

@@ -393,7 +393,7 @@ impl Song {
         let mut meta = mpris_server::Metadata::builder()
             .title(self.get_name())
             .trackid(ObjectPath::from_string_unchecked(format!(
-                "/io/github/htkhiem/Euphonica/{}",
+                "/io/github/h3303/Flaclify/{}",
                 self.get_queue_id()
             )))
             .length(Time::from_secs(self.get_duration() as i64))

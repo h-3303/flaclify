@@ -11,7 +11,7 @@ mod imp {
     use super::*;
 
     #[derive(Debug, Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/preferences/dialog.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/dialog.ui")]
     pub struct Preferences {
         #[template_child]
         pub client_tab: TemplateChild<ClientPreferences>,

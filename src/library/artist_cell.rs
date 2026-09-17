@@ -35,7 +35,7 @@ mod imp {
     use super::*;
 
     #[derive(CompositeTemplate, Default)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/artist-cell.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/artist-cell.ui")]
     pub struct ArtistCell {
         #[template_child]
         pub layout_switcher: TemplateChild<adw::MultiLayoutView>,

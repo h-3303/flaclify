@@ -31,7 +31,7 @@ mod imp {
     #[derive(Debug, CompositeTemplate, Derivative)]
     #[derivative(Default)]
     #[template(
-        resource = "/io/github/htkhiem/Euphonica/gtk/library/dynamic-playlist-editor-view.ui"
+        resource = "/io/github/h3303/Flaclify/gtk/library/dynamic-playlist-editor-view.ui"
     )]
     pub struct DynamicPlaylistEditorView {
         #[template_child]

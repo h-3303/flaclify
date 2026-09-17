@@ -157,7 +157,7 @@
 			</object>
 		</child>
 		<style>
-			<class name="euphonica-sidebar"/>
+			<class name="flaclify-sidebar"/>
 		</style>
 	</template>
 </interface>

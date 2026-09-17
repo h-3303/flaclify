@@ -22,7 +22,7 @@ mod imp {
     use super::*;
 
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/output.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/output.ui")]
     pub struct MpdOutput {
         #[template_child]
         pub icon_btn: TemplateChild<gtk::MenuButton>,

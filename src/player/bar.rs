@@ -26,7 +26,7 @@ mod imp {
 
     #[derive(Default, Properties, CompositeTemplate)]
     #[properties(wrapper_type = super::PlayerBar)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/player/bar.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/player/bar.ui")]
     pub struct PlayerBar {
         #[template_child]
         pub multi_layout_view: TemplateChild<adw::MultiLayoutView>,

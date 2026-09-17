@@ -886,65 +886,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "euphonica"
-version = "0.99.7"
-dependencies = [
- "aho-corasick",
- "ashpd",
- "async-channel",
- "async-lock",
- "async-trait",
- "asyncified",
- "auto-palette",
- "base64",
- "bson",
- "chrono",
- "derivative",
- "duplicate",
- "futures",
- "gettext-rs",
- "gtk4",
- "hsl",
- "idna",
- "image",
- "itertools 0.13.0",
- "libadwaita",
- "libblur",
- "libc",
- "libsecret",
- "lru",
- "mpd",
- "mpris-server",
- "musicbrainz_rs",
- "nohash-hasher",
- "once_cell",
- "oneshot",
- "open",
- "pipewire",
- "quick-xml",
- "r2d2",
- "r2d2_sqlite",
- "rand 0.9.5",
- "regex",
- "reqwest",
- "resolve-path",
- "ringbuffer",
- "rusqlite",
- "rustc-hash",
- "serde",
- "serde_json",
- "spectrum-analyzer",
- "strum",
- "strum_macros",
- "time",
- "tokio",
- "urlencoding",
- "uuid",
- "webp",
- "zbus 5.18.0",
-]
-
-[[package]]
 name = "event-listener"
 version = "5.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1030,6 +971,65 @@ name = "find-msvc-tools"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5baebc0774151f905a1a2cc41989300b1e6fbb29aff0ceffa1064fdd3088d582"
+
+[[package]]
+name = "flaclify"
+version = "0.99.7"
+dependencies = [
+ "aho-corasick",
+ "ashpd",
+ "async-channel",
+ "async-lock",
+ "async-trait",
+ "asyncified",
+ "auto-palette",
+ "base64",
+ "bson",
+ "chrono",
+ "derivative",
+ "duplicate",
+ "futures",
+ "gettext-rs",
+ "gtk4",
+ "hsl",
+ "idna",
+ "image",
+ "itertools 0.13.0",
+ "libadwaita",
+ "libblur",
+ "libc",
+ "libsecret",
+ "lru",
+ "mpd",
+ "mpris-server",
+ "musicbrainz_rs",
+ "nohash-hasher",
+ "once_cell",
+ "oneshot",
+ "open",
+ "pipewire",
+ "quick-xml",
+ "r2d2",
+ "r2d2_sqlite",
+ "rand 0.9.5",
+ "regex",
+ "reqwest",
+ "resolve-path",
+ "ringbuffer",
+ "rusqlite",
+ "rustc-hash",
+ "serde",
+ "serde_json",
+ "spectrum-analyzer",
+ "strum",
+ "strum_macros",
+ "time",
+ "tokio",
+ "urlencoding",
+ "uuid",
+ "webp",
+ "zbus 5.18.0",
+]
 
 [[package]]
 name = "flate2"

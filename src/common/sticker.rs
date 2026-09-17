@@ -54,7 +54,7 @@ impl Stickers {
         Self::SKIP_COUNT,
     ];
 
-    // Reserved for Euphonica-specific features (prefixed with our names to avoid collisions).
+    // Reserved for Flaclify-specific features (prefixed with our names to avoid collisions).
     // Not part of the "common" set as its value is complex and probably too specific to our app.
     // Open an issue if you think these may be of use for other clients too (and would like the
     // name prefix dropped, for example).

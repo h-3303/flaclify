@@ -13,7 +13,7 @@ mod imp {
     use super::*;
     
     #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/tag-button.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/tag-button.ui")]
     pub struct TagButton {
         #[template_child]
         pub name: TemplateChild<gtk::Label>,

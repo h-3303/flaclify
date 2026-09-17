@@ -15,7 +15,7 @@ mod imp {
     use super::*;
 
    #[derive(Default, CompositeTemplate)]
-    #[template(resource = "/io/github/htkhiem/Euphonica/gtk/library/tags-section.ui")]
+    #[template(resource = "/io/github/h3303/Flaclify/gtk/library/tags-section.ui")]
     pub struct TagsSection {
         #[template_child]
         pub tags_stack: TemplateChild<ContentStack>,
