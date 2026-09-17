@@ -596,9 +596,13 @@ impl Sidebar {
                     for playlist in incoming.iter() {
                         let (row, open) = incoming_row(&win, playlist);
                         let stored_name = playlist.mpd_playlist.clone();
+                        let playlist_id = playlist.playlist_id;
+                        let name = playlist.name.clone();
                         open.connect_clicked(clone!(
                             #[weak]
                             this,
+                            #[weak]
+                            win,
                             #[weak]
                             library,
                             #[weak]
@@ -608,23 +612,66 @@ impl Sidebar {
                             #[weak]
                             split_view,
                             move |_| {
-                                // Open the stored playlist if flacli has written it to MPD yet.
-                                let playlists = library.playlists();
-                                let found = playlists
-                                    .iter::<INode>()
-                                    .filter_map(Result::ok)
-                                    .find(|p| p.get_uri() == stored_name);
-                                if let Some(inode) = found {
-                                    this.imp().playlists_btn.set_active(true);
-                                    playlist_view.on_playlist_clicked(&inode);
-                                    if stack
-                                        .visible_child_name()
-                                        .is_none_or(|name| name.as_str() != "playlists")
-                                    {
-                                        stack.set_visible_child_name("playlists");
+                                // Open the stored playlist; have flacli store it in MPD first
+                                // when it has not yet (it stores from the tracks on disk).
+                                let open_stored = clone!(
+                                    #[weak]
+                                    this,
+                                    #[weak]
+                                    library,
+                                    #[weak]
+                                    playlist_view,
+                                    #[weak]
+                                    stack,
+                                    #[weak]
+                                    split_view,
+                                    #[strong]
+                                    stored_name,
+                                    #[upgrade_or]
+                                    false,
+                                    move || -> bool {
+                                        let found = library
+                                            .playlists()
+                                            .iter::<INode>()
+                                            .filter_map(Result::ok)
+                                            .find(|p| p.get_uri() == stored_name);
+                                        let Some(inode) = found else {
+                                            return false;
+                                        };
+                                        this.imp().playlists_btn.set_active(true);
+                                        playlist_view.on_playlist_clicked(&inode);
+                                        if stack
+                                            .visible_child_name()
+                                            .is_none_or(|name| name.as_str() != "playlists")
+                                        {
+                                            stack.set_visible_child_name("playlists");
+                                        }
+                                        split_view.set_show_sidebar(!split_view.is_collapsed());
+                                        true
                                     }
-                                    split_view.set_show_sidebar(!split_view.is_collapsed());
+                                );
+                                if open_stored() {
+                                    return;
                                 }
+                                let (playlist_id, name) = (playlist_id, name.clone());
+                                glib::spawn_future_local(clone!(
+                                    #[weak]
+                                    win,
+                                    #[weak]
+                                    library,
+                                    async move {
+                                        win.send_simple_toast(&format!("Asking flacli to store “{name}” in MPD…"), 3);
+                                        match flacli().store_in_mpd(playlist_id).await {
+                                            Ok(line) => {
+                                                let _ = library.init_playlists(true).await;
+                                                if !open_stored() {
+                                                    win.send_simple_toast(&format!("{line}, but the player does not list it yet. Try again in a moment."), 6);
+                                                }
+                                            }
+                                            Err(e) => win.send_simple_toast(&format!("“{name}” is {e}"), 6),
+                                        }
+                                    }
+                                ));
                             }
                         ));
                         list.append(&row);

@@ -876,6 +876,25 @@ impl Flacli {
         result.map(|_| ())
     }
 
+    /// `flacli mpd playlist <id>`: store the playlist in MPD under its name, from the tracks
+    /// already on disk. The sentence says what happened.
+    pub async fn store_in_mpd(&self, playlist_id: u32) -> Result<String, Error> {
+        let id = playlist_id.to_string();
+        let result = run::<serde_json::Value>(args(&["mpd", "playlist", &id])).await?;
+        let local = result.get("local_tracks").and_then(|v| v.as_u64()).unwrap_or(0);
+        let mpd = result.get("mpd").cloned().unwrap_or(serde_json::Value::Null);
+        if let Some(skipped) = mpd.get("skipped").and_then(|v| v.as_str()) {
+            return Err(Error::Exit(format!("not stored: {skipped}")));
+        }
+        let added = mpd.get("added").and_then(|v| v.as_u64()).unwrap_or(0);
+        let not_in_db = mpd.get("not_in_db").and_then(|v| v.as_array()).map(|a| a.len()).unwrap_or(0);
+        let mut line = format!("Stored in MPD with {added} of {local} local track{}", if local == 1 { "" } else { "s" });
+        if not_in_db > 0 {
+            line.push_str(&format!("; {not_in_db} not in MPD's database yet"));
+        }
+        Ok(line)
+    }
+
     /// `flacli cancel <id>`: stop the running job.
     pub async fn cancel(self: &Rc<Self>, playlist_id: u32) -> Result<(), Error> {
         let id = playlist_id.to_string();
