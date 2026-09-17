@@ -361,7 +361,14 @@ impl SongRow {
         if let Some(player) = self.imp().player.upgrade() {
             self.update_playing_indicator(&player);
         }
-        self.schedule_thumbnail();
+        if song.is_ghost() {
+            // Nothing on disk to fetch a cover for; the row is drawn dimmed instead.
+            self.imp().thumbnail.clear();
+            self.add_css_class("ghost-row");
+        } else {
+            self.remove_css_class("ghost-row");
+            self.schedule_thumbnail();
+        }
     }
 
     pub fn on_unbind(&self) {

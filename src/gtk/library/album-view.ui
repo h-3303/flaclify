@@ -104,6 +104,38 @@
                     </child>
                   </object>
                 </child>
+                <child type="top">
+                  <!-- flacli (Tier 2): when a search matches nothing in the library, offer Soulseek. -->
+                  <object class="GtkRevealer" id="soulseek_revealer">
+                    <property name="reveal-child">false</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="spacing">12</property>
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <property name="margin-top">6</property>
+                        <property name="margin-bottom">6</property>
+                        <child>
+                          <object class="GtkLabel" id="soulseek_label">
+                            <property name="xalign">0</property>
+                            <property name="hexpand">true</property>
+                            <property name="ellipsize">end</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="soulseek_btn">
+                            <property name="label" translatable="true">Search Soulseek</property>
+                            <property name="tooltip-text" translatable="true">Ask flacli to find it on Soulseek and fetch it</property>
+                            <property name="valign">3</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
 				        <property name="content">
                   <object class="EuphonicaContentStack" id="stack">
                     <property name="placeholder">

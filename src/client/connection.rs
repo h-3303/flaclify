@@ -188,6 +188,9 @@ pub enum Task {
         Responder<()>,
     ),
     Ping(Responder<()>),
+    /// MPD's music_directory, from the `config` command. MPD only answers it over a local socket;
+    /// over TCP the server refuses and this resolves to an error.
+    GetMusicDirectory(Responder<String>),
     /// Send a message to the inter-client channel
     SendMessage(
         /// Content
@@ -945,6 +948,9 @@ impl Connection {
                     }
                     Task::Ping(resp) => {
                         self.respond_with_client(move |c| c.ping(), resp);
+                    }
+                    Task::GetMusicDirectory(resp) => {
+                        self.respond_with_client(|c| c.music_directory(), resp);
                     }
                     Task::SendMessage(content, resp) => {
                         let wake_channel = self.wake_channel.clone();

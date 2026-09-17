@@ -270,7 +270,7 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
       <div class="g">
         <h4>flacli</h4>
         <p><a href="https://flacli.vercel.app">flacli</a> is the other half: a command line any agent can drive that fetches named songs, albums or whole playlists and files them as <code>Artist/Album/NN - Title</code>. It writes exactly the files above (<code>flacli wiki</code>, <code>flacli avatar</code>), asks MPD to rescan just the folders it filed downloads into, and stores each synced playlist in MPD by name. What an agent fetches is in this window, with its bio and its playlist, without a rescan and without anything written into the player's database.</p>
-        <p>What comes next lives in the player rather than the shell and is set out in the <a href="#roadmap">roadmap</a> below: an indicator for downloads under way, ghost rows for the tracks a playlist still lacks, the releases an artist page could fetch, and the review of doubtful matches as a dialog instead of a JSON field.</p>
+        <p>The player now reads the shell's state and drives it: an indicator for downloads under way, ghost rows for the tracks a playlist still lacks, the releases an artist page can fetch, and the review of doubtful matches as a dialog instead of a JSON field. What comes next is set out in the <a href="#roadmap">roadmap</a> below.</p>
       </div>
     </div>
   </section>
@@ -296,12 +296,13 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
         </ul>
       </li>
 
-      <li class="tier">
+      <li class="tier tier--done">
         <div>
           <span class="tier__num">Tier 1</span>
           <h4 class="tier__t">Flaclify reads flacli state</h4>
           <p class="tier__d">Read-only surfaces fed by <code>flacli --compact status</code>, the JSON contract the shell already keeps for agents. Polled only while a job is running.</p>
           <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/2">a stable status summary for players</a> · <a href="https://github.com/h-3303/flacli/issues/3">one installer for the whole stack</a></p>
+          <span class="stamp">Done</span>
         </div>
         <ul>
           <li><span>Gate every flacli feature on the MPD library being the one flacli files into, and on <code>flacli</code> being on the path with the Nicotine+ bridge reachable.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/8">№ 8</a></li>
@@ -311,12 +312,13 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
         </ul>
       </li>
 
-      <li class="tier">
+      <li class="tier tier--done">
         <div>
           <span class="tier__num">Tier 2</span>
           <h4 class="tier__t">Flaclify drives flacli</h4>
           <p class="tier__d">The first write actions from the player into the shell. The shell's rules hold: naming the music is the yes, a playlist is never queued until the totals have been seen, and Soulseek code stays out of this repository.</p>
           <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/1"><code>flacli serve</code>, a session D-Bus interface with signals</a></p>
+          <span class="stamp">Done</span>
         </div>
         <ul>
           <li><span>"Get this" on a missing release, and "Search Soulseek" when a library search returns nothing.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/4">№ 4</a></li>

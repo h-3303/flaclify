@@ -25,6 +25,14 @@
                       </object>
                     </child>
                     <child type="end">
+                      <!-- flacli (Tier 2): import a playlist from a service. Hidden unless flacli is set up. -->
+                      <object class="GtkButton" id="import_btn">
+                        <property name="icon-name">fl-list-add-symbolic</property>
+                        <property name="tooltip-text" translatable="true">Import a playlist from TIDAL, Deezer or YouTube Music (flacli)</property>
+                        <property name="visible">false</property>
+                      </object>
+                    </child>
+                    <child type="end">
                       <object class="GtkMenuButton" id="view_options_btn">
                         <property name="menu-model">view_options_model</property>
                         <property name="icon-name">fl-view-sort-ascending-symbolic</property>

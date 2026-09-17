@@ -671,6 +671,76 @@
                                         </property>
                                       </object>
                                     </child>
+
+                                    <child>
+                                      <!-- Releases MusicBrainz lists for this artist that the library lacks
+                                           (roadmap Tier 1). Shown only when flacli is set up, and the artist
+                                           has a MusicBrainz id. Read-only; Tier 2 hangs "Get this" off it. -->
+                                      <object class="AdwClamp">
+                                        <property name="visible">false</property>
+                                        <property name="margin-top">18</property>
+                                        <property name="margin-bottom">12</property>
+                                        <property name="margin-start">6</property>
+                                        <property name="margin-end">6</property>
+                                        <property name="maximum-size">1600</property>
+                                        <property name="tightening-threshold">1280</property>
+                                        <binding name="visible">
+                                          <lookup name="visible">missing_releases_box</lookup>
+                                        </binding>
+                                        <child>
+                                          <object class="GtkBox" id="missing_releases_box">
+                                            <property name="visible">false</property>
+                                            <property name="orientation">1</property>
+                                            <property name="spacing">6</property>
+                                            <property name="margin-start">12</property>
+                                            <property name="margin-end">12</property>
+                                            <child>
+                                              <object class="GtkBox">
+                                                <property name="spacing">6</property>
+                                                <child>
+                                                  <object class="GtkLabel">
+                                                    <property name="label" translatable="true">Not in the library</property>
+                                                    <property name="xalign">0</property>
+                                                    <property name="hexpand">true</property>
+                                                    <style>
+                                                      <class name="heading"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                                <child>
+                                                  <object class="GtkLabel" id="missing_releases_count">
+                                                    <style>
+                                                      <class name="caption"/>
+                                                      <class name="dim-label"/>
+                                                    </style>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="label" translatable="true">The studio albums and EPs MusicBrainz credits to this artist that are not in the library.</property>
+                                                <property name="xalign">0</property>
+                                                <property name="wrap">true</property>
+                                                <style>
+                                                  <class name="caption"/>
+                                                  <class name="dim-label"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkListBox" id="missing_releases_list">
+                                                <property name="selection-mode">0</property>
+                                                <property name="margin-top">6</property>
+                                                <style>
+                                                  <class name="boxed-list"/>
+                                                </style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>

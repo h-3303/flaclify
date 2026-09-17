@@ -107,6 +107,9 @@ pub struct SongInfo {
     pub mbid: Option<String>,
     pub last_modified: Option<String>,
     pub last_played: Option<OffsetDateTime>,
+    /// Set on ghost rows only: a track a synced playlist still lacks, with flacli's status for it
+    /// (`not_found`, `candidates`, ...). Such a song has no URI and cannot be queued.
+    pub missing_status: Option<String>,
 }
 
 impl SongInfo {
@@ -129,6 +132,36 @@ impl SongInfo {
     /// 2. URI
     pub fn get_comp_id(&self) -> &str {
         self.mbid.as_deref().unwrap_or(self.uri.as_ref())
+    }
+
+    /// A placeholder for a track flacli has not fetched yet: title and artist as the playlist
+    /// names them, no URI, and `missing_status` saying why it is not on disk.
+    pub fn ghost(title: &str, artist: Option<&str>, album: Option<&str>, status: &str) -> Self {
+        let mut info = Self {
+            title: title.to_owned(),
+            artist_tag: artist.map(str::to_owned),
+            missing_status: Some(status.to_owned()),
+            ..Self::default()
+        };
+        if let Some(artist) = artist {
+            info.artists = parse_mb_artist_tag(artist)
+                .iter()
+                .map(|s| ArtistInfo::new(s, None, false, false))
+                .collect();
+        }
+        if let Some(album) = album {
+            info.album = Some(AlbumInfo::new(
+                "",
+                album,
+                None,
+                artist,
+                None,
+                FxHashSet::default(),
+                Vec::with_capacity(0),
+                QualityGrade::Unknown,
+            ));
+        }
+        info
     }
 }
 
@@ -206,6 +239,9 @@ mod imp {
                     ParamSpecString::builder("last-played-desc")
                         .read_only()
                         .build(),
+                    ParamSpecString::builder("missing-status")
+                        .read_only()
+                        .build(),
                 ]
             });
             PROPERTIES.as_ref()
@@ -234,6 +270,7 @@ mod imp {
                 "quality-grade" => obj.get_quality_grade().to_icon_name().to_value(),
                 "last-modified" => obj.get_last_modified().to_value(),
                 "last-played-desc" => obj.get_last_played_desc().to_value(),
+                "missing-status" => obj.get_missing_status().to_value(),
                 _ => unimplemented!(),
             }
         }
@@ -389,6 +426,16 @@ impl Song {
         self.get_info().mbid.as_deref()
     }
 
+    /// flacli's status for a track the playlist still lacks; None for a real song.
+    pub fn get_missing_status(&self) -> Option<&str> {
+        self.get_info().missing_status.as_deref()
+    }
+
+    /// A ghost row: not on disk, not queueable.
+    pub fn is_ghost(&self) -> bool {
+        self.get_info().missing_status.is_some()
+    }
+
     pub fn get_mpris_metadata(&self) -> mpris_server::Metadata {
         let mut meta = mpris_server::Metadata::builder()
             .title(self.get_name())
@@ -485,6 +532,7 @@ impl From<mpd::song::Song> for SongInfo {
             mbid: None,
             last_modified: song.last_mod,
             last_played: None,
+            missing_status: None,
         };
 
         if let Some(place) = song.place {

@@ -22,7 +22,7 @@ use crate::theme::theme_manager;
 use crate::{
     EuphonicaWindow,
     cache::Cache,
-    client::{MpdWrapper, Result as ClientResult},
+    client::{ClientState, ConnectionState, MpdWrapper, Result as ClientResult},
     config::VERSION,
     library::Library,
     player::{Player, get_next_replaygain},
@@ -33,8 +33,9 @@ use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{
     gio,
-    glib::{self, clone},
+    glib::{self, clone, closure_local},
 };
+use mpd::Subsystem;
 use std::{
     cell::{Cell, OnceCell, RefCell},
     fs::create_dir_all,
@@ -225,6 +226,41 @@ mod imp {
             let _ = self.cache.set(cache);
             let _ = self.library.set(library);
             let _ = self.player.set(player);
+
+            // The flacli integration (roadmap Tier 1). Re-checks its gate on every connection,
+            // and asks flacli again whenever a stored playlist changes (flacli m3u stores one).
+            let flacli = crate::flacli::init();
+            let client_state = client.get_client_state();
+            client_state.connect_notify_local(
+                Some("connection-state"),
+                clone!(
+                    #[strong]
+                    flacli,
+                    #[strong]
+                    client,
+                    move |state, _| {
+                        if state.connection_state() == ConnectionState::Connected {
+                            glib::spawn_future_local(flacli.clone().check(client.clone()));
+                        }
+                    }
+                ),
+            );
+            if client_state.connection_state() == ConnectionState::Connected {
+                glib::spawn_future_local(flacli.clone().check(client.clone()));
+            }
+            client_state.connect_closure(
+                "idle",
+                false,
+                closure_local!(
+                    #[strong]
+                    flacli,
+                    move |_: ClientState, subsys: glib::BoxedAnyObject| {
+                        if *subsys.borrow::<Subsystem>() == Subsystem::Playlist {
+                            flacli.refresh_soon();
+                        }
+                    }
+                ),
+            );
 
             let obj = self.obj();
             obj.setup_gactions();

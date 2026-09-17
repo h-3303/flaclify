@@ -38,6 +38,12 @@ mod imp {
         #[template_child]
         pub search_entry: TemplateChild<gtk::SearchEntry>,
         #[template_child]
+        pub soulseek_revealer: TemplateChild<gtk::Revealer>,
+        #[template_child]
+        pub soulseek_label: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub soulseek_btn: TemplateChild<gtk::Button>,
+        #[template_child]
         pub rating: TemplateChild<Rating>,
         #[template_child]
         pub rating_mode: TemplateChild<gtk::DropDown>,
@@ -564,6 +570,66 @@ impl AlbumView {
 
         let grid_view = self.imp().grid_view.get();
         grid_view.set_model(Some(&sel_model));
+
+        // flacli (Tier 2): a search that matches nothing in the library offers Soulseek.
+        // Shown only with a term typed, no album left after filtering, and flacli set up.
+        let flacli_state = crate::flacli::flacli().state();
+        let update_offer = clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[weak]
+            sel_model,
+            #[weak]
+            flacli_state,
+            move || {
+                let term = this.imp().search_entry.text();
+                let offer = flacli_state.available() && !term.trim().is_empty() && sel_model.n_items() == 0;
+                if offer {
+                    this.imp()
+                        .soulseek_label
+                        .set_label(&format!("No album in the library matches “{}”.", term.trim()));
+                }
+                this.imp().soulseek_revealer.set_reveal_child(offer);
+            }
+        );
+        sel_model.connect_items_changed(clone!(
+            #[strong]
+            update_offer,
+            move |_, _, _, _| update_offer()
+        ));
+        self.imp().search_entry.connect_search_changed(clone!(
+            #[strong]
+            update_offer,
+            move |_| update_offer()
+        ));
+        flacli_state.connect_notify_local(
+            Some("available"),
+            clone!(
+                #[strong]
+                update_offer,
+                move |_, _| update_offer()
+            ),
+        );
+        self.imp().soulseek_btn.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            move |_| {
+                let term = this.imp().search_entry.text().trim().to_owned();
+                let Some(window) = this.imp().window.get().and_then(|w| w.upgrade()) else {
+                    return;
+                };
+                if term.is_empty() {
+                    return;
+                }
+                // Searching by album title: tell flacli it is an album so MusicBrainz expands it.
+                let item = if this.imp().search_mode.selected() == 1 {
+                    format!("{term} (album)")
+                } else {
+                    term.clone()
+                };
+                crate::flacli::fetch(&window, vec![item], format!("“{term}”"));
+            }
+        ));
         settings
             .bind("max-columns", &grid_view, "max-columns")
             .build();

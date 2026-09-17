@@ -1,5 +1,5 @@
 use adw::subclass::prelude::*;
-use glib::{Properties, clone};
+use glib::{Properties, clone, closure_local};
 use gtk::{CompositeTemplate, glib, prelude::*};
 use std::cell::Cell;
 
@@ -8,6 +8,7 @@ use crate::{
     cache::Cache,
     client::state::StickersSupportLevel,
     common::{INode, ImageStack, View},
+    flacli::{FlacliState, PlaylistStatus, cancel_job, flacli, queue, review},
     utils,
     window::EuphonicaWindow,
 };
@@ -52,6 +53,86 @@ fn fetch_playlist_cover(cache: &Rc<Cache>, cover: ImageStack, name: &str, is_dyn
     ));
 }
 
+/// One line per flacli playlist in the Incoming section: its name over what is happening to it,
+/// and the actions it is waiting on (Tier 2): stop a running job, review doubtful matches, queue.
+fn incoming_row(window: &EuphonicaWindow, playlist: &PlaylistStatus) -> (gtk::Box, gtk::Button) {
+    let name = gtk::Label::builder()
+        .label(&playlist.name)
+        .xalign(0.0)
+        .ellipsize(gtk::pango::EllipsizeMode::End)
+        .build();
+    let summary = gtk::Label::builder()
+        .label(playlist.summary())
+        .xalign(0.0)
+        .ellipsize(gtk::pango::EllipsizeMode::End)
+        .css_classes(["caption", "dim-label"])
+        .build();
+    let content = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(2)
+        .build();
+    content.append(&name);
+    content.append(&summary);
+    let open = gtk::Button::builder()
+        .child(&content)
+        .hexpand(true)
+        .tooltip_text(&playlist.next)
+        .css_classes(["flat"])
+        .build();
+
+    let row = gtk::Box::builder().spacing(0).build();
+    row.append(&open);
+    let action = |icon: &str, tip: &str| {
+        gtk::Button::builder()
+            .icon_name(icon)
+            .tooltip_text(tip)
+            .valign(gtk::Align::Center)
+            .css_classes(["flat", "circular"])
+            .build()
+    };
+    if playlist.is_running() {
+        let stop = action("stop-sign-outline-symbolic", "Stop the job");
+        stop.connect_clicked(clone!(
+            #[weak]
+            window,
+            #[strong]
+            playlist,
+            move |_| cancel_job(&window, playlist.clone())
+        ));
+        row.append(&stop);
+    } else {
+        if playlist.count("candidates") > 0 {
+            let review_btn = action(
+                "document-edit-symbolic",
+                &format!("Review {} doubtful match(es)", playlist.count("candidates")),
+            );
+            review_btn.connect_clicked(clone!(
+                #[weak]
+                window,
+                #[strong]
+                playlist,
+                move |_| review(&window, playlist.clone())
+            ));
+            row.append(&review_btn);
+        }
+        if playlist.count("approved") > 0 || playlist.count("candidates") > 0 {
+            let queue_btn = action(
+                "arrow-pointing-at-line-down-symbolic",
+                "Queue the confident matches (shows the totals first)",
+            );
+            queue_btn.connect_clicked(clone!(
+                #[weak]
+                window,
+                #[strong]
+                playlist,
+                move |_| queue(&window, playlist.clone())
+            ));
+            row.append(&queue_btn);
+        }
+    }
+    (row, open)
+}
+
 mod imp {
     use super::*;
 
@@ -79,6 +160,14 @@ mod imp {
         pub dyn_playlists_btn: TemplateChild<SidebarButton>,
         #[template_child]
         pub recent_dyn_playlists: TemplateChild<gtk::ListBox>,
+        #[template_child]
+        pub incoming_section: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub incoming_spinner: TemplateChild<gtk::Spinner>,
+        #[template_child]
+        pub incoming_refresh: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub incoming_list: TemplateChild<gtk::ListBox>,
         #[template_child]
         pub queue_btn: TemplateChild<gtk::ToggleButton>,
         #[template_child]
@@ -437,6 +526,90 @@ impl Sidebar {
             .transform_to(|_, lvl: StickersSupportLevel| Some(lvl == StickersSupportLevel::All))
             .sync_create()
             .build();
+
+        // Incoming: what flacli is fetching. Rebuilt from the controller's snapshot on every refresh.
+        let flacli_ctl = flacli();
+        let flacli_state = flacli_ctl.state();
+        flacli_state
+            .bind_property("active", &self.imp().incoming_spinner.get(), "visible")
+            .sync_create()
+            .build();
+        self.imp().incoming_refresh.connect_clicked(clone!(
+            #[strong]
+            flacli_ctl,
+            move |_| flacli_ctl.refresh()
+        ));
+        flacli_state.connect_closure(
+            "refreshed",
+            false,
+            closure_local!(
+                #[weak(rename_to = this)]
+                self,
+                #[weak]
+                win,
+                #[weak]
+                library,
+                #[weak]
+                playlist_view,
+                #[weak]
+                stack,
+                #[weak]
+                split_view,
+                move |_: FlacliState| {
+                    let incoming: Vec<PlaylistStatus> = flacli()
+                        .playlists()
+                        .into_iter()
+                        .filter(PlaylistStatus::is_incoming)
+                        .collect();
+                    let list = this.imp().incoming_list.get();
+                    list.remove_all();
+                    for playlist in incoming.iter() {
+                        let (row, open) = incoming_row(&win, playlist);
+                        let stored_name = playlist.mpd_playlist.clone();
+                        open.connect_clicked(clone!(
+                            #[weak]
+                            this,
+                            #[weak]
+                            library,
+                            #[weak]
+                            playlist_view,
+                            #[weak]
+                            stack,
+                            #[weak]
+                            split_view,
+                            move |_| {
+                                // Open the stored playlist if flacli has written it to MPD yet.
+                                let playlists = library.playlists();
+                                let found = playlists
+                                    .iter::<INode>()
+                                    .filter_map(Result::ok)
+                                    .find(|p| p.get_uri() == stored_name);
+                                if let Some(inode) = found {
+                                    this.imp().playlists_btn.set_active(true);
+                                    playlist_view.on_playlist_clicked(&inode);
+                                    if stack
+                                        .visible_child_name()
+                                        .is_none_or(|name| name.as_str() != "playlists")
+                                    {
+                                        stack.set_visible_child_name("playlists");
+                                    }
+                                    split_view.set_show_sidebar(!split_view.is_collapsed());
+                                }
+                            }
+                        ));
+                        list.append(&row);
+                    }
+                    let mut idx = 0;
+                    while let Some(row) = list.row_at_index(idx) {
+                        row.set_activatable(false);
+                        idx += 1;
+                    }
+                    this.imp()
+                        .incoming_section
+                        .set_visible(flacli().state().available() && !incoming.is_empty());
+                }
+            ),
+        );
 
         self.imp().queue_btn.connect_toggled(clone!(
             #[weak]

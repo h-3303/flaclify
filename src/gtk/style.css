@@ -205,3 +205,8 @@ listview > row {
 	border-radius: 999px;
 	background: var(--accent-color);
 }
+
+/* A track a synced playlist still lacks (flacli has not fetched it yet). */
+.ghost-row {
+    opacity: 0.45;
+}

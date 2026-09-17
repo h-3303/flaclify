@@ -15,7 +15,7 @@ use std::{
 
 use super::{Library, tag_button::TagButton};
 use crate::{
-    cache::{Cache, CacheState, Error as CacheError, placeholders::EMPTY_ARTIST_STRING}, common::{Album, Artist, ContentStack, RowAddButtons, Song, SongRow}, library::{Tag, add_to_playlist::AddToPlaylistButton, discography_year::DiscographyYear}, meta_providers::models::{MetaSource, Wiki, artist_type_to_string}, utils::{self, format_datetime_local_tz, format_secs_as_duration, settings_manager, tokio_runtime}, window::EuphonicaWindow,
+    cache::{Cache, CacheState, Error as CacheError, placeholders::EMPTY_ARTIST_STRING}, common::{Album, Artist, ContentStack, RowAddButtons, Song, SongRow}, flacli::flacli, library::{Tag, add_to_playlist::AddToPlaylistButton, discography_year::DiscographyYear}, meta_providers::{models::{MetaSource, Wiki, artist_type_to_string}, musicbrainz::{browse_release_groups, fold_title, library_has}}, utils::{self, format_datetime_local_tz, format_secs_as_duration, settings_manager, tokio_runtime}, window::EuphonicaWindow,
 };
 
 mod imp {
@@ -149,6 +149,16 @@ mod imp {
         pub discography_stack: TemplateChild<ContentStack>,
         #[template_child]
         pub discography_subview: TemplateChild<gtk::ListBox>,
+        // Releases the library lacks (flacli, Tier 1)
+        #[template_child]
+        pub missing_releases_box: TemplateChild<gtk::Box>,
+        #[template_child]
+        pub missing_releases_count: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub missing_releases_list: TemplateChild<gtk::ListBox>,
+        /// Folded titles of the albums in the discography, for the diff.
+        pub library_album_titles: RefCell<Vec<String>>,
+        pub missing_releases_handle: RefCell<Option<glib::JoinHandle<()>>>,
 
         pub library: WeakRef<Library>,
         pub artist: RefCell<Option<Artist>>,
@@ -876,6 +886,8 @@ impl ArtistContentView {
                         self.imp().meta_last_updated.set_label(&format!("Last updated {}", format_datetime_local_tz(last_modified)));
 
                         let _ = self.imp().meta.replace(Some(meta.clone()));
+                        // What MusicBrainz lists and the library lacks (needs the MBID)
+                        self.update_missing_releases();
                         // Metadata sync
                         let _ = self.imp().old_last_modified.replace(Some(last_modified));
                         let _ = self.imp().new_last_modified.replace(Some(last_modified));
@@ -893,11 +905,13 @@ impl ArtistContentView {
                         self.set_show_meta(false);
                         self.imp().meta_last_updated.set_visible(false);
                         let _ = self.imp().meta.take();
+                        self.update_missing_releases();
                     }
                     Err(e) => {
                         self.set_show_meta(false);
                         self.imp().meta_last_updated.set_visible(false);
                         let _ = self.imp().meta.take();
+                        self.update_missing_releases();
                         dbg!(e);
                     }
                 }
@@ -1200,6 +1214,18 @@ impl ArtistContentView {
     }
 
     pub fn setup(&self, library: &Library, cache: Rc<Cache>, window: &EuphonicaWindow) {
+        // flacli's gate is decided after the connection comes up; an artist page opened before
+        // that gets its missing releases once it does.
+        flacli().state().connect_notify_local(
+            Some("available"),
+            clone!(
+                #[weak(rename_to = this)]
+                self,
+                move |_, _| {
+                    this.update_missing_releases();
+                }
+            ),
+        );
         self.imp()
             .cache
             .set(cache)
@@ -1311,6 +1337,7 @@ impl ArtistContentView {
             async move {
                 let discography = this.imp().discography_subview.get();
                 discography.remove_all();
+                this.imp().library_album_titles.borrow_mut().clear();
                 let library = this.imp().library.upgrade().unwrap();
                 let discography_stack = this.imp().discography_stack.get();
                 discography_stack.show_spinner();
@@ -1342,9 +1369,13 @@ impl ArtistContentView {
                         let _vp = this.imp().scrolled_window.get();
                         let win = this.imp().window.upgrade();
                         let count_years = albums_by_year.len();
-                        // Extract genres first
+                        // Extract genres first, and remember the titles for the MusicBrainz diff
+                        let mut titles: Vec<String> = Vec::new();
                         for (_, maybe_albums) in albums_by_year.iter() {
                             for (maybe_album, _) in maybe_albums.iter() {
+                                if let Some(album) = maybe_album.as_ref() {
+                                    titles.push(fold_title(album.get_title()));
+                                }
                                 if let Some(genres) = maybe_album.as_ref().map(|a| a.get_genres()) {
                                     // Clone only what's not already in all_genres
                                     for genre in genres.iter() {
@@ -1355,6 +1386,7 @@ impl ArtistContentView {
                                 }
                             }
                         }
+                        this.imp().library_album_titles.replace(titles);
                         for (maybe_year, maybe_albums) in albums_by_year {
                             discography.append(&DiscographyYear::new(
                                 maybe_year,
@@ -1446,5 +1478,118 @@ impl ArtistContentView {
     fn clear_content(&self) {
         self.imp().song_list.remove_all();
         self.imp().discography_subview.remove_all();
+        if let Some(handle) = self.imp().missing_releases_handle.take() {
+            handle.abort();
+        }
+        self.imp().library_album_titles.borrow_mut().clear();
+        self.imp().missing_releases_list.remove_all();
+        self.imp().missing_releases_box.set_visible(false);
+    }
+
+    /// Diff the artist's MusicBrainz release groups against the discography and list what is
+    /// missing, under it. Read-only, and gated like every flacli feature: hidden unless flacli is
+    /// on the PATH and files into the library MPD serves. Artists without an MBID show nothing.
+    fn update_missing_releases(&self) {
+        let imp = self.imp();
+        if let Some(handle) = imp.missing_releases_handle.take() {
+            handle.abort();
+        }
+        imp.missing_releases_list.remove_all();
+        imp.missing_releases_box.set_visible(false);
+        let mbid = imp
+            .meta
+            .borrow()
+            .as_ref()
+            .and_then(|m| m.mbid.clone())
+            .or_else(|| self.artist().and_then(|a| a.get_mbid().map(str::to_owned)));
+        let Some(mbid) = mbid else {
+            return;
+        };
+        if !flacli().state().available() {
+            return;
+        }
+        let titles = imp.library_album_titles.borrow().clone();
+        let handle = glib::spawn_future_local(clone!(
+            #[weak(rename_to = this)]
+            self,
+            async move {
+                let wanted = mbid.clone();
+                let groups = match gio::spawn_blocking(move || browse_release_groups(&wanted)).await {
+                    Ok(Ok(groups)) => groups,
+                    Ok(Err(e)) => {
+                        eprintln!("[MusicBrainz] Could not browse release groups: {e:?}");
+                        return;
+                    }
+                    Err(_) => return,
+                };
+                // The view may have moved on to another artist meanwhile.
+                let still_bound = this
+                    .imp()
+                    .meta
+                    .borrow()
+                    .as_ref()
+                    .and_then(|m| m.mbid.as_deref().map(str::to_owned))
+                    .or_else(|| this.artist().and_then(|a| a.get_mbid().map(str::to_owned)))
+                    .is_some_and(|current| current == mbid);
+                if !still_bound {
+                    return;
+                }
+                let missing: Vec<_> = groups
+                    .into_iter()
+                    .filter(|group| !library_has(&titles, &group.title))
+                    .collect();
+                let list = this.imp().missing_releases_list.get();
+                list.remove_all();
+                let artist_name = this.artist().map(|a| a.get_name().to_owned()).unwrap_or_default();
+                for group in missing.iter() {
+                    let row = adw::ActionRow::builder()
+                        .title(&group.title)
+                        .subtitle(group.describe())
+                        .use_markup(false)
+                        .activatable(false)
+                        .build();
+                    let link = gtk::LinkButton::builder()
+                        .uri(group.url())
+                        .label("MusicBrainz")
+                        .valign(gtk::Align::Center)
+                        .css_classes(["caption"])
+                        .build();
+                    row.add_suffix(&link);
+                    // Tier 2: "Get this". Naming the release is the yes; flacli expands it through
+                    // MusicBrainz and fetches what the library lacks.
+                    let get = gtk::Button::builder()
+                        .label("Get this")
+                        .valign(gtk::Align::Center)
+                        .tooltip_text("Ask flacli to fetch this release from Soulseek")
+                        .build();
+                    let item = if artist_name.is_empty() {
+                        format!("{} (album)", group.title)
+                    } else {
+                        format!("{artist_name} - {} (album)", group.title)
+                    };
+                    let label = if artist_name.is_empty() {
+                        group.title.clone()
+                    } else {
+                        format!("{} by {artist_name}", group.title)
+                    };
+                    get.connect_clicked(clone!(
+                        #[weak(rename_to = this)]
+                        this,
+                        move |_| {
+                            if let Some(window) = this.imp().window.upgrade() {
+                                crate::flacli::fetch(&window, vec![item.clone()], label.clone());
+                            }
+                        }
+                    ));
+                    row.add_suffix(&get);
+                    list.append(&row);
+                }
+                this.imp()
+                    .missing_releases_count
+                    .set_label(&missing.len().to_string());
+                this.imp().missing_releases_box.set_visible(!missing.is_empty());
+            }
+        ));
+        imp.missing_releases_handle.replace(Some(handle));
     }
 }

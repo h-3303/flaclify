@@ -17,10 +17,66 @@ use super::Library;
 use crate::{
     cache::{Cache, CacheState},
     client::Error as ClientError,
-    common::{ContentStack, INode, ImageStack, RowAddButtons, RowEditButtons, Song, SongRow},
+    common::{ContentStack, INode, ImageStack, RowAddButtons, RowEditButtons, Song, SongInfo, SongRow},
+    flacli::{FlacliState, MissingTrack, flacli, status_label},
     utils::{format_secs_as_duration, tokio_runtime},
     window::EuphonicaWindow,
 };
+
+/// The stored playlist's songs with flacli's missing tracks slotted in at their original
+/// positions (1-based, as the imported playlist had them). Songs keep their order; a ghost
+/// whose position lies beyond the end goes last.
+fn merge_ghosts(songs: &[Song], missing: &[MissingTrack]) -> Vec<Song> {
+    let total = songs.len() + missing.len();
+    let mut by_position: std::collections::HashMap<u32, &MissingTrack> =
+        std::collections::HashMap::with_capacity(missing.len());
+    let mut overflow: Vec<&MissingTrack> = Vec::new();
+    for track in missing {
+        if track.position >= 1 && (track.position as usize) <= total && !by_position.contains_key(&track.position) {
+            by_position.insert(track.position, track);
+        } else {
+            overflow.push(track);
+        }
+    }
+    let ghost = |track: &MissingTrack| {
+        Song::from(SongInfo::ghost(
+            &track.title,
+            track.artist.as_deref(),
+            track.album.as_deref(),
+            &track.status,
+        ))
+    };
+    let mut out: Vec<Song> = Vec::with_capacity(total);
+    let mut real = songs.iter();
+    for position in 1..=(total as u32) {
+        if let Some(track) = by_position.get(&position) {
+            out.push(ghost(track));
+        } else if let Some(song) = real.next() {
+            out.push(song.clone());
+        }
+    }
+    out.extend(real.cloned());
+    out.extend(overflow.into_iter().map(ghost));
+    out
+}
+
+/// Same rows, in the same order, as far as the view can tell.
+fn same_rows(store: &gio::ListStore, rows: &[Song]) -> bool {
+    if store.n_items() as usize != rows.len() {
+        return false;
+    }
+    rows.iter().enumerate().all(|(i, song)| {
+        store.item(i as u32).and_downcast::<Song>().is_some_and(|shown| {
+            if shown.is_ghost() || song.is_ghost() {
+                shown.get_missing_status() == song.get_missing_status()
+                    && shown.get_name() == song.get_name()
+                    && shown.get_artist_tag() == song.get_artist_tag()
+            } else {
+                shown == *song
+            }
+        })
+    })
+}
 
 #[derive(Debug)]
 pub enum InternalEditAction {
@@ -145,6 +201,8 @@ mod imp {
         pub track_count: TemplateChild<gtk::Label>,
         #[template_child]
         pub runtime: TemplateChild<gtk::Label>,
+        #[template_child]
+        pub flacli_line: TemplateChild<gtk::Label>,
 
         #[template_child]
         pub action_row: TemplateChild<gtk::Stack>,
@@ -184,6 +242,10 @@ mod imp {
 
         #[derivative(Default(value = "gio::ListStore::new::<Song>()"))]
         pub song_list: gio::ListStore,
+        /// What the list view shows: `song_list`, plus ghost rows for the tracks flacli has not
+        /// fetched yet. Queue actions and edit mode read `song_list`, never this one.
+        #[derivative(Default(value = "gio::ListStore::new::<Song>()"))]
+        pub display_list: gio::ListStore,
         #[derivative(Default(value = "gio::ListStore::new::<Song>()"))]
         pub editing_song_list: gio::ListStore,
         #[derivative(Default(value = "gtk::MultiSelection::new(Option::<gio::ListStore>::None)"))]
@@ -200,6 +262,9 @@ mod imp {
         pub selecting_all: Cell<bool>, // Enables queuing the entire playlist efficiently
         pub window: WeakRef<EuphonicaWindow>,
         pub library: WeakRef<Library>,
+        /// The flacli playlist stored under the bound playlist's name, once the snapshot has it.
+        pub flacli_playlist_id: Cell<Option<u32>>,
+        pub flacli_signal_id: RefCell<Option<SignalHandlerId>>,
 
         // FIXME: Working around the scroll position bug. See src/player/queue_view.rs (same issue).
         pub last_scroll_pos: Cell<f64>,
@@ -278,7 +343,7 @@ mod imp {
                 }
             ));
 
-            self.sel_model.set_model(Some(&self.song_list.clone()));
+            self.sel_model.set_model(Some(&self.display_list.clone()));
             self.content.set_model(Some(&self.sel_model));
             self.editing_content
                 .set_model(Some(&gtk::NoSelection::new(Some(
@@ -289,10 +354,10 @@ mod imp {
             self.sel_model.connect_selection_changed(clone!(
                 #[weak(rename_to = this)]
                 self,
-                move |sel_model, _, _| {
+                move |_, _, _| {
                     // TODO: this can be slow, might consider redesigning
-                    let n_sel = sel_model.selection().size();
-                    if n_sel == 0 || (n_sel as u32) == sel_model.model().unwrap().n_items() {
+                    let n_sel = this.obj().selected_songs().len() as u32;
+                    if n_sel == 0 || n_sel == this.song_list.n_items() {
                         this.selecting_all.replace(true);
                         this.replace_queue_text.set_label("Play all");
                         this.append_queue_text.set_label("Queue all");
@@ -538,16 +603,10 @@ impl PlaylistContentView {
                                     )
                                     .await;
                             } else {
-                                let store = &this.imp().song_list;
-                                // Get list of selected songs
-                                let sel = &this.imp().sel_model.selection();
-                                let mut songs: Vec<Song> = Vec::with_capacity(sel.size() as usize);
-                                let (iter, first_idx) = BitsetIter::init_first(sel).unwrap();
-                                songs.push(store.item(first_idx).and_downcast::<Song>().unwrap());
-                                iter.for_each(|idx| {
-                                    songs.push(store.item(idx).and_downcast::<Song>().unwrap())
-                                });
-                                library.queue_songs(&songs, true, true).await;
+                                let songs = this.selected_songs();
+                                if !songs.is_empty() {
+                                    library.queue_songs(&songs, true, true).await;
+                                }
                             }
                         }
                     }
@@ -574,16 +633,10 @@ impl PlaylistContentView {
                                     )
                                     .await;
                             } else {
-                                let store = &this.imp().song_list;
-                                // Get list of selected songs
-                                let sel = &this.imp().sel_model.selection();
-                                let mut songs: Vec<Song> = Vec::with_capacity(sel.size() as usize);
-                                let (iter, first_idx) = BitsetIter::init_first(sel).unwrap();
-                                songs.push(store.item(first_idx).and_downcast::<Song>().unwrap());
-                                iter.for_each(|idx| {
-                                    songs.push(store.item(idx).and_downcast::<Song>().unwrap())
-                                });
-                                library.queue_songs(&songs, false, false).await;
+                                let songs = this.selected_songs();
+                                if !songs.is_empty() {
+                                    library.queue_songs(&songs, false, false).await;
+                                }
                             }
                         }
                     }
@@ -721,12 +774,23 @@ impl PlaylistContentView {
                     .bind(&row, "second-attrib-text", gtk::Widget::NONE);
 
                 row.set_third_attrib_icon_name(Some("hourglass-symbolic"));
-                item.property_expression("item")
-                    .chain_property::<Song>("duration")
-                    .chain_closure::<String>(closure_local!(|_: Option<glib::Object>, dur: u64| {
-                        format_secs_as_duration(dur as f64)
-                    }))
-                    .bind(&row, "third-attrib-text", gtk::Widget::NONE);
+                // A ghost row has no duration; it shows why the track is still missing instead.
+                let duration = item
+                    .property_expression("item")
+                    .chain_property::<Song>("duration");
+                let missing = item
+                    .property_expression("item")
+                    .chain_property::<Song>("missing-status");
+                gtk::ClosureExpression::new::<String>(
+                    [duration.upcast(), missing.upcast()],
+                    closure_local!(|_: Option<glib::Object>, dur: u64, missing: Option<String>| {
+                        match missing {
+                            Some(status) => status_label(&status).to_owned(),
+                            None => format_secs_as_duration(dur as f64),
+                        }
+                    }),
+                )
+                .bind(&row, "third-attrib-text", gtk::Widget::NONE);
 
                 item.property_expression("item")
                     .chain_property::<Song>("quality-grade")
@@ -927,11 +991,10 @@ impl PlaylistContentView {
                 .and_downcast::<SongRow>()
                 .expect("The child has to be an `SongRow`.");
 
-            child
-                .end_widget()
-                .and_downcast::<RowAddButtons>()
-                .unwrap()
-                .set_song(Some(&item));
+            let add_buttons = child.end_widget().and_downcast::<RowAddButtons>().unwrap();
+            // Nothing to add for a track that is not on disk yet.
+            add_buttons.set_visible(!item.is_ghost());
+            add_buttons.set_song(if item.is_ghost() { None } else { Some(&item) });
             child.on_bind(&item);
         });
 
@@ -960,11 +1023,9 @@ impl PlaylistContentView {
                 .child()
                 .and_downcast::<SongRow>()
                 .expect("The child has to be an `SongRow`.");
-            child
-                .end_widget()
-                .and_downcast::<RowAddButtons>()
-                .unwrap()
-                .set_song(None);
+            let add_buttons = child.end_widget().and_downcast::<RowAddButtons>().unwrap();
+            add_buttons.set_visible(true);
+            add_buttons.set_song(None);
             child.on_unbind();
         });
 
@@ -990,6 +1051,20 @@ impl PlaylistContentView {
                 this.imp().restore_last_pos.set(2);
             }
         ));
+
+        // Ghost rows follow flacli's snapshot: whenever it is refreshed, redo them for the
+        // playlist on screen (a no-op when nothing changed).
+        let _ = self.imp().flacli_signal_id.replace(Some(flacli().state().connect_closure(
+            "refreshed",
+            false,
+            closure_local!(
+                #[weak(rename_to = this)]
+                self,
+                move |_: FlacliState| {
+                    this.refresh_ghosts();
+                }
+            ),
+        )));
 
         // Set the factory of the list view
         self.imp().content.set_factory(Some(&factory));
@@ -1106,7 +1181,9 @@ impl PlaylistContentView {
                 let content_stack = this.imp().content_stack.get();
                 content_stack.show_spinner();
                 let song_list = this.imp().song_list.clone();
+                let display_list = this.imp().display_list.clone();
                 song_list.remove_all();
+                display_list.remove_all();
                 let _ = this
                     .imp()
                     .library
@@ -1114,9 +1191,12 @@ impl PlaylistContentView {
                     .unwrap()
                     .get_playlist_songs(name, &mut |songs| {
                         song_list.extend_from_slice(&songs);
+                        display_list.extend_from_slice(&songs);
                     })
                     .await;
-                if song_list.n_items() > 0 {
+                // Slot in the tracks flacli still owes this playlist, if it is one of flacli's.
+                this.refresh_ghosts();
+                if display_list.n_items() > 0 {
                     content_stack.show_content();
                 } else {
                     content_stack.show_placeholder();
@@ -1150,11 +1230,88 @@ impl PlaylistContentView {
         }
         if clear_contents {
             self.imp().song_list.remove_all();
+            self.imp().display_list.remove_all();
         }
+        if self.imp().flacli_playlist_id.take().is_some() {
+            flacli().watch(None);
+        }
+        self.imp().flacli_line.set_visible(false);
         // Always clear the editing song list & exit edit mode without saving
         self.exit_edit_mode(false);
         if self.imp().editing_song_list.n_items() > 0 {
             self.imp().editing_song_list.remove_all();
+        }
+    }
+
+    /// The selected rows that are real songs. Ghost rows can be selected like any other row
+    /// but there is nothing on disk to queue for them.
+    pub fn selected_songs(&self) -> Vec<Song> {
+        let store = &self.imp().display_list;
+        let sel = self.imp().sel_model.selection();
+        let mut songs: Vec<Song> = Vec::with_capacity(sel.size() as usize);
+        if let Some((iter, first_idx)) = BitsetIter::init_first(&sel) {
+            for idx in std::iter::once(first_idx).chain(iter) {
+                if let Some(song) = store.item(idx).and_downcast::<Song>()
+                    && !song.is_ghost()
+                {
+                    songs.push(song);
+                }
+            }
+        }
+        songs
+    }
+
+    /// Redo the ghost rows and the flacli line from the controller's snapshot. Read-only:
+    /// the stored playlist itself is never touched.
+    pub fn refresh_ghosts(&self) {
+        let Some(name) = self.imp().playlist.borrow().as_ref().map(|p| p.get_uri().to_owned())
+        else {
+            return;
+        };
+        let flacli = flacli();
+        let entry = if flacli.state().available() {
+            flacli.playlist_for_mpd_name(&name)
+        } else {
+            None
+        };
+        let songs: Vec<Song> = self
+            .imp()
+            .song_list
+            .iter::<Song>()
+            .filter_map(Result::ok)
+            .collect();
+        let rows = match entry.as_ref() {
+            Some(entry) if entry.detailed && !entry.missing.is_empty() => {
+                merge_ghosts(&songs, &entry.missing)
+            }
+            _ => songs,
+        };
+        let display_list = &self.imp().display_list;
+        if !same_rows(display_list, &rows) {
+            display_list.splice(0, display_list.n_items(), &rows);
+        }
+        let line = self.imp().flacli_line.get();
+        match entry {
+            Some(entry) => {
+                let missing = entry.missing.len();
+                let mut text = format!("flacli · {}", entry.summary());
+                if entry.detailed && missing > 0 {
+                    text.push_str(&format!(" · {missing} still missing"));
+                }
+                line.set_label(&text);
+                line.set_visible(true);
+                // Keep this playlist's detail fresh while it is on screen. `watch` asks flacli
+                // again, which lands here once more with the missing tracks filled in.
+                if self.imp().flacli_playlist_id.replace(Some(entry.playlist_id)) != Some(entry.playlist_id) {
+                    flacli.watch(Some(entry.playlist_id));
+                }
+            }
+            None => {
+                line.set_visible(false);
+                if self.imp().flacli_playlist_id.take().is_some() {
+                    flacli.watch(None);
+                }
+            }
         }
     }
 
@@ -1325,5 +1482,55 @@ impl PlaylistContentView {
                 this.is_editing.set(false);
             }
         ));
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn song(title: &str) -> Song {
+        let mut info = SongInfo::default();
+        info.uri = format!("{title}.flac");
+        info.title = title.to_owned();
+        Song::from(info)
+    }
+
+    fn missing(position: u32, title: &str) -> MissingTrack {
+        MissingTrack {
+            position,
+            artist: Some("A".to_owned()),
+            title: title.to_owned(),
+            album: None,
+            status: "not_found".to_owned(),
+        }
+    }
+
+    fn names(rows: &[Song]) -> Vec<String> {
+        rows.iter()
+            .map(|s| if s.is_ghost() { format!("({})", s.get_name()) } else { s.get_name().to_owned() })
+            .collect()
+    }
+
+    #[test]
+    fn ghosts_take_their_original_positions() {
+        let rows = merge_ghosts(&[song("s1"), song("s2")], &[missing(1, "g1"), missing(4, "g4")]);
+        assert_eq!(names(&rows), ["(g1)", "s1", "s2", "(g4)"]);
+    }
+
+    #[test]
+    fn ghosts_beyond_the_end_go_last_and_songs_are_never_lost() {
+        let rows = merge_ghosts(&[song("s1")], &[missing(10, "g10")]);
+        assert_eq!(names(&rows), ["s1", "(g10)"]);
+        let rows = merge_ghosts(&[song("s1"), song("s2")], &[missing(2, "ga"), missing(2, "gb")]);
+        assert_eq!(names(&rows), ["s1", "(ga)", "s2", "(gb)"]);
+    }
+
+    #[test]
+    fn ghost_rows_carry_the_reason() {
+        let rows = merge_ghosts(&[], &[missing(1, "g")]);
+        assert_eq!(rows[0].get_missing_status(), Some("not_found"));
+        assert_eq!(rows[0].get_artist_tag(), Some("A"));
+        assert_eq!(rows[0].get_uri(), "");
     }
 }

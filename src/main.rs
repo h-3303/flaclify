@@ -23,6 +23,7 @@ mod cache;
 mod client;
 mod common;
 mod config;
+mod flacli;
 mod library;
 mod meta_providers;
 mod player;

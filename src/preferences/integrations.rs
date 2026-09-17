@@ -15,6 +15,8 @@ mod imp {
     #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/integrations.ui")]
     pub struct IntegrationsPreferences {
         #[template_child]
+        pub flacli_status: TemplateChild<adw::ActionRow>,
+        #[template_child]
         pub enable_mpris: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub run_in_background: TemplateChild<adw::SwitchRow>,
@@ -155,6 +157,40 @@ impl IntegrationsPreferences {
         local_settings
             .bind("music-directory", &imp.local_music_directory.get(), "text")
             .build();
+
+        // flacli: say what the gate decided, and why
+        let flacli_state = crate::flacli::flacli().state();
+        let flacli_status = imp.flacli_status.get();
+        let describe = move |state: &crate::flacli::FlacliState| {
+            if state.available() {
+                let bridge = if state.bridge_reachable() {
+                    "the Nicotine+ bridge answers"
+                } else {
+                    "the Nicotine+ bridge is not reachable (fetching will need it)"
+                };
+                format!("Found; MPD and flacli share {}; {bridge}", state.music_dir())
+            } else {
+                let reason = state.reason();
+                if reason.is_empty() {
+                    "Not checked yet".to_owned()
+                } else {
+                    format!("Hidden: {reason}")
+                }
+            }
+        };
+        flacli_status.set_subtitle(&describe(&flacli_state));
+        for prop in ["available", "reason", "bridge-reachable"] {
+            flacli_state.connect_notify_local(
+                Some(prop),
+                glib::clone!(
+                    #[weak]
+                    flacli_status,
+                    #[strong]
+                    describe,
+                    move |state, _| flacli_status.set_subtitle(&describe(state))
+                ),
+            );
+        }
 
         // Set up Last.fm settings
         let lastfm_settings = utils::meta_provider_settings("lastfm");

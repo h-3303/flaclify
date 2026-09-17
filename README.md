@@ -103,10 +103,34 @@ files* has the switch and the music directory (empty means the XDG music folder)
 
 [flacli](https://flacli.vercel.app) writes exactly these files (`flacli wiki`, `flacli avatar`),
 tells MPD to rescan the folders it filed downloads into, and stores each synced playlist in MPD by
-name, so what an agent fetches appears here without a rescan. The further steps, from an
-"incoming" indicator to fetching a missing release from the artist page, and at the end a pocket
-device running the whole stack, are tracked as the
-[roadmap](https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap).
+name, so what an agent fetches appears here without a rescan.
+
+Flaclify also reads flacli's state, through `flacli --compact status`, the JSON it keeps stable
+for players. Three read-only surfaces, all gated the same way: `flacli` must be on the PATH and
+its `music_dir` must be the folder MPD serves (or one inside the other; MPD only reports it over a
+local socket). Preferences → Integrations → *flacli* shows the verdict.
+
+- **Incoming**, in the sidebar: each playlist flacli is working on, with the job state and the
+  counts that matter (downloading, done, to review). Polled only while a job runs or downloads are
+  in flight, and again when a stored playlist changes.
+- **Ghost rows** in a synced playlist: the tracks flacli has not fetched yet, greyed, in their
+  original positions, with the reason (not found, needs a decision, queued, skipped).
+- **Not in the library**, under an artist's discography: the studio albums and EPs MusicBrainz
+  credits to the artist that the library lacks. Needs the artist's MusicBrainz id.
+
+From the same surfaces the player drives the shell, still through the CLI (`flacli get`, `sync`,
+`queue`, `review`, `approve`, `skip`, `cancel`; D-Bus comes when polling gets clumsy or Flatpak
+needs it). The shell's rules hold. Naming the music is the yes: **Get this** on a missing release
+and **Search Soulseek** under an album search that matches nothing hand the name to `flacli get`,
+which fetches the confident matches at once. A playlist is never queued until the totals have been
+seen: the **import** button in the playlist view takes a TIDAL, Deezer or YouTube Music link and
+matches it in the background, then Incoming offers **Queue**, which shows tracks, folders, size
+and users before the yes, and **Review**, a dialog that lists each doubtful match with flacli's
+why (title, artist, album and duration agreement) to approve or skip per track. Every fetch first
+checks that the Nicotine+ bridge answers. No Soulseek code lives in this repository.
+
+What comes next, an agent inside the player and a pocket device running the whole stack, is
+tracked as the [roadmap](https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap).
 
 ## Build
 

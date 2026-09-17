@@ -619,6 +619,13 @@ impl MpdWrapper {
         res
     }
 
+    /// The directory MPD serves, as its `config` command reports it. Only available over a
+    /// local socket; the flacli integration uses it to decide whether MPD and flacli share a library.
+    pub async fn get_music_directory(&self) -> ClientResult<String> {
+        let (s, r) = oneshot::channel();
+        self.foreground(Task::GetMusicDirectory(s), r).await
+    }
+
     pub async fn get_playlists(&self) -> ClientResult<Vec<INode>> {
         let (s, r) = oneshot::channel();
         self.handle_playlist_error(self.foreground(Task::GetPlaylists(s), r).await)

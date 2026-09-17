@@ -96,6 +96,63 @@
 						</child>
 
 						<child>
+							<!-- What flacli is fetching (roadmap Tier 1). Shown only when flacli is on the PATH,
+							     files into the library MPD serves, and has a playlist under way or awaiting review. -->
+							<object class="GtkBox" id="incoming_section">
+								<property name="visible">false</property>
+								<property name="spacing">6</property>
+								<property name="orientation">1</property>
+								<child>
+									<object class="GtkSeparator"></object>
+								</child>
+								<child>
+									<object class="GtkBox">
+										<property name="margin-start">12</property>
+										<property name="margin-end">6</property>
+										<child>
+											<object class="GtkLabel">
+												<property name="label" translatable="true">Incoming</property>
+												<property name="hexpand">true</property>
+												<property name="xalign">0</property>
+												<style>
+													<class name="caption-heading"/>
+													<class name="dim-label"/>
+												</style>
+											</object>
+										</child>
+										<child>
+											<object class="GtkSpinner" id="incoming_spinner">
+												<property name="visible">false</property>
+												<property name="spinning">true</property>
+												<property name="margin-end">6</property>
+											</object>
+										</child>
+										<child>
+											<object class="GtkButton" id="incoming_refresh">
+												<property name="icon-name">view-refresh-symbolic</property>
+												<property name="tooltip-text" translatable="true">Ask flacli again</property>
+												<property name="valign">3</property>
+												<style>
+													<class name="flat"/>
+													<class name="circular"/>
+												</style>
+											</object>
+										</child>
+									</object>
+								</child>
+								<child>
+									<object class="GtkListBox" id="incoming_list">
+										<property name="hexpand">true</property>
+										<property name="selection-mode">none</property>
+										<style>
+											<class name="no-bg"/>
+										</style>
+									</object>
+								</child>
+							</object>
+						</child>
+
+						<child>
 							<object class="GtkSeparator"></object>
 						</child>
 

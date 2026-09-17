@@ -47,6 +47,8 @@ mod imp {
         pub content_page: TemplateChild<adw::NavigationPage>,
         #[template_child]
         pub content_view: TemplateChild<PlaylistContentView>,
+        #[template_child]
+        pub import_btn: TemplateChild<gtk::Button>,
 
         // Search & filter models
         pub search_filter: gtk::StringFilter,
@@ -325,6 +327,18 @@ impl PlaylistView {
         self.imp().content_page.connect_hidden(move |_| {
             content_view.unbind(true);
         });
+
+        // flacli (Tier 2): import from a service, gated like every flacli feature
+        crate::flacli::flacli()
+            .state()
+            .bind_property("available", &self.imp().import_btn.get(), "visible")
+            .sync_create()
+            .build();
+        self.imp().import_btn.connect_clicked(clone!(
+            #[weak]
+            window,
+            move |_| crate::flacli::import_from_service(&window)
+        ));
         self.imp().library.set(Some(library));
         self.imp()
             .cache
