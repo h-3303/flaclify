@@ -197,6 +197,7 @@ mod imp {
         pub queue_view: TemplateChild<QueueView>,
         // flacli views (Tier 2), built in code and added to the stack at setup.
         pub get_view: OnceCell<Rc<crate::flacli::GetView>>,
+        pub requests_view: OnceCell<Rc<crate::flacli::RequestsView>>,
         pub tidy_view: OnceCell<Rc<crate::flacli::TidyView>>,
 
         #[template_child]
@@ -1373,6 +1374,9 @@ impl EuphonicaWindow {
             let get_view = crate::flacli::GetView::new(&win);
             stack.add_named(&get_view.widget, Some("get"));
             let _ = win.imp().get_view.set(get_view);
+            let requests_view = crate::flacli::RequestsView::new(&win);
+            stack.add_named(&requests_view.widget, Some("requests"));
+            let _ = win.imp().requests_view.set(requests_view);
             let tidy_view = crate::flacli::TidyView::new(&win);
             stack.add_named(&tidy_view.widget, Some("tidy"));
             let _ = win.imp().tidy_view.set(tidy_view);
@@ -1380,7 +1384,15 @@ impl EuphonicaWindow {
                 #[weak]
                 win,
                 move |stack| {
-                    if stack.visible_child_name().as_deref() == Some("tidy") {
+                    let name = stack.visible_child_name();
+                    if let Some(view) = win.imp().requests_view.get() {
+                        if name.as_deref() == Some("requests") {
+                            view.shown();
+                        } else {
+                            view.hidden();
+                        }
+                    }
+                    if name.as_deref() == Some("tidy") {
                         if let Some(view) = win.imp().tidy_view.get() {
                             view.shown();
                         }

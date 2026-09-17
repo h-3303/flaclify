@@ -112,6 +112,12 @@
 									</object>
 								</child>
 								<child>
+									<object class="EuphonicaSidebarButton" id="requests_btn">
+										<property name="group">recent_btn</property>
+										<property name="label" translatable="true">Requests</property>
+									</object>
+								</child>
+								<child>
 									<object class="EuphonicaSidebarButton" id="tidy_btn">
 										<property name="group">recent_btn</property>
 										<property name="label" translatable="true">Tidy</property>

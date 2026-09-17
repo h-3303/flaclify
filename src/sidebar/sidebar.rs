@@ -183,6 +183,8 @@ mod imp {
         #[template_child]
         pub get_btn: TemplateChild<SidebarButton>,
         #[template_child]
+        pub requests_btn: TemplateChild<SidebarButton>,
+        #[template_child]
         pub tidy_btn: TemplateChild<SidebarButton>,
         #[template_child]
         pub queue_btn: TemplateChild<gtk::ToggleButton>,
@@ -321,6 +323,15 @@ impl Sidebar {
             move |btn| {
                 if btn.is_active() {
                     stack.set_visible_child_name("get");
+                }
+            }
+        ));
+        self.imp().requests_btn.connect_toggled(clone!(
+            #[weak]
+            stack,
+            move |btn| {
+                if btn.is_active() {
+                    stack.set_visible_child_name("requests");
                 }
             }
         ));
@@ -608,6 +619,7 @@ impl Sidebar {
                         let stored_name = playlist.mpd_playlist.clone();
                         let playlist_id = playlist.playlist_id;
                         let name = playlist.name.clone();
+                        let is_requests = playlist.is_requests();
                         open.connect_clicked(clone!(
                             #[weak]
                             this,
@@ -660,6 +672,12 @@ impl Sidebar {
                                         true
                                     }
                                 );
+                                // Requests is flacli's own list, never an MPD playlist: its page.
+                                if is_requests {
+                                    this.set_view("requests");
+                                    split_view.set_show_sidebar(!split_view.is_collapsed());
+                                    return;
+                                }
                                 if open_stored() {
                                     return;
                                 }
@@ -761,6 +779,7 @@ impl Sidebar {
             "recent" => self.imp().recent_btn.set_active(true),
             "queue" => self.imp().queue_btn.set_active(true),
             "get" => self.imp().get_btn.set_active(true),
+            "requests" => self.imp().requests_btn.set_active(true),
             "tidy" => self.imp().tidy_btn.set_active(true),
             _ => {
                 eprintln!("Unknown view: {}", view_name);

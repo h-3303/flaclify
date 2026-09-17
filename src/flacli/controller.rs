@@ -70,6 +70,8 @@ impl Job {
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct MissingTrack {
+    #[serde(default)]
+    pub track_id: u64,
     /// 1-based position in the imported playlist.
     pub position: u32,
     #[serde(default)]
@@ -430,6 +432,11 @@ pub struct Review {
 pub const SAFE_CONFIDENCE: f64 = 0.85;
 
 impl PlaylistStatus {
+    /// flacli's own Requests playlist: never stored in MPD, shown on the Requests page.
+    pub fn is_requests(&self) -> bool {
+        self.name == "Requests"
+    }
+
     pub fn count(&self, status: &str) -> u32 {
         self.counts.get(status).copied().unwrap_or(0)
     }
@@ -627,6 +634,11 @@ impl Flacli {
 
     pub fn state(&self) -> FlacliState {
         self.state.clone()
+    }
+
+    /// flacli's Requests playlist, where `get` puts what is named, if it exists yet.
+    pub fn requests_playlist(&self) -> Option<PlaylistStatus> {
+        self.playlists.borrow().iter().find(|p| p.is_requests()).cloned()
     }
 
     /// The last snapshot, every playlist flacli knows.
