@@ -56,6 +56,7 @@
   .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; }
   .shot--hero { grid-column: 1 / -1; }
   .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-paper); }
+  .shot video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-toner); }
   .shot figcaption { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); }
   .shot figcaption b { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .18em; text-transform: uppercase; color: var(--dtw-toner); display: block; margin-bottom: 3px; }
 
@@ -148,6 +149,7 @@
   <section class="sec" id="player">
     <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The player</h2></div>
     <div class="shots">
+      <figure class="shot shot--hero shot--film"><video src="video/flaclify-tour.mp4" poster="video/flaclify-tour.jpg" autoplay muted loop playsinline preload="metadata" aria-label="A tour of Flaclify's screens"></video><figcaption><b>The tour, half a minute</b>Every main screen in one pass, recorded from the running player: the album grid and an album, an artist with the bio and picture read from beside the music, Folders, the queue, a MusicBrainz search on Get with one result ticked, Requests, Tidy, a sentence typed for Ask flacli, then four themes applied while the music plays.</figcaption></figure>
       <figure class="shot shot--hero"><img src="img/ui-albums.jpg" alt="The album grid, in the Reversed Spine theme"><figcaption><b>Albums</b>The library as MPD serves it, covers from the files themselves, in the Reversed Spine theme. Left, the views; flacli's own pages sit below Folders while it is set up: Get, Requests, Tidy, Ask flacli.</figcaption></figure>
       <figure class="shot" hidden><img src="img/ui-artist.jpg" alt="An artist page with the bio and picture read from beside the music" loading="lazy"><figcaption><b>Artist</b>Bio and picture read from <code>artist.md</code> and <code>artist.jpg</code> in the artist's folder, as flacli writes them. Under the discography, the studio albums MusicBrainz knows and the library lacks, each with a Get this.</figcaption></figure>
       <figure class="shot" hidden><img src="img/ui-get.jpg" alt="The Get page: MusicBrainz results with tick boxes" loading="lazy"><figcaption><b>Get</b>One search, three pages: songs, albums, artists, from MusicBrainz. An artist opens onto their albums, an album onto its tracklist. Every tick is one name to flacli, listed before it goes. By name takes the names typed, one a line.</figcaption></figure>
