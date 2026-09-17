@@ -221,3 +221,9 @@ toolbarview > .top-bar,
 .top-bar > box,
 .top-bar { box-shadow: none; }
 undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states: white type on the magenta gradient ------- */
+.sidebar-btn:checked label, .sidebar-btn:checked image,
+button.suggested-action label, button.suggested-action image,
+button:checked .caption, gridview > child:selected .caption,
+listview > row:selected .caption { color: #ffffff; }

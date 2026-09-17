@@ -255,3 +255,11 @@ toolbarview > .top-bar,
 .top-bar > box,
 .top-bar { box-shadow: none; }
 undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states -------------------------------------------- */
+.sidebar-btn:checked label, .sidebar-btn:checked image { color: #ffd23f; }
+button:not(.flat):checked label, button:not(.flat):active label,
+button.suggested-action label, button.destructive-action label { color: #ffffff; }
+button:not(.flat):checked, button:not(.flat):active { background: #111111; color: #ffffff; }
+listview > row:selected label, gridview > child:selected label,
+listview > row:selected .caption, gridview > child:selected .caption { color: #111111; }

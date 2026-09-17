@@ -12,9 +12,10 @@ Additions over upstream:
 ## Themes
 
 Pick one from the primary menu (**Theme** submenu) or cycle with `Ctrl+T` / `Ctrl+Shift+T`.
-Bundled: Adwaita (stock), Broadsheet, Folio, Terminal, Neon, Bauhaus. Broadsheet is the
-"Euphonica × Moirai Digital" direction from the Death to the World design system: toner on
-paper, typewriter labels, blackletter masthead. Its five typefaces ship in `data/fonts/` and
+Bundled: Adwaita (stock), Broadsheet, Reversed Spine, Folio, Terminal, Neon, Bauhaus.
+Broadsheet is direction 1a of the "Euphonica × Moirai Digital" canvas (Death to the World
+design system): toner on paper, typewriter labels, blackletter masthead. Reversed Spine is
+direction 1b: it `@import`s Broadsheet and reverses the sidebar and transport to toner. Its five typefaces ship in `data/fonts/` and
 install to `share/fonts/flaclify` (OFL, Special Elite under Apache 2.0).
 
 A theme is one GTK CSS file. Drop your own into `~/.config/flaclify/themes/`; the directory is
@@ -42,7 +43,10 @@ button { border-radius: 0; }
 The bundled themes in `src/themes/` are the reference for which selectors the app exposes
 (`.sidebar-btn`, `.player-bar`, `.cover-shadow`, `.border-radius-6`, and so on). One GTK
 quirk to know: ellipsized labels are measured without `letter-spacing`, so tracked text gets
-cut short. Keep tracking to buttons, tooltips and other labels that never ellipsize. Themes can
+cut short. Keep tracking to buttons, tooltips and other labels that never ellipsize.
+A theme may also `@import url("resource:///io/github/h3303/Flaclify/themes/<stem>.css");`
+to build on a bundled one. Any state that reverses a surface (checked, active, selected)
+must set its own label and icon colours, since captions carry their own ink colour. Themes can
 also be switched from outside the app:
 
 ```sh

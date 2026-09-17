@@ -1,0 +1,195 @@
+/* @name: Reversed Spine
+ * @scheme: light
+ * @auto-accent: off
+ * @art-background: off
+ *
+ * Euphonica × Moirai Digital, direction 1b "Reversed spine": the sidebar is
+ * a toner-black spine with paper knocked out of it, the current view is the
+ * one item reversed back to paper, and the transport is a black band along
+ * the foot. Content stays in the 1a broadsheet voice, so this theme imports
+ * Broadsheet and only reverses what 1b reverses.
+ *
+ * The mockup's hollow (outlined) masthead has no GTK CSS equivalent, so the
+ * masthead is set solid in paper instead.
+ */
+
+@import url("resource:///io/github/h3303/Flaclify/themes/broadsheet.css");
+
+:root {
+  --sidebar-bg-color: #141412;
+  --sidebar-fg-color: #e8e5dc;
+  --sidebar-backdrop-color: #141412;
+  --sidebar-shade-color: rgb(20 20 18 / 82%);
+}
+
+/* ---- The spine: toner ground, paper type ---------------------------------- */
+
+.light-right-edge headerbar {
+  background-color: #141412;
+  color: #e8e5dc;
+  border-bottom: none;
+}
+.light-right-edge headerbar .title,
+.light-right-edge headerbar windowtitle > .title {
+  color: #e8e5dc;
+}
+.light-right-edge headerbar .subtitle,
+.light-right-edge headerbar windowtitle > .subtitle {
+  color: #e8e5dc;
+  opacity: 0.65;
+}
+.light-right-edge headerbar button:not(.flat),
+.light-right-edge headerbar menubutton > button {
+  border: 1px solid #e8e5dc;
+  color: #e8e5dc;
+}
+.light-right-edge headerbar button:hover {
+  background: transparent;
+  opacity: 0.8;
+}
+.flaclify-sidebar separator {
+  background: rgb(232 229 220 / 25%);
+}
+
+/* Nav: knockout paper on black; the current view reverses back to paper. */
+.sidebar-btn,
+.sidebar-btn label {
+  color: #e8e5dc;
+}
+.sidebar-btn:hover {
+  background: transparent;
+  opacity: 0.8;
+}
+/* Specificity must beat Broadsheet's `button.flat:checked` (toner on toner). */
+button.flat.sidebar-btn:checked,
+button.flat.sidebar-btn:checked:hover,
+button.flat.sidebar-btn:active {
+  background: #e8e5dc;
+  color: #141412;
+  opacity: 1;
+}
+button.flat.sidebar-btn:checked label,
+button.flat.sidebar-btn:checked image {
+  color: #141412;
+}
+/* The queue slip: a paper-ruled box at the foot of the spine. */
+.flaclify-sidebar button:not(.sidebar-btn) {
+  border: 1px solid #e8e5dc;
+  border-radius: 0;
+  color: #e8e5dc;
+  background: transparent;
+  margin: 4px 6px;
+}
+.flaclify-sidebar button:not(.sidebar-btn):hover {
+  background: transparent;
+  opacity: 0.8;
+}
+.flaclify-sidebar button:not(.sidebar-btn):checked {
+  background: #e8e5dc;
+  color: #141412;
+}
+.flaclify-sidebar button:not(.sidebar-btn):checked label {
+  color: #141412;
+}
+.flaclify-sidebar label {
+  color: #e8e5dc;
+}
+.flaclify-sidebar .caption,
+.flaclify-sidebar .dim-label,
+.flaclify-sidebar .dimmed {
+  color: #e8e5dc;
+  opacity: 0.65;
+}
+.light-right-edge scrollbar > range > trough > slider {
+  background: #e8e5dc;
+}
+.light-right-edge *:focus-visible {
+  outline-color: #e8e5dc;
+}
+
+/* ---- Content: plates get the paste shadow, titles become toner chips ------ */
+
+.cover-shadow {
+  box-shadow: 3px 3px 0 rgb(20 20 18 / 18%), 0 0 0 1px #1a1a18;
+}
+/* Chip on the inner label so it hugs the title rather than spanning the cell. */
+.caption-heading {
+  background: none;
+}
+.caption-heading label {
+  background: #141412;
+  color: #e8e5dc;
+  padding: 1px 7px;
+}
+
+/* ---- Transport: a black band along the foot ------------------------------- */
+
+.player-bar {
+  background: #141412;
+  color: #e8e5dc;
+  border-top: none;
+}
+.player-bar label,
+.player-bar .heading {
+  color: #e8e5dc;
+}
+.player-bar .caption,
+.player-bar .dim-label,
+.player-bar .dimmed {
+  color: #e8e5dc;
+  opacity: 0.65;
+}
+.player-bar button,
+.player-bar button.flat {
+  color: #e8e5dc;
+}
+.player-bar button:not(.flat) {
+  border: 1px solid #e8e5dc;
+  color: #e8e5dc;
+  background: transparent;
+}
+.player-bar button:hover,
+.player-bar button.flat:hover {
+  background: transparent;
+  opacity: 0.8;
+}
+.player-bar .play-button,
+.player-bar .play-button:hover {
+  background: transparent;
+  border: 1px solid #e8e5dc;
+  color: #e8e5dc;
+}
+.player-bar .play-button:hover {
+  opacity: 0.85;
+}
+.player-bar separator {
+  background: rgb(232 229 220 / 25%);
+}
+.player-bar scale > trough {
+  background: rgb(232 229 220 / 25%);
+  min-height: 2px;
+}
+.player-bar scale > trough > highlight,
+.player-bar scale > trough > slider {
+  background: #e8e5dc;
+}
+.seekbar2 scale > trough > highlight {
+  background: #e8e5dc;              /* no red on black: the mockup keeps 1b's bar all paper */
+}
+.seekbar2 label,
+.seekbar2 * {
+  color: #e8e5dc;
+}
+.player-bar .border-radius-6,
+.player-bar .cover-shadow {
+  box-shadow: 0 0 0 1px #e8e5dc;    /* plate on black takes a paper rule */
+}
+
+/* ---- Corner: the spine's edge is the divider; no drawn rule needed -------- */
+
+.light-right-edge { border-right: none; }
+
+/* ---- Contrast in reversed states: paper knockouts carry toner type -------- */
+button.flat.sidebar-btn:checked .caption,
+button.flat.sidebar-btn:checked .dim-label,
+.flaclify-sidebar button:not(.sidebar-btn):checked .caption { color: #141412; opacity: 1; }

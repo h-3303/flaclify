@@ -76,15 +76,17 @@ window {
 /* Sidebar masthead: Voice I blackletter, typewriter tagline beneath.
  * No letter-spacing anywhere a label can ellipsize: GTK measures ellipsized
  * labels without tracking, so tracked text gets cut short. */
-.sidebar-pane headerbar .title,
-.sidebar-pane headerbar windowtitle > .title {
+/* Scoped to the main sidebar page (.light-right-edge): the queue's nested
+ * "Now Playing" pane is also a .sidebar-pane and must not get the masthead. */
+.light-right-edge headerbar .title,
+.light-right-edge headerbar windowtitle > .title {
   font-family: "Pirata One", serif;
   font-size: 24px;
   font-weight: 400;
   text-transform: none;
 }
-.sidebar-pane headerbar .subtitle,
-.sidebar-pane headerbar windowtitle > .subtitle {
+.light-right-edge headerbar .subtitle,
+.light-right-edge headerbar windowtitle > .subtitle {
   font-family: "Special Elite", monospace;
   font-size: 8px;
   text-transform: uppercase;
@@ -482,3 +484,22 @@ toolbarview > .top-bar,
 .top-bar > box,
 .top-bar { box-shadow: none; }
 undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states -------------------------------------------
+ * Captions and dim labels carry their own (dark) ink colour, which would sit
+ * invisibly on a toner knockout. Every checked / active / selected container
+ * therefore sets its label and icon colours explicitly. */
+button:checked label, button:checked image,
+button:active label, button:active image,
+button.flat:checked label, button.flat:checked image,
+listview > row:selected label, listview > row:selected image,
+gridview > child:selected label, gridview > child:selected image,
+.navigation-sidebar > row:selected label {
+  color: #e8e5dc;
+}
+button:checked .caption, button:checked .dim-label, button:checked .dimmed,
+listview > row:selected .caption, listview > row:selected .dim-label,
+gridview > child:selected .caption, gridview > child:selected .dim-label {
+  color: #e8e5dc;
+  opacity: 0.75;
+}

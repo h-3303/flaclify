@@ -6,6 +6,9 @@
     <child>
       <object class="GtkLabel" id="child">
         <!-- Default to scrolling mode -->
+        <!-- Start-aligned so a themed background hugs the text when it fits;
+             when the text is wider than the marquee it still gets the full width. -->
+        <property name="halign">start</property>
         <property name="xalign">0.0</property>
         <property name="lines">1</property>
         <property name="ellipsize">none</property>

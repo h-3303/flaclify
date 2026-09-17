@@ -245,3 +245,12 @@ toolbarview > .top-bar,
 .top-bar > box,
 .top-bar { box-shadow: none; }
 undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states: phosphor block, toner type ------------- */
+button:checked label, button:checked image, button:active label, button:active image,
+listview > row:selected label, listview > row:selected image,
+gridview > child:selected label, gridview > child:selected image,
+button:checked .caption, button:checked .dim-label,
+listview > row:selected .caption, gridview > child:selected .caption {
+  color: #04140a;
+}
