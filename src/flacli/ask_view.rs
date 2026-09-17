@@ -4,7 +4,7 @@
 
 use adw::prelude::*;
 use gtk::{glib, glib::clone};
-use std::rc::Rc;
+use std::{cell::RefCell, rc::Rc};
 
 use super::{
     controller::{run_agent, run_raw},
@@ -12,7 +12,7 @@ use super::{
 };
 use crate::window::EuphonicaWindow;
 
-const INTRO: &str = "Everything the other pages do is a flacli command, and so is everything they do not. Type what would follow `flacli` on the command line and press Enter; the answer comes back as flacli gives it. Anything that does not start with a flacli command is a sentence for the agent (Claude Code with the flacli plugin, unless Preferences say otherwise), which reads the guide, uses the tools and reports back. It fetches on a plain request; it stops before deleting or applying and tells you what it would run.";
+const INTRO: &str = "Everything the other pages do is a flacli command, and so is everything they do not. Type what would follow `flacli` on the command line and press Enter; the answer comes back as flacli gives it. Anything that does not start with a flacli command is a sentence for the agent (Claude Code with the flacli plugin, unless Preferences say otherwise), which reads the guide, uses the tools and reports back. It fetches on a plain request; it stops before deleting or applying and tells you what it would run, and a “yes, do it” continues the same conversation.";
 
 /// flacli's commands, as `flacli --help` lists them. Anything else typed is a sentence.
 const COMMANDS: &[&str] = &[
@@ -79,6 +79,9 @@ pub struct AskView {
     output: gtk::TextView,
     spinner: gtk::Spinner,
     run_btn: gtk::Button,
+    /// The agent conversation under way, so "yes, do it" lands where it belongs.
+    session: RefCell<Option<String>>,
+    new_btn: gtk::Button,
 }
 
 impl AskView {
@@ -94,7 +97,13 @@ impl AskView {
             .icon_name("edit-clear-all-symbolic")
             .tooltip_text("Clear the console")
             .build();
+        let new_btn = gtk::Button::builder()
+            .label("New conversation")
+            .tooltip_text("Forget the agent conversation under way; the next sentence starts fresh")
+            .visible(false)
+            .build();
         header.pack_end(&clear_btn);
+        header.pack_end(&new_btn);
         header.pack_end(&guide_btn);
         header.pack_end(&commands_btn);
 
@@ -162,7 +171,18 @@ impl AskView {
             output,
             spinner,
             run_btn,
+            session: RefCell::new(None),
+            new_btn,
         });
+        this.new_btn.connect_clicked(clone!(
+            #[weak(rename_to = view)]
+            this,
+            move |button| {
+                view.session.borrow_mut().take();
+                button.set_visible(false);
+                view.append("— new conversation —\n\n");
+            }
+        ));
         let hook = |button: &gtk::Button, view: &Rc<Self>, line: &'static str| {
             let view = Rc::downgrade(view);
             button.connect_clicked(move |_| {
@@ -235,11 +255,21 @@ impl AskView {
                 view.finish(&text);
             });
         } else {
-            self.append(&format!("» {line}\n   (handed to the agent; this can take a minute)\n"));
+            let continuing = self.session.borrow().is_some();
+            self.append(&format!(
+                "» {line}\n   ({}; this can take a minute)\n",
+                if continuing { "to the agent, same conversation" } else { "handed to the agent" }
+            ));
+            let session = self.session.borrow().clone();
             glib::spawn_future_local(async move {
-                let text = match run_agent(line).await {
-                    Ok(answer) if answer.ok => answer.stdout,
-                    Ok(answer) => answer.pretty(),
+                let text = match run_agent(line, session).await {
+                    Ok(reply) => {
+                        if let Some(id) = reply.session_id {
+                            *view.session.borrow_mut() = Some(id);
+                            view.new_btn.set_visible(true);
+                        }
+                        reply.text
+                    }
                     Err(e) => format!("could not reach the agent: {e}"),
                 };
                 view.finish(&text);

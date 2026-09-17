@@ -69,9 +69,9 @@
 			<default>true</default>
 		</key>
 		<key name="agent-command" type="s">
-			<default>'claude -p --output-format text --allowedTools mcp__plugin_flacli_flacli mcp__plugin_flacli_soulseek --max-turns 12'</default>
+			<default>'claude -p --output-format json --allowedTools mcp__plugin_flacli_flacli mcp__plugin_flacli_soulseek --max-turns 12'</default>
 			<summary>The agent a plain sentence on the Ask flacli page is handed to</summary>
-			<description>A command line; the sentence is appended as its last argument and its standard output is shown. The default is Claude Code in print mode with the flacli plugin's tools allowed. Empty means sentences are refused.</description>
+			<description>A command line; the sentence is appended as its last argument and its standard output is shown. The default is Claude Code in print mode with the flacli plugin's tools allowed, answering as JSON so the page can resume the same conversation with --resume. Empty means sentences are refused.</description>
 		</key>
 	</schema>
 
