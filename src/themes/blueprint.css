@@ -29,12 +29,10 @@
   --sidebar-bg-color: #0f2745;
   --sidebar-fg-color: #d9e8f7;
   --sidebar-backdrop-color: #0f2745;
-  --sidebar-border-color: rgb(217 232 247 / 35%);
   --sidebar-shade-color: rgb(15 39 69 / 82%);
   --secondary-sidebar-bg-color: #0e2542;
   --secondary-sidebar-fg-color: #d9e8f7;
   --secondary-sidebar-backdrop-color: #0e2542;
-  --secondary-sidebar-border-color: rgb(217 232 247 / 35%);
   --secondary-sidebar-shade-color: rgb(14 37 66 / 82%);
 
   --card-bg-color: #10294a;
@@ -73,10 +71,7 @@ window {
 /* Masthead: annotation caps over a hairline. */
 .light-right-edge headerbar .title,
 .light-right-edge headerbar windowtitle > .title {
-  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
   font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
 }
 .light-right-edge headerbar .subtitle,
 .light-right-edge headerbar windowtitle > .subtitle {
@@ -97,14 +92,14 @@ headerbar windowtitle > .title {
   text-transform: uppercase;
 }
 
-/* Small labels are title-block annotations. */
+/* Small labels are title-block annotations. libadwaita already dims .dim-label/.dimmed
+ * with --dim-opacity, so no colour is pinned here; one on top would dim them twice. */
 .caption,
 .dim-label,
 .dimmed {
   font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
   font-size: 8.5pt;
   text-transform: uppercase;
-  color: rgb(217 232 247 / 72%);
 }
 .caption-heading {
   font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif;
@@ -166,14 +161,7 @@ listview > row,
   font-size: 9pt;
   text-transform: uppercase;
 }
-.sidebar-btn:hover {
-  background: rgb(217 232 247 / 10%);
-}
-.sidebar-btn:checked,
-.sidebar-btn:checked:hover {
-  background: #d9e8f7;
-  color: #10294a;
-}
+/* Hover and the checked reversal come from the generic button.flat rules below. */
 .flaclify-sidebar separator {
   background: rgb(217 232 247 / 22%);
   min-height: 1px;
@@ -195,21 +183,21 @@ button.flat:hover {
   background: rgb(217 232 247 / 10%);
 }
 button.suggested-action,
-button.suggested-action:hover,
-.play-button,
-.play-button:hover {
+button.suggested-action:hover {
   background: #d9e8f7;
   color: #10294a;
   border: 1px solid #d9e8f7;
 }
-button.suggested-action:hover,
-.play-button:hover {
+button.suggested-action:hover {
   opacity: 0.88;
 }
 button.destructive-action {
   background: transparent;
   color: #ff6b57;
   border: 1px solid #ff6b57;
+}
+button.destructive-action:hover {
+  background: rgb(255 107 87 / 12%);
 }
 
 /* Plates and slips: one hairline, nothing floats. */
@@ -293,7 +281,7 @@ scale > trough > slider {
   box-shadow: none;
   min-width: 5px;
   min-height: 11px;
-  margin: -4px;
+  margin: -3px 0; /* a horizontal -4px would widen the drawn mark to 8px */
 }
 progressbar > trough {
   background: rgb(217 232 247 / 22%);
@@ -397,8 +385,7 @@ button:active label, button:active image,
 button.flat:checked label, button.flat:checked image,
 listview > row:selected label, listview > row:selected image,
 gridview > child:selected label, gridview > child:selected image,
-.navigation-sidebar > row:selected label,
-.sidebar-btn:checked label, .sidebar-btn:checked image {
+.navigation-sidebar > row:selected label {
   color: #10294a;
 }
 button:checked .caption, button:checked .dim-label, button:checked .dimmed,
@@ -411,13 +398,20 @@ button:checked, button.flat:checked, button:active, button.flat:active {
   background: #d9e8f7;
   color: #10294a;
 }
+/* Red pencil stays red when pressed; the generic reversal above would turn it chalk. */
+button.destructive-action:active, button.destructive-action:checked {
+  background: #ff6b57;
+  color: #2a0b06;
+  border-color: #ff6b57;
+}
+button.destructive-action:active label, button.destructive-action:active image,
+button.destructive-action:checked label, button.destructive-action:checked image { color: #2a0b06; }
 
 /* ---- Avatars and long-form text ------------------------------------------- */
-avatar { background-color: #0d2340; color: #d9e8f7; border: 1px solid rgb(217 232 247 / 32%); border-radius: 0; }
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar { background-image: none; background-color: #0d2340; color: #d9e8f7; border: 1px solid rgb(217 232 247 / 32%); border-radius: 0; }
 avatar image { color: #d9e8f7; }
 :root { --document-font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif; --document-font-size: 10.5pt;
         --monospace-font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; }
 .document, textview, textview text { font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif; font-size: 10.5pt; }
 
-/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
-avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #0d2340; color: #d9e8f7; }

@@ -119,6 +119,7 @@
 								</property>
 								<style>
 									<class name="flat"/>
+									<class name="queue-btn"/>
 								</style>
 							</object>
 						</child>

@@ -30,12 +30,10 @@
   --sidebar-bg-color: #43301f;
   --sidebar-fg-color: #efe3cf;
   --sidebar-backdrop-color: #43301f;
-  --sidebar-border-color: #b6a488;
   --sidebar-shade-color: rgb(67 48 31 / 84%);
   --secondary-sidebar-bg-color: #e9dfcc;
   --secondary-sidebar-fg-color: #291f16;
   --secondary-sidebar-backdrop-color: #e9dfcc;
-  --secondary-sidebar-border-color: #b6a488;
   --secondary-sidebar-shade-color: rgb(233 223 204 / 82%);
 
   --card-bg-color: #f2ead9;
@@ -62,7 +60,7 @@
   --shade-color: rgb(41 31 22 / 10%);
   --border-color: #b6a488;
   --scrollbar-outline-color: #f2ead9;
-  --dim-opacity: 0.62;
+  --dim-opacity: 0.7;
 }
 
 window {
@@ -78,9 +76,6 @@ window {
 .light-right-edge headerbar .title,
 .light-right-edge headerbar windowtitle > .title {
   font-size: 15px;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #efe3cf;
 }
 .light-right-edge headerbar .subtitle,
 .light-right-edge headerbar windowtitle > .subtitle {
@@ -96,8 +91,17 @@ window {
   color: #efe3cf;
   box-shadow: none;
 }
-.light-right-edge headerbar button:hover {
+.light-right-edge headerbar button:not(.flat):hover,
+.light-right-edge headerbar menubutton > button:hover,
+.light-right-edge headerbar button.flat:hover {
   background: rgb(239 227 207 / 12%);
+}
+.light-right-edge headerbar button:not(.flat):active,
+.light-right-edge headerbar button:not(.flat):checked,
+.light-right-edge headerbar menubutton > button:active,
+.light-right-edge headerbar menubutton > button:checked {
+  background: rgb(239 227 207 / 22%);
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 35%);
 }
 headerbar {
   box-shadow: none;
@@ -113,11 +117,12 @@ headerbar windowtitle > .title {
 .title-1, .title-2, .title-3, .title-4, .heading {
   font-weight: 700;
 }
+/* Small labels: libadwaita already dims .dim-label/.dimmed with --dim-opacity,
+ * so no colour is pinned here; a colour on top would dim them twice. */
 .caption,
 .dim-label,
 .dimmed {
   font-size: 8.5pt;
-  color: #6b5c48;
 }
 .caption-heading {
   font-size: 10pt;
@@ -164,20 +169,18 @@ listview > row,
   padding-top: 6px;
   padding-bottom: 6px;
 }
-.sidebar-btn,
-.sidebar-btn label {
-  color: #efe3cf;
-}
 .sidebar-btn label {
   font-weight: 600;
   font-size: 9.5pt;
   text-transform: uppercase;
 }
-.sidebar-btn:hover {
+.sidebar-btn:hover,
+.flaclify-sidebar button.queue-btn:hover {
   background: rgb(239 227 207 / 10%);
 }
 button.flat.sidebar-btn:checked,
-button.flat.sidebar-btn:checked:hover {
+button.flat.sidebar-btn:checked:hover,
+.flaclify-sidebar button.queue-btn:checked {
   background: #efe3cf;
   color: #43301f;
 }
@@ -187,11 +190,6 @@ button.flat.sidebar-btn:checked:hover {
 }
 .flaclify-sidebar label {
   color: #efe3cf;
-}
-.flaclify-sidebar .caption,
-.flaclify-sidebar .dim-label,
-.flaclify-sidebar .dimmed {
-  color: rgb(239 227 207 / 65%);
 }
 .light-right-edge scrollbar > range > trough > slider {
   background: rgb(239 227 207 / 45%);
@@ -220,13 +218,16 @@ button.flat:hover {
   background: rgb(41 31 22 / 7%);
 }
 button.suggested-action,
-button.suggested-action:hover,
-.play-button,
-.play-button:hover {
+button.suggested-action:hover {
   background: linear-gradient(180deg, #e8712a, #c1500e);
   color: #fff6ea;
   border: 1px solid #a8440a;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%), 0 1px 2px rgb(41 31 22 / 25%);
+}
+button.suggested-action:active,
+button.suggested-action:checked {
+  background: #c1500e;
+  box-shadow: inset 0 1px 3px rgb(41 31 22 / 35%);
 }
 button.destructive-action {
   background: transparent;
@@ -293,20 +294,24 @@ gridview > child:selected {
 .player-bar .heading {
   color: #efe3cf;
 }
-.player-bar .caption,
-.player-bar .dim-label,
-.player-bar .dimmed {
-  color: rgb(239 227 207 / 65%);
-}
 .player-bar button,
 .player-bar button.flat {
   color: #efe3cf;
 }
-.player-bar button:not(.flat) {
+/* Faceplate keys; the orange play key keeps its suggested-action rule above. */
+.player-bar button:not(.flat):not(.suggested-action) {
   background: linear-gradient(180deg, #3a322a, #211b15);
   border: 1px solid #4c4237;
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
   color: #efe3cf;
+}
+.player-bar button:not(.flat):not(.suggested-action):hover {
+  background: linear-gradient(180deg, #463d33, #2a221b);
+}
+.player-bar button:not(.flat):not(.suggested-action):active,
+.player-bar button:not(.flat):not(.suggested-action):checked {
+  background: #17120e;
+  box-shadow: inset 0 1px 3px rgb(0 0 0 / 50%);
 }
 .player-bar button.flat:hover {
   background: rgb(239 227 207 / 10%);
@@ -314,7 +319,6 @@ gridview > child:selected {
 .player-bar separator {
   background: rgb(239 227 207 / 18%);
 }
-.seekbar2 label,
 .seekbar2 * {
   color: #efe3cf;
 }
@@ -355,6 +359,7 @@ scale > trough > slider {
   box-shadow: 0 1px 2px rgb(41 31 22 / 25%);
   min-width: 12px;
   min-height: 12px;
+  margin: -4px; /* libadwaita's -8px would allocate the knob 0 and draw it 16px */
   border-radius: 3px;
 }
 progressbar > trough {
@@ -449,7 +454,8 @@ undershoot.top { background-image: none; box-shadow: none; }
 
 /* ---- Contrast in reversed states ------------------------------------------ */
 button.flat.sidebar-btn:checked label,
-button.flat.sidebar-btn:checked image {
+button.flat.sidebar-btn:checked image,
+.flaclify-sidebar button.queue-btn:checked label {
   color: #43301f;
 }
 button.flat.sidebar-btn:checked .caption,
@@ -457,18 +463,16 @@ button.flat.sidebar-btn:checked .dim-label {
   color: #43301f;
   opacity: 0.8;
 }
-button.suggested-action label, button.suggested-action image,
-.play-button label, .play-button image { color: #fff6ea; }
+button.suggested-action label, button.suggested-action image { color: #fff6ea; }
 listview > row:selected label, gridview > child:selected label,
 listview > row:selected image, gridview > child:selected image { color: #291f16; }
 listview > row:selected .caption, gridview > child:selected .caption { color: #291f16; opacity: 0.72; }
 
 /* ---- Avatars and long-form text ------------------------------------------- */
-avatar { background-color: #e2d5bd; color: #43301f; border: 1px solid #b6a488; border-radius: 4px; }
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar { background-image: none; background-color: #e2d5bd; color: #43301f; border: 1px solid #b6a488; border-radius: 4px; }
 avatar image { color: #43301f; }
 :root { --document-font-family: "Archivo", "Cantarell", "DejaVu Sans", sans-serif; --document-font-size: 10.5pt;
         --monospace-font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; }
 .document, textview, textview text { font-family: "Archivo", "Cantarell", "DejaVu Sans", sans-serif; font-size: 10.5pt; }
 
-/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
-avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #e2d5bd; color: #43301f; }

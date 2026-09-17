@@ -27,12 +27,10 @@
   --sidebar-bg-color: #f7ebe9;
   --sidebar-fg-color: #52424b;
   --sidebar-backdrop-color: #f7ebe9;
-  --sidebar-border-color: rgb(82 66 75 / 10%);
   --sidebar-shade-color: rgb(247 235 233 / 80%);
   --secondary-sidebar-bg-color: #faf1ee;
   --secondary-sidebar-fg-color: #52424b;
   --secondary-sidebar-backdrop-color: #faf1ee;
-  --secondary-sidebar-border-color: rgb(82 66 75 / 10%);
   --secondary-sidebar-shade-color: rgb(250 241 238 / 80%);
 
   --card-bg-color: #ffffff;
@@ -59,7 +57,7 @@
   --shade-color: rgb(82 66 75 / 7%);
   --border-color: rgb(82 66 75 / 12%);
   --scrollbar-outline-color: #ffffff;
-  --dim-opacity: 0.6;
+  --dim-opacity: 0.8; /* plum ink on near-white: 0.6 would fall under 4.5:1 */
 }
 
 window {
@@ -71,7 +69,6 @@ window {
 .light-right-edge headerbar .title,
 .light-right-edge headerbar windowtitle > .title {
   font-size: 16px;
-  font-weight: 800;
 }
 .light-right-edge headerbar .subtitle,
 .light-right-edge headerbar windowtitle > .subtitle {
@@ -91,12 +88,13 @@ headerbar windowtitle > .title {
 .title-1, .title-2, .title-3, .title-4, .heading {
   font-weight: 800;
 }
+/* Small labels: libadwaita already dims .dim-label/.dimmed with --dim-opacity,
+ * so no colour is pinned here; a colour on top would dim them twice. */
 .caption,
 .dim-label,
 .dimmed {
   font-size: 8.5pt;
   font-weight: 600;
-  color: rgb(82 66 75 / 62%);
 }
 .caption-heading {
   font-size: 10pt;
@@ -112,6 +110,17 @@ tooltip,
 switch {
   border-radius: 999px;
 }
+/* Linked groups stay one segmented control: the pill radius above would otherwise
+ * beat libadwaita's inner-corner reset (this file loads at USER priority). */
+.linked:not(.vertical) > *:not(:first-child):not(:last-child) { border-radius: 0; }
+.linked:not(.vertical) > *:first-child:dir(ltr),
+.linked:not(.vertical) > *:last-child:dir(rtl) { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.linked:not(.vertical) > *:last-child:dir(ltr),
+.linked:not(.vertical) > *:first-child:dir(rtl) { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.linked.vertical > *:not(:first-child):not(:last-child) { border-radius: 0; }
+.linked.vertical > *:first-child { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.linked.vertical > *:last-child { border-top-left-radius: 0; border-top-right-radius: 0; }
+.linked > *:not(:first-child) { box-shadow: none; }
 .card,
 .boxed-list,
 popover > contents {
@@ -151,11 +160,13 @@ checkbutton > check {
 .sidebar-btn label {
   font-weight: 700;
 }
-.sidebar-btn:hover {
+.sidebar-btn:hover,
+.flaclify-sidebar button.queue-btn:hover {
   background: rgb(194 85 122 / 8%);
 }
 .sidebar-btn:checked,
-.sidebar-btn:checked:hover {
+.sidebar-btn:checked:hover,
+.flaclify-sidebar button.queue-btn:checked {
   background: rgb(194 85 122 / 14%);
   color: #a63f63;
 }
@@ -180,16 +191,13 @@ button.flat:hover {
   background: rgb(82 66 75 / 6%);
 }
 button.suggested-action,
-button.suggested-action:hover,
-.play-button,
-.play-button:hover {
+button.suggested-action:hover {
   background: #c2557a;
   color: #ffffff;
   border: none;
   box-shadow: 0 4px 14px rgb(194 85 122 / 35%);
 }
-button.suggested-action:hover,
-.play-button:hover {
+button.suggested-action:hover {
   background: #b04a6e;
 }
 button.destructive-action {
@@ -274,6 +282,10 @@ progressbar > trough > progress {
   border-top: none;
   background: #ffffff;
   box-shadow: 0 -6px 20px rgb(82 66 75 / 8%);
+}
+/* With the album-art wash on, the transport shows its shade like every other pane. */
+.no-shading .player-bar {
+  background: var(--sidebar-shade-color);
 }
 .discography-line {
   border-radius: 999px;
@@ -360,8 +372,7 @@ undershoot.top { background-image: none; box-shadow: none; }
 
 /* ---- Contrast in reversed states ------------------------------------------
  * Selection is a tint, so body ink survives; rose pills set their own white. */
-button.suggested-action label, button.suggested-action image,
-.play-button label, .play-button image { color: #ffffff; }
+button.suggested-action label, button.suggested-action image { color: #ffffff; }
 button:not(.flat):checked, button:not(.flat):active {
   background: #c2557a;
   color: #ffffff;
@@ -369,17 +380,15 @@ button:not(.flat):checked, button:not(.flat):active {
 }
 button:not(.flat):checked label, button:not(.flat):active label,
 button:not(.flat):checked image, button:not(.flat):active image { color: #ffffff; }
-.sidebar-btn:checked label, .sidebar-btn:checked image { color: #a63f63; }
 listview > row:selected label, gridview > child:selected label,
 listview > row:selected image, gridview > child:selected image { color: #52424b; }
 listview > row:selected .caption, gridview > child:selected .caption { color: #52424b; opacity: 0.68; }
 
 /* ---- Avatars and long-form text ------------------------------------------- */
-avatar { background-color: #f8e7ec; color: #a63f63; border: none; }
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar { background-image: none; background-color: #f8e7ec; color: #a63f63; border: none; }
 avatar image { color: #a63f63; }
 :root { --document-font-family: "Nunito", "Quicksand", "Cantarell", "DejaVu Sans", sans-serif; --document-font-size: 10.5pt;
         --monospace-font-family: "Adwaita Mono", "DejaVu Sans Mono", monospace; }
 .document, textview, textview text { font-family: "Nunito", "Quicksand", "Cantarell", "DejaVu Sans", sans-serif; font-size: 10.5pt; }
 
-/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
-avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #f8e7ec; color: #a63f63; }

@@ -12,6 +12,7 @@ Outputs:
   the iconsets section of src/flaclify.gresource.xml (between markers)
   build/iconsheets/<set>.html   review sheet (Claude Design @dsCard)
   build/iconsheets/<set>.png    contact sheet via rsvg-convert (if available)
+  site/sheets/<set>.png, site/sheets/placeholder-<set>.svg   the same, for the project site
 
 Run from the repo root with the build venv:  build/venv/bin/python tools/gen_icons.py
 """
@@ -19,6 +20,7 @@ Run from the repo root with the build venv:  build/venv/bin/python tools/gen_ico
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -30,6 +32,7 @@ from fontTools.ttLib import TTFont
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "src" / "iconsets"
 SHEETS = ROOT / "build" / "iconsheets"
+SITE_SHEETS = ROOT / "site" / "sheets"
 GRESOURCE = ROOT / "src" / "flaclify.gresource.xml"
 PREFIX = "/io/github/h3303/Flaclify/iconsets"
 
@@ -42,13 +45,25 @@ FONTS = {
 
 
 def fc_match(pattern):
-    return Path(subprocess.run(["fc-match", "--format=%{file}", pattern],
-                               capture_output=True, text=True).stdout.strip())
+    """Resolve a fontconfig pattern to a file, insisting on the family asked for.
+
+    fc-match always answers with *some* font, so a face that is not installed
+    would silently come back as whatever fontconfig prefers and the committed
+    icons would then depend on the machine that generated them.
+    """
+    family = pattern.split(":")[0]
+    out = subprocess.run(["fc-match", "--format=%{file}\t%{family}", pattern],
+                         capture_output=True, text=True).stdout.strip()
+    file, _, got = out.partition("\t")
+    if family.lower() not in got.lower():
+        sys.exit(f"gen_icons: font {family!r} is not installed (fontconfig offered {got!r}); "
+                 "install it so the output is reproducible")
+    return Path(file)
 
 
+# Only faces every Linux desktop has, so any machine regenerates the same files.
 FONTS["mono"] = fc_match("DejaVu Sans Mono")
 FONTS["sans-bold"] = fc_match("DejaVu Sans:bold")
-FONTS["plex-mono"] = fc_match("IBM Plex Mono")   # blueprint annotations; falls back to the system mono
 
 # ---------------------------------------------------------------------------
 # Styles
@@ -72,7 +87,7 @@ STYLES = {
     "folio": dict(w=1.0, cap="round", shapes="stroke", dot=1.0, text="old-standard-bold",
                   glyphs=False, ground="#ece3cc", ink="#221b0f",
                   title="Folio", blurb="Engraver's hairlines with round terminals."),
-    "blueprint": dict(w=1.0, cap="butt", shapes="stroke", dot=0.8, text="plex-mono",
+    "blueprint": dict(w=1.0, cap="butt", shapes="stroke", dot=0.8, text="mono",
                       glyphs=False, ground="#10294a", ink="#d9e8f7",
                       title="Blueprint", blurb="Pen-plotter hairlines with butt caps; drafting line-work."),
     "nocturne": dict(w=1.25, cap="round", shapes="stroke", dot=1.0, text="old-standard-italic",
@@ -437,30 +452,47 @@ def render_icon(style_key, name, spec):
 # Album-art placeholders: one 512px plate per set, in that theme's own idiom
 # ---------------------------------------------------------------------------
 
+def _label(r, fill):
+    """The renderer's text paths as one run of filled <path>s."""
+    return "".join(f'<path d="{d}" fill="{fill}"/>' for d, _ in r.paths)
+
+
+def _grid(pid, stroke, opacity, step=32):
+    return (f'<defs><pattern id="{pid}" width="{step}" height="{step}" patternUnits="userSpaceOnUse">'
+            f'<path d="M{step} 0H0V{step}" fill="none" stroke="{stroke}" stroke-opacity="{opacity}" stroke-width="1"/></pattern></defs>')
+
+
+def _frame(size, inset, stroke, opacity=None):
+    """A hairline rectangle inset from the plate edge, on the half-pixel."""
+    o = f' stroke-opacity="{opacity}"' if opacity is not None else ""
+    edge = f"{inset + .5:g}".lstrip("0")   # 0 -> ".5", 10 -> "10.5"
+    return f'<rect x="{edge}" y="{edge}" width="{size - 2 * inset - 1}" height="{size - 2 * inset - 1}" fill="none" stroke="{stroke}"{o}/>'
+
+
 def placeholder_svg(key):
     S = 512
-    r = Renderer(STYLES[key])
+    style = STYLES[key]
+    ink = style["ink"]
+    r = Renderer(style)
     body = []
     if key == "dttw":
         # the design system's plate: paper, 1px line ink, halftone fill, typewriter label
         r.text("NO LOCAL ART", (96, 236, 320, 40), font="special-elite", tracking=0.12)
-        label = "".join(f'<path d="{d}" fill="#141412"/>' for d, _ in r.paths)
         body = [f'<rect width="{S}" height="{S}" fill="#e8e5dc"/>',
                 '<defs><pattern id="tone" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="2.2" fill="#111"/></pattern></defs>',
                 f'<rect x="1" y="1" width="{S-2}" height="{S-2}" fill="url(#tone)" opacity=".38"/>',
-                '<rect x="86" y="222" width="340" height="68" fill="#e8e5dc"/>', label,
-                f'<rect x=".5" y=".5" width="{S-1}" height="{S-1}" fill="none" stroke="#141412" stroke-width="1"/>']
+                '<rect x="86" y="222" width="340" height="68" fill="#e8e5dc"/>', _label(r, ink),
+                f'<rect x=".5" y=".5" width="{S-1}" height="{S-1}" fill="none" stroke="{ink}" stroke-width="1"/>']
     elif key == "terminal":
         r.text("NO ART", (116, 226, 280, 60), font="mono")
-        label = "".join(f'<path d="{d}" fill="#39ff88"/>' for d, _ in r.paths)
         body = [f'<rect width="{S}" height="{S}" fill="#070a08"/>',
-                '<defs><pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#39ff88" stroke-opacity=".12" stroke-width="1"/></pattern></defs>',
-                f'<rect width="{S}" height="{S}" fill="url(#grid)"/>', label,
-                f'<rect x=".5" y=".5" width="{S-1}" height="{S-1}" fill="none" stroke="#39ff88" stroke-opacity=".3"/>']
+                _grid("grid", ink, ".12"),
+                f'<rect width="{S}" height="{S}" fill="url(#grid)"/>', _label(r, ink),
+                _frame(S, 0, ink, ".3")]
     elif key == "neon":
         for prim in ICONS["music-note-single"]["geo"]:
             r.draw(prim)
-        note = "".join(f'<path d="{d}" fill="#ff7ac0"/>' for d, _ in r.paths)
+        note = _label(r, ink)
         body = [f'<rect width="{S}" height="{S}" fill="#1c0f30"/>',
                 '<defs><radialGradient id="glow"><stop offset="0" stop-color="#ff4fa3" stop-opacity=".45"/><stop offset="1" stop-color="#ff4fa3" stop-opacity="0"/></radialGradient></defs>',
                 f'<circle cx="256" cy="256" r="220" fill="url(#glow)"/>',
@@ -473,29 +505,23 @@ def placeholder_svg(key):
                 '<rect x="60" y="428" width="392" height="6" fill="#111111"/>']
     elif key == "folio":
         r.text("no plate", (136, 232, 240, 46), font="old-standard-italic")
-        label = "".join(f'<path d="{d}" fill="#6f6350"/>' for d, _ in r.paths)
         body = [f'<rect width="{S}" height="{S}" fill="#f6f0df"/>',
-                '<rect x="10.5" y="10.5" width="491" height="491" fill="none" stroke="#b3a683"/>',
-                '<rect x="16.5" y="16.5" width="479" height="479" fill="none" stroke="#c8bc9f"/>', label]
+                _frame(S, 10, "#b3a683"), _frame(S, 16, "#c8bc9f"), _label(r, "#6f6350")]
     elif key == "blueprint":
         # drafting sheet: grid, centre crosshair, mono annotation
-        r.text("NO DRAWING ON FILE", (76, 240, 360, 26), font="plex-mono", tracking=0.08)
-        label = "".join(f'<path d="{d}" fill="#d9e8f7"/>' for d, _ in r.paths)
-        body = [f'<rect width="{S}" height="{S}" fill="#10294a"/>',
-                '<defs><pattern id="bpgrid" width="32" height="32" patternUnits="userSpaceOnUse">'
-                '<path d="M32 0H0V32" fill="none" stroke="#d9e8f7" stroke-opacity=".14"/></pattern></defs>',
+        r.text("NO DRAWING ON FILE", (76, 240, 360, 26), font="mono", tracking=0.08)
+        body = [f'<rect width="{S}" height="{S}" fill="{style["ground"]}"/>',
+                _grid("bpgrid", ink, ".14"),
                 f'<rect width="{S}" height="{S}" fill="url(#bpgrid)"/>',
-                '<path d="M256 176V336 M176 256H336" stroke="#d9e8f7" stroke-opacity=".5"/>',
-                '<circle cx="256" cy="256" r="60" fill="none" stroke="#d9e8f7" stroke-opacity=".5"/>',
-                label,
-                f'<rect x="8.5" y="8.5" width="{S-17}" height="{S-17}" fill="none" stroke="#d9e8f7" stroke-opacity=".55"/>']
+                f'<path d="M256 176V336 M176 256H336" stroke="{ink}" stroke-opacity=".5"/>',
+                f'<circle cx="256" cy="256" r="60" fill="none" stroke="{ink}" stroke-opacity=".5"/>',
+                _label(r, ink),
+                _frame(S, 8, ink, ".55")]
     elif key == "nocturne":
         # a bookplate: double rule, italic label
         r.text("ex libris", (166, 236, 180, 40), font="old-standard-italic")
-        label = "".join(f'<path d="{d}" fill="#d9a441"/>' for d, _ in r.paths)
         body = [f'<rect width="{S}" height="{S}" fill="#221b15"/>',
-                '<rect x="14.5" y="14.5" width="483" height="483" fill="none" stroke="#d9a441" stroke-opacity=".55"/>',
-                '<rect x="22.5" y="22.5" width="467" height="467" fill="none" stroke="#d9a441" stroke-opacity=".3"/>', label]
+                _frame(S, 14, ink, ".55"), _frame(S, 22, ink, ".3"), _label(r, ink)]
     elif key == "cassette":
         # a tape label: cream card, orange stripe, two reels
         body = [f'<rect width="{S}" height="{S}" fill="#262019"/>',
@@ -535,10 +561,10 @@ def write_gresource():
     blocks = []
     for key in STYLES:
         files = "".join(
-            f'    <file preprocess="xml-stripblanks" alias="{NAMES[n]}.svg">iconsets/{key}/icons/scalable/actions/{NAMES[n]}.svg</file>\n'
+            f'    <file compressed="true" preprocess="xml-stripblanks" alias="{NAMES[n]}.svg">iconsets/{key}/icons/scalable/actions/{NAMES[n]}.svg</file>\n'
             for n in ICONS)
         blocks.append(f'  <gresource prefix="{PREFIX}/{key}/icons/scalable/actions/">\n{files}  </gresource>\n'
-                      f'  <gresource prefix="{PREFIX}/{key}/">\n    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/{key}/albumart-placeholder.svg</file>\n  </gresource>\n')
+                      f'  <gresource prefix="{PREFIX}/{key}/">\n    <file compressed="true" preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/{key}/albumart-placeholder.svg</file>\n  </gresource>\n')
     section = begin + "".join(blocks) + end
     if begin in xml:
         xml = re.sub(re.escape(begin) + r".*?" + re.escape(end), lambda m: section, xml, flags=re.S)
@@ -550,11 +576,13 @@ def write_gresource():
 
 def write_sheets():
     SHEETS.mkdir(parents=True, exist_ok=True)
+    SITE_SHEETS.mkdir(parents=True, exist_ok=True)
     for key, style in STYLES.items():
+        bodies = {name: (OUT / key / "icons/scalable/actions" / f"{NAMES[name]}.svg").read_text().split("\n", 1)[1]
+                  for name in ICONS}
         cells = []
         for name in ICONS:
-            svg = (OUT / key / "icons/scalable/actions" / f"{NAMES[name]}.svg").read_text()
-            svg = svg.split("\n", 1)[1].replace('fill="#222222"', 'fill="currentColor"')
+            svg = bodies[name].replace('fill="#222222"', 'fill="currentColor"')
             cells.append(f'<div class="cell"><div class="row">'
                          f'<span class="i s16">{svg}</span><span class="i s24">{svg}</span><span class="i s32">{svg}</span>'
                          f'</div><div class="name">{name}</div></div>')
@@ -584,8 +612,7 @@ p{{margin:0 0 20px;opacity:.7}}
         w, h = cols * cell + pad * 2, rows * cell + pad * 2
         items = []
         for i, name in enumerate(ICONS):
-            svg = (OUT / key / "icons/scalable/actions" / f"{NAMES[name]}.svg").read_text().split("\n", 1)[1]
-            inner = re.sub(r"^<svg[^>]*>|</svg>\s*$", "", svg).replace('fill="#222222"', f'fill="{style["ink"]}"')
+            inner = re.sub(r"^<svg[^>]*>|</svg>\s*$", "", bodies[name]).replace('fill="#222222"', f'fill="{style["ink"]}"')
             x, y = pad + (i % cols) * cell + 4, pad + (i // cols) * cell + 4
             items.append(f'<g transform="translate({x},{y}) scale(2)">{inner}</g>')
         sheet = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}">'
@@ -595,7 +622,10 @@ p{{margin:0 0 20px;opacity:.7}}
             subprocess.run(["rsvg-convert", "-o", str(SHEETS / f"{key}.png"), str(SHEETS / f"{key}.svg")], check=True)
         except (OSError, subprocess.CalledProcessError) as e:
             print("png sheet skipped:", e)
-    print(f"sheets in {SHEETS.relative_to(ROOT)}")
+        else:
+            shutil.copyfile(SHEETS / f"{key}.png", SITE_SHEETS / f"{key}.png")
+        shutil.copyfile(OUT / key / "albumart-placeholder.svg", SITE_SHEETS / f"placeholder-{key}.svg")
+    print(f"sheets in {SHEETS.relative_to(ROOT)} and {SITE_SHEETS.relative_to(ROOT)}")
 
 
 if __name__ == "__main__":

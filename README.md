@@ -25,9 +25,10 @@ Broadsheet is direction 1a of the "Euphonica × Moirai Digital" canvas (Death to
 design system): toner on paper, typewriter labels, blackletter masthead. Reversed Spine is
 direction 1b: it `@import`s Broadsheet and reverses the sidebar and transport to toner. Its five typefaces ship in `data/fonts/` and
 install to `share/fonts/flaclify` (OFL, Special Elite under Apache 2.0).
-Blueprint, Nocturne, Cassette and Marshmallow name IBM Plex, EB Garamond, Archivo, JetBrains Mono
-and Nunito; none is bundled, and each falls back to Cantarell, DejaVu or the system serif and mono
-when the face is not installed.
+Blueprint, Nocturne, Cassette and Marshmallow ask first for IBM Plex, EB Garamond, Archivo,
+JetBrains Mono and Nunito; none is bundled. Each stack then tries common free faces (Cormorant
+Garamond, Libre Baskerville, Liberation Serif, Quicksand, Noto Sans, Adwaita Mono) before
+Cantarell, DejaVu or the system serif and mono, so what you see depends on what is installed.
 
 A theme is one GTK CSS file. Drop your own into `~/.config/flaclify/themes/`; the directory is
 watched, so saving the file re-applies it while the app runs. Metadata goes in the leading

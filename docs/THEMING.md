@@ -106,6 +106,7 @@ The app adds a few hooks on top of GTK's node names:
 | Selector | What it is |
 | --- | --- |
 | `.sidebar-btn` | The sidebar navigation buttons (`:checked` is the current view) |
+| `.queue-btn` | The Queue toggle at the foot of the sidebar. A plain flat button, not a `.sidebar-btn`, so give its `:checked` state its own rule |
 | `.flaclify-sidebar` | The sidebar widget under the masthead |
 | `.light-right-edge` | The sidebar page; owns the vertical rule (see §4) |
 | `.light-left-edge` | The queue view's content page, same role |
@@ -138,10 +139,13 @@ theme is searched before app resources, so an unprefixed override would never be
 
 ## 3. Contrast in reversed states
 
-Captions and dim labels carry their own colour. Inside anything you reverse (a checked
-sidebar button, a selected row, an active toggle) they inherit nothing and vanish. Every
-theme therefore ends with a block that sets label and icon colours explicitly for those
-states:
+Captions and dim labels are tricky in two directions. libadwaita already dims `.dim-label`
+and `.dimmed` with `opacity: var(--dim-opacity)`, so do not also pin a translucent colour on
+them: colour alpha × opacity dims the label twice and drops 9pt text under 4.5:1 (set
+`--dim-opacity` instead, and keep any pinned colour opaque). Inside anything you reverse (a
+checked sidebar button, a selected row, an active toggle) a pinned colour does not follow
+the reversal and the label vanishes. Every theme therefore ends with a block that sets label
+and icon colours explicitly for those states:
 
 ```css
 button:checked label, button:checked image,
@@ -177,7 +181,8 @@ the vertical rule and pin both header bars to the same height:
 .light-left-edge  { border-left:  1px solid <ink>; }
 headerbar { min-height: 43px; }                 /* content header: ~3px more chrome */
 .sidebar-pane headerbar { min-height: 46px; }   /* sidebar header: two-line title */
-toolbarview > .top-bar, .top-bar { box-shadow: none; }
+toolbarview > revealer.top-bar, toolbarview > .top-bar,
+.top-bar > box, .top-bar { box-shadow: none; }
 undershoot.top { background-image: none; box-shadow: none; }
 ```
 
