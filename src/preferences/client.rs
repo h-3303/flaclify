@@ -70,7 +70,7 @@ fn set_status_icon(img: &gtk::Image, state: StatusIconState) {
         }
         StatusIconState::Loading => {
             img.set_css_classes(&["dim-label"]);
-            img.set_icon_name(Some("content-loading-symbolic"));
+            img.set_icon_name(Some("fl-content-loading-symbolic"));
         }
         StatusIconState::Partial => {
             img.set_css_classes(&["warning"]);

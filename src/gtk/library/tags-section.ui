@@ -29,7 +29,7 @@
                       <class name="circular"/>
                     </style>
                     <property name="halign">center</property>
-                    <property name="icon-name">list-add-symbolic</property>
+                    <property name="icon-name">fl-list-add-symbolic</property>
                   </object>
                 </child>
               </object>

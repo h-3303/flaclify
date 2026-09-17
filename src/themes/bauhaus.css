@@ -1,6 +1,7 @@
 /* @name: Bauhaus
  * @scheme: light
  * @auto-accent: off
+ * @icons: bauhaus
  *
  * Off-white ground, primary colour blocks, two-pixel black rules and hard
  * offset shadows. No rounding anywhere. Loud on purpose.
@@ -263,3 +264,12 @@ button.suggested-action label, button.destructive-action label { color: #ffffff;
 button:not(.flat):checked, button:not(.flat):active { background: #111111; color: #ffffff; }
 listview > row:selected label, gridview > child:selected label,
 listview > row:selected .caption, gridview > child:selected .caption { color: #111111; }
+
+/* ---- Avatars and long-form text ------------------------------------------ */
+avatar { background-color: #ffd23f; color: #111111; border: 2px solid #111111; border-radius: 0; box-shadow: 3px 3px 0 #111111; }
+avatar image { color: #111111; }
+:root { --document-font-family: "Inter", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif; }
+.document, textview, textview text { font-family: "Inter", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif; font-weight: 500; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #ffd23f; color: #111111; }

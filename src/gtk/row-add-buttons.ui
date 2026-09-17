@@ -14,7 +14,7 @@
     <child>
       <object class="GtkButton" id="append_queue">
         <property name="tooltip-text" translatable="true">Add this song to the end of the queue</property>
-        <property name="icon-name">list-add-symbolic</property>
+        <property name="icon-name">fl-list-add-symbolic</property>
         <style>
           <class name="flat"/>
         </style>

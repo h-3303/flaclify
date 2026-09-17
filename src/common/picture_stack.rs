@@ -7,7 +7,7 @@ use gtk::{
 };
 use std::cell::{Cell, OnceCell};
 
-use crate::cache::placeholders::{ALBUMART_PLACEHOLDER, ALBUMART_THUMBNAIL_PLACEHOLDER};
+use crate::cache::placeholders;
 
 use super::{ImageState, paintables::RotatingPaintable};
 
@@ -104,11 +104,7 @@ impl PictureStack {
 
     #[inline]
     fn show_placeholder(&self, thumb: bool) {
-        self.display(if thumb {
-            &*ALBUMART_THUMBNAIL_PLACEHOLDER
-        } else {
-            &*ALBUMART_PLACEHOLDER
-        });
+        self.display(&placeholders::albumart(thumb));
     }
 
     fn display(&self, paintable: &impl IsA<gdk::Paintable>) {

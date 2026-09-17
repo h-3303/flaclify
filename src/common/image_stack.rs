@@ -7,7 +7,7 @@ use gtk::{
 };
 use std::cell::Cell;
 
-use crate::cache::placeholders::{ALBUMART_PLACEHOLDER, ALBUMART_THUMBNAIL_PLACEHOLDER};
+use crate::cache::placeholders;
 
 use super::ImageState;
 
@@ -97,11 +97,7 @@ impl ImageStack {
 
     #[inline]
     fn show_placeholder(&self, thumb: bool) {
-        self.imp().image.set_paintable(Some(if thumb {
-            &*ALBUMART_THUMBNAIL_PLACEHOLDER
-        } else {
-            &*ALBUMART_PLACEHOLDER
-        }));
+        self.imp().image.set_paintable(Some(&placeholders::albumart(thumb)));
     }
 
     pub fn set_is_thumbnail(&self, new: bool) {

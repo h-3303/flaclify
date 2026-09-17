@@ -197,7 +197,7 @@
                             <child type="end">
                               <object class="GtkMenuButton" id="menu_btn">
                                 <property name="primary">True</property>
-                                <property name="icon-name">open-menu-symbolic</property>
+                                <property name="icon-name">fl-open-menu-symbolic</property>
                                 <property name="tooltip-text" translatable="yes">Menu</property>
                                 <property name="menu-model">primary_menu</property>
                               </object>

@@ -7,7 +7,7 @@ use std::{
 };
 
 use crate::{
-    cache::{Cache, placeholders::ALBUMART_THUMBNAIL_PLACEHOLDER},
+    cache::{Cache, placeholders},
     common::INode,
 };
 
@@ -181,7 +181,7 @@ impl PlaylistRow {
     fn clear_thumbnail(&self) {
         self.imp()
             .thumbnail
-            .set_paintable(Some(&*ALBUMART_THUMBNAIL_PLACEHOLDER));
+            .set_paintable(Some(&placeholders::albumart(true)));
     }
 
     fn uri(&self) -> Option<String> {

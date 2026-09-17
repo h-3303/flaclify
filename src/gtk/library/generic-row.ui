@@ -60,7 +60,7 @@
 						<child>
 							<object class="GtkButton" id="append_queue">
 								<property name="tooltip-text" translatable="true">Append this to the queue</property>
-								<property name="icon-name">list-add-symbolic</property>
+								<property name="icon-name">fl-list-add-symbolic</property>
 								<property name="visible">false</property>
 								<style>
 									<class name="flat"/>

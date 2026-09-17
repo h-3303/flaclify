@@ -70,8 +70,17 @@
   </gresource>
   <gresource prefix="/io/github/h3303/Flaclify/icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">gtk/icons/brush-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="view-sort-descending-symbolic.svg">gtk/icons/view-sort-descending-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="view-sort-ascending-symbolic.svg">gtk/icons/view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">gtk/icons/fl-avatar-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">gtk/icons/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">gtk/icons/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">gtk/icons/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">gtk/icons/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">gtk/icons/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">gtk/icons/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">gtk/icons/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">gtk/icons/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">gtk/icons/view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">gtk/icons/view-sort-ascending-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="dock-right-symbolic.svg">gtk/icons/dock-right-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="settings-symbolic.svg">gtk/icons/settings-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">gtk/icons/mixramp-off-symbolic.svg</file>
@@ -112,13 +121,13 @@
     <file preprocess="xml-stripblanks" alias="music-queue-symbolic.svg">gtk/icons/music-queue-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">gtk/icons/music-note-single-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">gtk/icons/paper-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="user-trash-symbolic.svg">gtk/icons/user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">gtk/icons/user-trash-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="server-pick-symbolic.svg">gtk/icons/server-pick-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">gtk/icons/format-base-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">gtk/icons/format-cd-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">gtk/icons/format-hires-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">gtk/icons/format-dsd-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="edit-select-all-symbolic.svg">gtk/icons/edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">gtk/icons/edit-select-all-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">gtk/icons/edit-select-none-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">gtk/icons/consume-off-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">gtk/icons/consume-on-symbolic.svg</file>
@@ -128,10 +137,10 @@
     <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">gtk/icons/star-large-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">gtk/icons/star-outline-half-left-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">gtk/icons/star-outline-rounded-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="view-more-symbolic.svg">gtk/icons/view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">gtk/icons/view-more-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">gtk/icons/check-round-outline-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">gtk/icons/cross-small-circle-outline-symbolic.svg</file>
-    <file preprocess="xml-stripblanks" alias="content-loading-symbolic.svg">gtk/icons/content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">gtk/icons/content-loading-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">gtk/icons/lyrics-on-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">gtk/icons/lyrics-off-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">gtk/icons/recent-symbolic.svg</file>
@@ -148,4 +157,376 @@
     <file preprocess="xml-stripblanks" alias="mixed-folder-1-symbolic.svg">gtk/icons/mixed-folder-1-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="mixed-folder-2-symbolic.svg">gtk/icons/mixed-folder-2-symbolic.svg</file>
   </gresource>
+  <!-- iconsets:begin (generated by tools/gen_icons.py) -->
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/dttw/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="play-large-symbolic.svg">iconsets/dttw/icons/scalable/actions/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="play-symbolic.svg">iconsets/dttw/icons/scalable/actions/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="pause-large-symbolic.svg">iconsets/dttw/icons/scalable/actions/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-large-symbolic.svg">iconsets/dttw/icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backward-large-symbolic.svg">iconsets/dttw/icons/scalable/actions/skip-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-consecutive-symbolic.svg">iconsets/dttw/icons/scalable/actions/playlist-consecutive-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-symbolic.svg">iconsets/dttw/icons/scalable/actions/playlist-repeat-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-song-symbolic.svg">iconsets/dttw/icons/scalable/actions/playlist-repeat-song-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">iconsets/dttw/icons/scalable/actions/consume-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">iconsets/dttw/icons/scalable/actions/consume-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-symbolic.svg">iconsets/dttw/icons/scalable/actions/crossfade-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-off-symbolic.svg">iconsets/dttw/icons/scalable/actions/crossfade-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-symbolic.svg">iconsets/dttw/icons/scalable/actions/mixramp-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">iconsets/dttw/icons/scalable/actions/mixramp-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-off-symbolic.svg">iconsets/dttw/icons/scalable/actions/rg-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-track-symbolic.svg">iconsets/dttw/icons/scalable/actions/rg-track-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-album-symbolic.svg">iconsets/dttw/icons/scalable/actions/rg-album-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-auto-symbolic.svg">iconsets/dttw/icons/scalable/actions/rg-auto-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="stop-sign-outline-symbolic.svg">iconsets/dttw/icons/scalable/actions/stop-sign-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="dock-left-symbolic.svg">iconsets/dttw/icons/scalable/actions/dock-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">iconsets/dttw/icons/scalable/actions/cross-small-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="left-symbolic.svg">iconsets/dttw/icons/scalable/actions/left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="right-symbolic.svg">iconsets/dttw/icons/scalable/actions/right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="up-symbolic.svg">iconsets/dttw/icons/scalable/actions/up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="down-symbolic.svg">iconsets/dttw/icons/scalable/actions/down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">iconsets/dttw/icons/scalable/actions/plus-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="copy-symbolic.svg">iconsets/dttw/icons/scalable/actions/copy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">iconsets/dttw/icons/scalable/actions/edit-select-none-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">iconsets/dttw/icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-away-from-line-up-symbolic.svg">iconsets/dttw/icons/scalable/actions/arrow-pointing-away-from-line-up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-insert-symbolic.svg">iconsets/dttw/icons/scalable/actions/text-insert-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">iconsets/dttw/icons/scalable/actions/exclamation-mark-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">iconsets/dttw/icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">iconsets/dttw/icons/scalable/actions/enabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">iconsets/dttw/icons/scalable/actions/disabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">iconsets/dttw/icons/scalable/actions/circle-outline-thick-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="hourglass-symbolic.svg">iconsets/dttw/icons/scalable/actions/hourglass-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">iconsets/dttw/icons/scalable/actions/format-cd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">iconsets/dttw/icons/scalable/actions/format-hires-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">iconsets/dttw/icons/scalable/actions/format-dsd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">iconsets/dttw/icons/scalable/actions/format-base-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">iconsets/dttw/icons/scalable/actions/star-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">iconsets/dttw/icons/scalable/actions/star-outline-rounded-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">iconsets/dttw/icons/scalable/actions/star-outline-half-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">iconsets/dttw/icons/scalable/actions/music-note-single-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-artist-symbolic.svg">iconsets/dttw/icons/scalable/actions/music-artist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-music-symbolic.svg">iconsets/dttw/icons/scalable/actions/library-music-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-artists-symbolic.svg">iconsets/dttw/icons/scalable/actions/library-artists-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">iconsets/dttw/icons/scalable/actions/recent-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-symbolic.svg">iconsets/dttw/icons/scalable/actions/playlist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">iconsets/dttw/icons/scalable/actions/paper-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">iconsets/dttw/icons/scalable/actions/lyrics-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">iconsets/dttw/icons/scalable/actions/lyrics-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">iconsets/dttw/icons/scalable/actions/brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">iconsets/dttw/icons/scalable/actions/fl-avatar-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/dttw/">
+    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/dttw/albumart-placeholder.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/terminal/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="play-large-symbolic.svg">iconsets/terminal/icons/scalable/actions/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="play-symbolic.svg">iconsets/terminal/icons/scalable/actions/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="pause-large-symbolic.svg">iconsets/terminal/icons/scalable/actions/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-large-symbolic.svg">iconsets/terminal/icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backward-large-symbolic.svg">iconsets/terminal/icons/scalable/actions/skip-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-consecutive-symbolic.svg">iconsets/terminal/icons/scalable/actions/playlist-consecutive-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-symbolic.svg">iconsets/terminal/icons/scalable/actions/playlist-repeat-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-song-symbolic.svg">iconsets/terminal/icons/scalable/actions/playlist-repeat-song-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">iconsets/terminal/icons/scalable/actions/consume-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">iconsets/terminal/icons/scalable/actions/consume-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-symbolic.svg">iconsets/terminal/icons/scalable/actions/crossfade-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-off-symbolic.svg">iconsets/terminal/icons/scalable/actions/crossfade-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-symbolic.svg">iconsets/terminal/icons/scalable/actions/mixramp-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">iconsets/terminal/icons/scalable/actions/mixramp-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-off-symbolic.svg">iconsets/terminal/icons/scalable/actions/rg-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-track-symbolic.svg">iconsets/terminal/icons/scalable/actions/rg-track-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-album-symbolic.svg">iconsets/terminal/icons/scalable/actions/rg-album-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-auto-symbolic.svg">iconsets/terminal/icons/scalable/actions/rg-auto-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="stop-sign-outline-symbolic.svg">iconsets/terminal/icons/scalable/actions/stop-sign-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="dock-left-symbolic.svg">iconsets/terminal/icons/scalable/actions/dock-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">iconsets/terminal/icons/scalable/actions/cross-small-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="left-symbolic.svg">iconsets/terminal/icons/scalable/actions/left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="right-symbolic.svg">iconsets/terminal/icons/scalable/actions/right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="up-symbolic.svg">iconsets/terminal/icons/scalable/actions/up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="down-symbolic.svg">iconsets/terminal/icons/scalable/actions/down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">iconsets/terminal/icons/scalable/actions/plus-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="copy-symbolic.svg">iconsets/terminal/icons/scalable/actions/copy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">iconsets/terminal/icons/scalable/actions/edit-select-none-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">iconsets/terminal/icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-away-from-line-up-symbolic.svg">iconsets/terminal/icons/scalable/actions/arrow-pointing-away-from-line-up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-insert-symbolic.svg">iconsets/terminal/icons/scalable/actions/text-insert-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">iconsets/terminal/icons/scalable/actions/exclamation-mark-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">iconsets/terminal/icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">iconsets/terminal/icons/scalable/actions/enabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">iconsets/terminal/icons/scalable/actions/disabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">iconsets/terminal/icons/scalable/actions/circle-outline-thick-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="hourglass-symbolic.svg">iconsets/terminal/icons/scalable/actions/hourglass-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">iconsets/terminal/icons/scalable/actions/format-cd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">iconsets/terminal/icons/scalable/actions/format-hires-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">iconsets/terminal/icons/scalable/actions/format-dsd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">iconsets/terminal/icons/scalable/actions/format-base-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">iconsets/terminal/icons/scalable/actions/star-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">iconsets/terminal/icons/scalable/actions/star-outline-rounded-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">iconsets/terminal/icons/scalable/actions/star-outline-half-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">iconsets/terminal/icons/scalable/actions/music-note-single-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-artist-symbolic.svg">iconsets/terminal/icons/scalable/actions/music-artist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-music-symbolic.svg">iconsets/terminal/icons/scalable/actions/library-music-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-artists-symbolic.svg">iconsets/terminal/icons/scalable/actions/library-artists-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">iconsets/terminal/icons/scalable/actions/recent-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-symbolic.svg">iconsets/terminal/icons/scalable/actions/playlist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">iconsets/terminal/icons/scalable/actions/paper-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">iconsets/terminal/icons/scalable/actions/lyrics-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">iconsets/terminal/icons/scalable/actions/lyrics-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">iconsets/terminal/icons/scalable/actions/brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">iconsets/terminal/icons/scalable/actions/fl-avatar-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/terminal/">
+    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/terminal/albumart-placeholder.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/neon/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="play-large-symbolic.svg">iconsets/neon/icons/scalable/actions/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="play-symbolic.svg">iconsets/neon/icons/scalable/actions/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="pause-large-symbolic.svg">iconsets/neon/icons/scalable/actions/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-large-symbolic.svg">iconsets/neon/icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backward-large-symbolic.svg">iconsets/neon/icons/scalable/actions/skip-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-consecutive-symbolic.svg">iconsets/neon/icons/scalable/actions/playlist-consecutive-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-symbolic.svg">iconsets/neon/icons/scalable/actions/playlist-repeat-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-song-symbolic.svg">iconsets/neon/icons/scalable/actions/playlist-repeat-song-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">iconsets/neon/icons/scalable/actions/consume-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">iconsets/neon/icons/scalable/actions/consume-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-symbolic.svg">iconsets/neon/icons/scalable/actions/crossfade-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-off-symbolic.svg">iconsets/neon/icons/scalable/actions/crossfade-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-symbolic.svg">iconsets/neon/icons/scalable/actions/mixramp-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">iconsets/neon/icons/scalable/actions/mixramp-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-off-symbolic.svg">iconsets/neon/icons/scalable/actions/rg-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-track-symbolic.svg">iconsets/neon/icons/scalable/actions/rg-track-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-album-symbolic.svg">iconsets/neon/icons/scalable/actions/rg-album-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-auto-symbolic.svg">iconsets/neon/icons/scalable/actions/rg-auto-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="stop-sign-outline-symbolic.svg">iconsets/neon/icons/scalable/actions/stop-sign-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="dock-left-symbolic.svg">iconsets/neon/icons/scalable/actions/dock-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">iconsets/neon/icons/scalable/actions/cross-small-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="left-symbolic.svg">iconsets/neon/icons/scalable/actions/left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="right-symbolic.svg">iconsets/neon/icons/scalable/actions/right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="up-symbolic.svg">iconsets/neon/icons/scalable/actions/up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="down-symbolic.svg">iconsets/neon/icons/scalable/actions/down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">iconsets/neon/icons/scalable/actions/plus-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="copy-symbolic.svg">iconsets/neon/icons/scalable/actions/copy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">iconsets/neon/icons/scalable/actions/edit-select-none-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">iconsets/neon/icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-away-from-line-up-symbolic.svg">iconsets/neon/icons/scalable/actions/arrow-pointing-away-from-line-up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-insert-symbolic.svg">iconsets/neon/icons/scalable/actions/text-insert-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">iconsets/neon/icons/scalable/actions/exclamation-mark-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">iconsets/neon/icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">iconsets/neon/icons/scalable/actions/enabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">iconsets/neon/icons/scalable/actions/disabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">iconsets/neon/icons/scalable/actions/circle-outline-thick-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="hourglass-symbolic.svg">iconsets/neon/icons/scalable/actions/hourglass-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">iconsets/neon/icons/scalable/actions/format-cd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">iconsets/neon/icons/scalable/actions/format-hires-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">iconsets/neon/icons/scalable/actions/format-dsd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">iconsets/neon/icons/scalable/actions/format-base-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">iconsets/neon/icons/scalable/actions/star-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">iconsets/neon/icons/scalable/actions/star-outline-rounded-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">iconsets/neon/icons/scalable/actions/star-outline-half-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">iconsets/neon/icons/scalable/actions/music-note-single-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-artist-symbolic.svg">iconsets/neon/icons/scalable/actions/music-artist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-music-symbolic.svg">iconsets/neon/icons/scalable/actions/library-music-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-artists-symbolic.svg">iconsets/neon/icons/scalable/actions/library-artists-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">iconsets/neon/icons/scalable/actions/recent-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-symbolic.svg">iconsets/neon/icons/scalable/actions/playlist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">iconsets/neon/icons/scalable/actions/paper-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">iconsets/neon/icons/scalable/actions/lyrics-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">iconsets/neon/icons/scalable/actions/lyrics-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">iconsets/neon/icons/scalable/actions/brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">iconsets/neon/icons/scalable/actions/fl-avatar-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/neon/">
+    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/neon/albumart-placeholder.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/bauhaus/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="play-large-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="play-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="pause-large-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-large-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backward-large-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/skip-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-consecutive-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/playlist-consecutive-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/playlist-repeat-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-song-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/playlist-repeat-song-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/consume-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/consume-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/crossfade-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-off-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/crossfade-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/mixramp-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/mixramp-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-off-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/rg-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-track-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/rg-track-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-album-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/rg-album-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-auto-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/rg-auto-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="stop-sign-outline-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/stop-sign-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="dock-left-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/dock-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/cross-small-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="left-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="right-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="up-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="down-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/plus-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="copy-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/copy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/edit-select-none-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-away-from-line-up-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/arrow-pointing-away-from-line-up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-insert-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/text-insert-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/exclamation-mark-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/enabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/disabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/circle-outline-thick-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="hourglass-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/hourglass-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/format-cd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/format-hires-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/format-dsd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/format-base-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/star-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/star-outline-rounded-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/star-outline-half-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/music-note-single-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-artist-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/music-artist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-music-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/library-music-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-artists-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/library-artists-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/recent-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/playlist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/paper-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/lyrics-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/lyrics-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">iconsets/bauhaus/icons/scalable/actions/fl-avatar-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/bauhaus/">
+    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/bauhaus/albumart-placeholder.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/folio/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks" alias="play-large-symbolic.svg">iconsets/folio/icons/scalable/actions/play-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="play-symbolic.svg">iconsets/folio/icons/scalable/actions/play-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="pause-large-symbolic.svg">iconsets/folio/icons/scalable/actions/pause-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-forward-large-symbolic.svg">iconsets/folio/icons/scalable/actions/skip-forward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="skip-backward-large-symbolic.svg">iconsets/folio/icons/scalable/actions/skip-backward-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-media-playlist-shuffle-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-media-playlist-shuffle-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-consecutive-symbolic.svg">iconsets/folio/icons/scalable/actions/playlist-consecutive-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-symbolic.svg">iconsets/folio/icons/scalable/actions/playlist-repeat-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-repeat-song-symbolic.svg">iconsets/folio/icons/scalable/actions/playlist-repeat-song-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-on-symbolic.svg">iconsets/folio/icons/scalable/actions/consume-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="consume-off-symbolic.svg">iconsets/folio/icons/scalable/actions/consume-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-symbolic.svg">iconsets/folio/icons/scalable/actions/crossfade-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="crossfade-off-symbolic.svg">iconsets/folio/icons/scalable/actions/crossfade-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-symbolic.svg">iconsets/folio/icons/scalable/actions/mixramp-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="mixramp-off-symbolic.svg">iconsets/folio/icons/scalable/actions/mixramp-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-off-symbolic.svg">iconsets/folio/icons/scalable/actions/rg-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-track-symbolic.svg">iconsets/folio/icons/scalable/actions/rg-track-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-album-symbolic.svg">iconsets/folio/icons/scalable/actions/rg-album-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="rg-auto-symbolic.svg">iconsets/folio/icons/scalable/actions/rg-auto-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="stop-sign-outline-symbolic.svg">iconsets/folio/icons/scalable/actions/stop-sign-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-open-menu-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-open-menu-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-find-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-edit-find-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-ascending-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-view-sort-ascending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-sort-descending-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-view-sort-descending-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="dock-left-symbolic.svg">iconsets/folio/icons/scalable/actions/dock-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-more-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-view-more-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="cross-small-symbolic.svg">iconsets/folio/icons/scalable/actions/cross-small-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="left-symbolic.svg">iconsets/folio/icons/scalable/actions/left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="right-symbolic.svg">iconsets/folio/icons/scalable/actions/right-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="up-symbolic.svg">iconsets/folio/icons/scalable/actions/up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="down-symbolic.svg">iconsets/folio/icons/scalable/actions/down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-add-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-list-add-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="plus-symbolic.svg">iconsets/folio/icons/scalable/actions/plus-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-list-remove-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-list-remove-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-user-trash-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-user-trash-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="copy-symbolic.svg">iconsets/folio/icons/scalable/actions/copy-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-document-edit-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-document-edit-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-edit-select-all-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-edit-select-all-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="edit-select-none-symbolic.svg">iconsets/folio/icons/scalable/actions/edit-select-none-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-view-refresh-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-view-refresh-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-at-line-down-symbolic.svg">iconsets/folio/icons/scalable/actions/arrow-pointing-at-line-down-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="arrow-pointing-away-from-line-up-symbolic.svg">iconsets/folio/icons/scalable/actions/arrow-pointing-away-from-line-up-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="text-insert-symbolic.svg">iconsets/folio/icons/scalable/actions/text-insert-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="exclamation-mark-symbolic.svg">iconsets/folio/icons/scalable/actions/exclamation-mark-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="info-outline-symbolic.svg">iconsets/folio/icons/scalable/actions/info-outline-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="enabled-feature-symbolic.svg">iconsets/folio/icons/scalable/actions/enabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="disabled-feature-symbolic.svg">iconsets/folio/icons/scalable/actions/disabled-feature-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="circle-outline-thick-symbolic.svg">iconsets/folio/icons/scalable/actions/circle-outline-thick-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="hourglass-symbolic.svg">iconsets/folio/icons/scalable/actions/hourglass-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-content-loading-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-content-loading-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-cd-symbolic.svg">iconsets/folio/icons/scalable/actions/format-cd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-hires-symbolic.svg">iconsets/folio/icons/scalable/actions/format-hires-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-dsd-symbolic.svg">iconsets/folio/icons/scalable/actions/format-dsd-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="format-base-symbolic.svg">iconsets/folio/icons/scalable/actions/format-base-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-large-symbolic.svg">iconsets/folio/icons/scalable/actions/star-large-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-rounded-symbolic.svg">iconsets/folio/icons/scalable/actions/star-outline-rounded-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="star-outline-half-left-symbolic.svg">iconsets/folio/icons/scalable/actions/star-outline-half-left-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-note-single-symbolic.svg">iconsets/folio/icons/scalable/actions/music-note-single-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="music-artist-symbolic.svg">iconsets/folio/icons/scalable/actions/music-artist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-music-symbolic.svg">iconsets/folio/icons/scalable/actions/library-music-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="library-artists-symbolic.svg">iconsets/folio/icons/scalable/actions/library-artists-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="recent-symbolic.svg">iconsets/folio/icons/scalable/actions/recent-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-folder-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-folder-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="playlist-symbolic.svg">iconsets/folio/icons/scalable/actions/playlist-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="paper-symbolic.svg">iconsets/folio/icons/scalable/actions/paper-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-on-symbolic.svg">iconsets/folio/icons/scalable/actions/lyrics-on-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="lyrics-off-symbolic.svg">iconsets/folio/icons/scalable/actions/lyrics-off-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="brush-symbolic.svg">iconsets/folio/icons/scalable/actions/brush-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="fl-avatar-symbolic.svg">iconsets/folio/icons/scalable/actions/fl-avatar-symbolic.svg</file>
+  </gresource>
+  <gresource prefix="/io/github/h3303/Flaclify/iconsets/folio/">
+    <file preprocess="xml-stripblanks" alias="albumart-placeholder.svg">iconsets/folio/albumart-placeholder.svg</file>
+  </gresource>
+  <!-- iconsets:end -->
 </gresources>

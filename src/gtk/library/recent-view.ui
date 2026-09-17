@@ -24,7 +24,7 @@
                         <style>
                           <class name="destructive-action"/>
                         </style>
-                        <property name="icon-name">user-trash-symbolic</property>
+                        <property name="icon-name">fl-user-trash-symbolic</property>
                         <property name="tooltip-text" translatable="true">Clear history</property>
                       </object>
                     </child>

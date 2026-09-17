@@ -2,6 +2,7 @@
  * @scheme: light
  * @auto-accent: off
  * @art-background: off
+ * @icons: dttw
  *
  * Euphonica × Moirai Digital, direction 1a "Quiet broadsheet": toner on paper,
  * assembled by hand. Two inks only, 1px line-ink rules, no rounding, no blur,
@@ -503,3 +504,16 @@ gridview > child:selected .caption, gridview > child:selected .dim-label {
   color: #e8e5dc;
   opacity: 0.75;
 }
+
+/* ---- Avatars and long-form text ---------------------------------------------
+ * The artist avatar is a plate: paper ground, line-ink rule, themed mark.
+ * Wiki and bio text use libadwaita's document style, whose typeface comes
+ * from --document-font-family rather than the window font. */
+avatar { background-color: #e8e5dc; color: #141412; border: 1px solid #1a1a18; border-radius: 0; }
+avatar image { color: #141412; }
+:root { --document-font-family: "Old Standard TT", "Liberation Serif", serif; --document-font-size: 12.5px;
+        --monospace-font-family: "Special Elite", monospace; --monospace-font-size: 11px; }
+.document, textview, textview text { font-family: "Old Standard TT", "Liberation Serif", serif; font-size: 12.5px; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #e8e5dc; color: #141412; }

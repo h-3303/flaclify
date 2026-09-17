@@ -261,7 +261,7 @@
 				<property name="header-suffix">
 					<object class="GtkButton" id="refresh_cache_stats_btn">
 						<property name="tooltip-text" translatable="true">Refresh cache statistics</property>
-						<property name="icon-name">view-refresh-symbolic</property>
+						<property name="icon-name">fl-view-refresh-symbolic</property>
 					</object>
 				</property>
 		<child>

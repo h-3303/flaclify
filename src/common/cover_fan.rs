@@ -6,7 +6,7 @@ use gtk::{
 };
 use std::{cell::Cell, f32::consts::PI};
 
-use crate::cache::placeholders::{ALBUMART_PLACEHOLDER, ALBUMART_THUMBNAIL_PLACEHOLDER};
+use crate::cache::placeholders;
 
 // As soon as a cell comes within this close of the render area, treat it as
 // visible & load album art early to avoid showing loading spinners.
@@ -217,11 +217,8 @@ impl CoverFan {
     }
 
     pub fn clear_cover(&self, index: u8, thumb: bool) {
-        let placeholder = Some(if thumb {
-            &*ALBUMART_THUMBNAIL_PLACEHOLDER
-        } else {
-            &*ALBUMART_PLACEHOLDER
-        });
+        let themed = placeholders::albumart(thumb);
+        let placeholder = Some(&themed);
         match index {
             0 => {
                 self.imp().cover1.set_paintable(placeholder);

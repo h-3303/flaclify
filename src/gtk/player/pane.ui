@@ -188,7 +188,7 @@
               </child>
               <child>
                 <object class="GtkButton" id="clear_lyrics">
-                  <property name="icon-name">user-trash-symbolic</property>
+                  <property name="icon-name">fl-user-trash-symbolic</property>
                   <property name="tooltip-text" translatable="true">Clear lyrics</property>
                   <style>
                     <class name="destructive-action"/>

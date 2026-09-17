@@ -19,7 +19,9 @@
 					<object class="AdwAvatar" id="avatar">
 						<property name="halign">center</property>
 						<property name="valign">end</property>
-						<property name="show-initials">true</property>
+						<!-- Themed mark instead of initials: each icon set ships fl-avatar. -->
+						<property name="show-initials">false</property>
+						<property name="icon-name">fl-avatar-symbolic</property>
 						<property name="size">96</property>
 					</object>
 				</child>

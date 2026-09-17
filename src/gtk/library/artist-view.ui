@@ -21,7 +21,7 @@
                     </child>
                     <child type="end">
                       <object class="GtkToggleButton" id="search_btn">
-                        <property name="icon-name">edit-find-symbolic</property>
+                        <property name="icon-name">fl-edit-find-symbolic</property>
                       </object>
                     </child>
                     <child type="end">
@@ -43,7 +43,7 @@
                             <property name="spacing">6</property>
                             <child>
                               <object class="GtkImage" id="sort_dir">
-                                <property name="icon-name">view-sort-ascending-symbolic</property>
+                                <property name="icon-name">fl-view-sort-ascending-symbolic</property>
                               </object>
                             </child>
                             <child>

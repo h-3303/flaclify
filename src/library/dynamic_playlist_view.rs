@@ -216,8 +216,8 @@ mod imp {
                 .bind("sort-direction", &view_options_btn, "icon-name")
                 .get_only()
                 .mapping(|dir, _| match dir.get::<String>().unwrap().as_ref() {
-                    "asc" => Some("view-sort-ascending-symbolic".to_value()),
-                    _ => Some("view-sort-descending-symbolic".to_value()),
+                    "asc" => Some("fl-view-sort-ascending-symbolic".to_value()),
+                    _ => Some("fl-view-sort-descending-symbolic".to_value()),
                 })
                 .build();
 

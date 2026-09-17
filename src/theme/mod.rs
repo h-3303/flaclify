@@ -8,6 +8,8 @@
  *     @scheme: light          (light | dark | follow — optional)
  *     @auto-accent: off       (off | on — optional; off suppresses album-art accents)
  *     @art-background: off    (off | on — optional; off hides the blurred album-art wash)
+ *     @icons: dttw            (optional; a bundled icon set under /iconsets/<name>/icons,
+ *                              searched before the stock icons while the theme is active)
  *
  * inside the leading comment block, followed by ordinary rules such as
  *     :root { --window-bg-color: #ece3cc; ... }
@@ -30,6 +32,7 @@ use std::{
 use crate::utils::settings_manager;
 
 const RESOURCE_DIR: &str = "/io/github/h3303/Flaclify/themes/";
+const ICONSET_DIR: &str = "/io/github/h3303/Flaclify/iconsets/";
 pub const DEFAULT_ID: &str = "default";
 
 #[derive(Clone, Debug)]
@@ -43,6 +46,8 @@ pub struct Theme {
     pub auto_accent: Option<bool>,
     /// `Some(false)` means the blurred album-art background is hidden while this theme is on.
     pub art_background: Option<bool>,
+    /// Name of a bundled icon set that overrides the stock symbolic icons.
+    pub icons: Option<String>,
     pub css: String,
     pub user: bool,
 }
@@ -55,6 +60,7 @@ impl Theme {
             scheme: None,
             auto_accent: None,
             art_background: None,
+            icons: None,
             css: String::new(),
             user: false,
         }
@@ -65,6 +71,7 @@ impl Theme {
         let mut scheme = None;
         let mut auto_accent = None;
         let mut art_background = None;
+        let mut icons = None;
 
         // Only the leading comment block is inspected.
         if let Some(start) = css.find("/*") {
@@ -95,6 +102,9 @@ impl Theme {
                             _ => None,
                         }
                     }
+                    "icons" | "icon-set" if !value.is_empty() && value != "default" => {
+                        icons = Some(value.to_owned())
+                    }
                     "art-background" | "album-art-bg" => {
                         art_background = match value {
                             "off" | "false" | "no" => Some(false),
@@ -113,6 +123,7 @@ impl Theme {
             scheme,
             auto_accent,
             art_background,
+            icons,
             css,
             user,
         }
@@ -241,6 +252,7 @@ impl ThemeManager {
             .unwrap_or_else(Theme::stock);
 
         self.provider.load_from_string(&theme.css);
+        apply_icon_set(theme.icons.as_deref());
 
         let settings = &self.settings;
         if let Some(scheme) = theme.scheme {
@@ -335,6 +347,29 @@ impl ThemeManager {
         });
         *self.reload_source.borrow_mut() = Some(id);
     }
+}
+
+/// Put the theme's icon set (if any) first in the icon theme's resource search
+/// path so its symbolic icons shadow the stock ones. Icons the set does not
+/// provide fall through to the stock bundle. Icon widgets pick the change up
+/// live via the icon theme's `changed` signal.
+fn apply_icon_set(set: Option<&str>) {
+    crate::cache::placeholders::refresh(set);
+    let Some(display) = gdk::Display::default() else {
+        return;
+    };
+    let icon_theme = gtk::IconTheme::for_display(&display);
+    let mut paths: Vec<String> = icon_theme
+        .resource_path()
+        .iter()
+        .map(|p| p.to_string())
+        .filter(|p| !p.starts_with(ICONSET_DIR))
+        .collect();
+    if let Some(set) = set {
+        paths.insert(0, format!("{ICONSET_DIR}{set}/icons"));
+    }
+    let refs: Vec<&str> = paths.iter().map(String::as_str).collect();
+    icon_theme.set_resource_path(&refs);
 }
 
 fn load_bundled() -> Vec<Theme> {

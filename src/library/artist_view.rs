@@ -238,8 +238,8 @@ impl ArtistView {
             .bind("sort-direction", &sort_dir, "icon-name")
             .get_only()
             .mapping(|dir, _| match dir.get::<String>().unwrap().as_ref() {
-                "asc" => Some("view-sort-ascending-symbolic".to_value()),
-                _ => Some("view-sort-descending-symbolic".to_value()),
+                "asc" => Some("fl-view-sort-ascending-symbolic".to_value()),
+                _ => Some("fl-view-sort-descending-symbolic".to_value()),
             })
             .build();
 

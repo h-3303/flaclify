@@ -18,7 +18,7 @@ pub enum INodeType {
 impl INodeType {
     pub fn icon_name(&self) -> &'static str {
         match self {
-            Self::Folder => "folder-symbolic",
+            Self::Folder => "fl-folder-symbolic",
             Self::Song => "music-note-single-symbolic",
             Self::Playlist | Self::DynamicPlaylist => "playlist-symbolic",
             _ => "paper-symbolic",

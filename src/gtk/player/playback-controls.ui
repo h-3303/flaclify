@@ -81,7 +81,7 @@
     <child>
       <object class="GtkToggleButton" id="random_btn">
         <property name="valign">center</property>
-        <property name="icon-name">media-playlist-shuffle-symbolic</property>
+        <property name="icon-name">fl-media-playlist-shuffle-symbolic</property>
         <property name="tooltip-text" translatable="true">Shuffle Queue</property>
         <style>
           <class name="circular"/>

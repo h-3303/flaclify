@@ -1,5 +1,6 @@
 /* @name: Neon
  * @scheme: dark
+ * @icons: neon
  *
  * Deep violet ground, magenta and cyan light. Generous radii, pill buttons,
  * soft glow on anything active. Leaves the auto-accent setting alone, so with
@@ -227,3 +228,12 @@ undershoot.top { background-image: none; box-shadow: none; }
 button.suggested-action label, button.suggested-action image,
 button:checked .caption, gridview > child:selected .caption,
 listview > row:selected .caption { color: #ffffff; }
+
+/* ---- Avatars and long-form text ------------------------------------------ */
+avatar { background: linear-gradient(135deg, #ff4fa3, #7a3cff); color: #fff; box-shadow: 0 0 14px rgb(255 79 163 / 45%); }
+avatar image { color: #fff; }
+:root { --document-font-family: "Inter", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif; }
+.document, textview, textview text { font-family: "Inter", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif; }
+
+/* libadwaita hands avatars a random gradient per name; keep the theme's one gradient. */
+avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: linear-gradient(135deg, #ff4fa3, #7a3cff); color: #ffffff; }

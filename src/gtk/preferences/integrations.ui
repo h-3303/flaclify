@@ -42,7 +42,7 @@
                 <style>
                   <class name="warning"/>
                 </style>
-                <property name="icon-name">content-loading-symbolic</property>
+                <property name="icon-name">fl-content-loading-symbolic</property>
               </object>
             </child>
           </object>

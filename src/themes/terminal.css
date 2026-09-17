@@ -1,6 +1,7 @@
 /* @name: Terminal
  * @scheme: dark
  * @auto-accent: off
+ * @icons: terminal
  *
  * Phosphor on black. Monospace, one-pixel rules, no rounding, no shadows.
  * Hover and selection invert instead of tinting.
@@ -254,3 +255,13 @@ button:checked .caption, button:checked .dim-label,
 listview > row:selected .caption, gridview > child:selected .caption {
   color: #04140a;
 }
+
+/* ---- Avatars and long-form text ------------------------------------------ */
+avatar { background-color: #101612; color: #39ff88; border: 1px solid rgb(57 255 136 / 28%); border-radius: 0; }
+avatar image { color: #39ff88; }
+:root { --document-font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; --document-font-size: 10pt;
+        --monospace-font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; }
+.document, textview, textview text { font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; font-size: 10pt; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #101612; color: #39ff88; }

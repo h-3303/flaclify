@@ -16,13 +16,13 @@
             </child>
             <child type="end">
               <object class="GtkToggleButton" id="search_btn">
-                <property name="icon-name">edit-find-symbolic</property>
+                <property name="icon-name">fl-edit-find-symbolic</property>
               </object>
             </child>
             <child type="end">
               <object class="GtkMenuButton" id="view_options_btn">
                 <property name="menu-model">view_options_model</property>
-                <property name="icon-name">view-sort-ascending-symbolic</property>
+                <property name="icon-name">fl-view-sort-ascending-symbolic</property>
               </object>
             </child>
           </object>

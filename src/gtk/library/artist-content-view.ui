@@ -37,7 +37,7 @@
                 <child type="end">
                   <object class="GtkMenuButton" id="edit_menu">
                     <property name="menu-model">edit_menu_model</property>
-                    <property name="icon-name">view-more-symbolic</property>
+                    <property name="icon-name">fl-view-more-symbolic</property>
                   </object>
                 </child>
                 <child type="end">
@@ -341,7 +341,7 @@
                                                           <class name="circular"/>
                                                         </style>
                                                         <property name="halign">center</property>
-                                                        <property name="icon-name">list-add-symbolic</property>
+                                                        <property name="icon-name">fl-list-add-symbolic</property>
                                                       </object>
                                                     </child>
                                                   </object>
@@ -729,7 +729,7 @@
                                         <property name="spacing">6</property>
                                         <child>
                                           <object class="GtkImage">
-                                            <property name="icon-name">list-add-symbolic</property>
+                                            <property name="icon-name">fl-list-add-symbolic</property>
                                           </object>
                                         </child>
                                         <child>
@@ -754,7 +754,7 @@
                                     <style>
                                       <class name="circular"/>
                                     </style>
-                                    <property name="icon-name">edit-select-all-symbolic</property>
+                                    <property name="icon-name">fl-edit-select-all-symbolic</property>
                                     <style>
                                       <class name="circular"/>
                                       <class name="flat"/>

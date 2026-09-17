@@ -168,7 +168,7 @@
                                             <property name="spacing">6</property>
                                             <child>
                                               <object class="GtkImage">
-                                                <property name="icon-name">list-add-symbolic</property>
+                                                <property name="icon-name">fl-list-add-symbolic</property>
                                               </object>
                                             </child>
                                             <child>
@@ -206,7 +206,7 @@
                                             <property name="spacing">6</property>
                                             <child>
                                               <object class="GtkImage">
-                                                <property name="icon-name">list-add-symbolic</property>
+                                                <property name="icon-name">fl-list-add-symbolic</property>
                                               </object>
                                             </child>
                                             <child>

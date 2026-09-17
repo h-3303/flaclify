@@ -48,7 +48,7 @@
                     <child type="end">
                       <object class="GtkMenuButton" id="edit_menu">
                         <property name="menu-model">edit_menu_model</property>
-                        <property name="icon-name">view-more-symbolic</property>
+                        <property name="icon-name">fl-view-more-symbolic</property>
                       </object>
                     </child>
                   </object>
@@ -110,7 +110,7 @@
                         </child>
                         <child>
                           <object class="GtkToggleButton" id="search_btn">
-                            <property name="icon-name">edit-find-symbolic</property>
+                            <property name="icon-name">fl-edit-find-symbolic</property>
                             <property name="tooltip-text" translatable="true">Search queue</property>
                           </object>
                         </child>

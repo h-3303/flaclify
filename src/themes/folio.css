@@ -1,6 +1,7 @@
 /* @name: Folio
  * @scheme: light
  * @auto-accent: off
+ * @icons: folio
  *
  * Laid paper, engraver's ink, a little gilt. Serif throughout, square corners,
  * hairline and double rules instead of shadows. Nothing glows.
@@ -216,3 +217,12 @@ button:not(.flat):checked label, button:not(.flat):active label,
 button:not(.flat):checked image, button:not(.flat):active image { color: #f1e8d2; }
 listview > row:selected label, gridview > child:selected label,
 listview > row:selected .caption, gridview > child:selected .caption { color: #221b0f; }
+
+/* ---- Avatars and long-form text ------------------------------------------ */
+avatar { background-color: #f6f0df; color: #221b0f; border: 1px solid #b3a683; border-radius: 0; }
+avatar image { color: #574c38; }
+:root { --document-font-family: "Cormorant Garamond", "EB Garamond", "Libre Baskerville", "Liberation Serif", "DejaVu Serif", serif; --document-font-size: 12pt; }
+.document, textview, textview text { font-family: "Cormorant Garamond", "EB Garamond", "Libre Baskerville", "Liberation Serif", "DejaVu Serif", serif; font-size: 12pt; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #f6f0df; color: #574c38; }

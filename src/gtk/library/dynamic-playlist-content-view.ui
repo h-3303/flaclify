@@ -34,7 +34,7 @@
             <property name="header-end-widget">
               <object class="GtkMenuButton" id="ellipsis_menu">
                 <property name="menu-model">ellipsis_menu_model</property>
-                <property name="icon-name">view-more-symbolic</property>
+                <property name="icon-name">fl-view-more-symbolic</property>
               </object>
             </property>
             <property name="infobox-widget">
@@ -204,7 +204,7 @@
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkImage">
-                            <property name="icon-name">list-add-symbolic</property>
+                            <property name="icon-name">fl-list-add-symbolic</property>
                           </object>
                         </child>
                         <child>
@@ -224,7 +224,7 @@
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkImage">
-                            <property name="icon-name">document-edit-symbolic</property>
+                            <property name="icon-name">fl-document-edit-symbolic</property>
                           </object>
                         </child>
                         <child>

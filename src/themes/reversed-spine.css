@@ -2,6 +2,7 @@
  * @scheme: light
  * @auto-accent: off
  * @art-background: off
+ * @icons: dttw
  *
  * Euphonica × Moirai Digital, direction 1b "Reversed spine": the sidebar is
  * a toner-black spine with paper knocked out of it, the current view is the
@@ -193,3 +194,5 @@ button.flat.sidebar-btn:checked image {
 button.flat.sidebar-btn:checked .caption,
 button.flat.sidebar-btn:checked .dim-label,
 .flaclify-sidebar button:not(.sidebar-btn):checked .caption { color: #141412; opacity: 1; }
+
+/* Avatars sit in the paper content pane; same plate as Broadsheet. */
