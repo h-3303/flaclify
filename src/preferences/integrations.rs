@@ -17,6 +17,8 @@ mod imp {
         #[template_child]
         pub flacli_status: TemplateChild<adw::ActionRow>,
         #[template_child]
+        pub agent_command: TemplateChild<adw::EntryRow>,
+        #[template_child]
         pub enable_mpris: TemplateChild<adw::SwitchRow>,
         #[template_child]
         pub run_in_background: TemplateChild<adw::SwitchRow>,
@@ -156,6 +158,11 @@ impl IntegrationsPreferences {
             .build();
         local_settings
             .bind("music-directory", &imp.local_music_directory.get(), "text")
+            .build();
+
+        // The agent a plain sentence on the Ask flacli page is handed to
+        utils::settings_manager()
+            .bind("agent-command", &imp.agent_command.get(), "text")
             .build();
 
         // flacli: say what the gate decided, and why

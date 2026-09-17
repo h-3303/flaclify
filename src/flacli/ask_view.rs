@@ -6,10 +6,27 @@ use adw::prelude::*;
 use gtk::{glib, glib::clone};
 use std::rc::Rc;
 
-use super::{controller::run_raw, get_view::show_sidebar_button};
+use super::{
+    controller::{run_agent, run_raw},
+    get_view::show_sidebar_button,
+};
 use crate::window::EuphonicaWindow;
 
-const INTRO: &str = "Everything the other pages do is a flacli command, and so is everything they do not. Type what would follow `flacli` on the command line and press Enter. The answer comes back as flacli gives it, JSON where it speaks JSON. Commands lists them all; Guide is the agent guide, with the rules.";
+const INTRO: &str = "Everything the other pages do is a flacli command, and so is everything they do not. Type what would follow `flacli` on the command line and press Enter; the answer comes back as flacli gives it. Anything that does not start with a flacli command is a sentence for the agent (Claude Code with the flacli plugin, unless Preferences say otherwise), which reads the guide, uses the tools and reports back. It fetches on a plain request; it stops before deleting or applying and tells you what it would run.";
+
+/// flacli's commands, as `flacli --help` lists them. Anything else typed is a sentence.
+const COMMANDS: &[&str] = &[
+    "guide", "doctor", "config", "get", "import", "sync", "status", "review", "approve", "skip", "queue", "cancel", "m3u",
+    "mpd", "delete", "scan", "tidy", "wiki", "avatar", "cover", "service", "search", "download", "downloads", "mcp",
+];
+
+/// A line meant for flacli itself, rather than for the agent.
+pub fn is_command(line: &str) -> bool {
+    match line.split_whitespace().next() {
+        Some(first) => first.starts_with('-') || COMMANDS.contains(&first),
+        None => false,
+    }
+}
 
 /// A shell-like split: spaces separate, single or double quotes group, a backslash escapes.
 pub fn split_args(line: &str) -> Vec<String> {
@@ -93,7 +110,7 @@ impl AskView {
             .valign(gtk::Align::Center)
             .build();
         let entry = gtk::Entry::builder()
-            .placeholder_text("status · status 1 · skip 1 --remaining · tidy --new · get \"Artist - Title\" · doctor")
+            .placeholder_text("status 1 · skip 1 --remaining · doctor · or a sentence: what is still downloading?")
             .hexpand(true)
             .css_classes(["monospace"])
             .build();
@@ -200,29 +217,56 @@ impl AskView {
     }
 
     fn run_line_owned(self: &Rc<Self>, line: String) {
-        let args = split_args(&line);
-        if args.is_empty() {
+        let line = line.trim().to_owned();
+        if line.is_empty() {
             return;
         }
-        self.append(&format!("$ flacli {}\n", line.trim()));
         self.spinner.set_visible(true);
         self.run_btn.set_sensitive(false);
         let view = self.clone();
-        glib::spawn_future_local(async move {
-            let text = match run_raw(args).await {
-                Ok(answer) => answer.pretty(),
-                Err(e) => format!("could not run flacli: {e}"),
-            };
-            view.append(&format!("{}\n\n", text.trim_end()));
-            view.spinner.set_visible(false);
-            view.run_btn.set_sensitive(true);
-        });
+        if is_command(&line) {
+            let args = split_args(&line);
+            self.append(&format!("$ flacli {line}\n"));
+            glib::spawn_future_local(async move {
+                let text = match run_raw(args).await {
+                    Ok(answer) => answer.pretty(),
+                    Err(e) => format!("could not run flacli: {e}"),
+                };
+                view.finish(&text);
+            });
+        } else {
+            self.append(&format!("» {line}\n   (handed to the agent; this can take a minute)\n"));
+            glib::spawn_future_local(async move {
+                let text = match run_agent(line).await {
+                    Ok(answer) if answer.ok => answer.stdout,
+                    Ok(answer) => answer.pretty(),
+                    Err(e) => format!("could not reach the agent: {e}"),
+                };
+                view.finish(&text);
+            });
+        }
+    }
+
+    fn finish(&self, text: &str) {
+        self.append(&format!("{}\n\n", text.trim_end()));
+        self.spinner.set_visible(false);
+        self.run_btn.set_sensitive(true);
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn commands_are_told_from_sentences() {
+        assert!(is_command("status 1"));
+        assert!(is_command("--help"));
+        assert!(is_command("tidy --new"));
+        assert!(!is_command("Black box recorder has songs in a duplicate album"));
+        assert!(!is_command("what is still downloading?"));
+        assert!(!is_command(""));
+    }
 
     #[test]
     fn args_split_like_a_shell() {

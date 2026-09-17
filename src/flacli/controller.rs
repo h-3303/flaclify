@@ -629,6 +629,41 @@ pub(super) async fn run_raw(args: Vec<String>) -> Result<Answer, Error> {
     .unwrap_or(Err(Error::Thread))
 }
 
+/// What the agent is told beyond the sentence, so its answer fits a console pane.
+const AGENT_BRIEF: &str = "You are reached from the Ask flacli page of Flaclify, the music player, by a person typing a sentence \
+into a small console. Use the flacli tools (or `flacli` on the command line, with --compact) to find out and to act. \
+Naming music is the yes; anything else destructive (deleting files, applying a tidy plan, forgetting a playlist) needs a yes \
+the person cannot give here: say exactly what you would run and stop. Answer in a few plain lines, no headings, no markdown.";
+
+/// Hand a plain sentence to the configured agent (Preferences → Integrations → flacli) and
+/// return what it printed. The sentence goes last on its command line.
+pub(super) async fn run_agent(sentence: String) -> Result<Answer, Error> {
+    let command = crate::utils::settings_manager().string("agent-command");
+    let mut parts = super::ask_view::split_args(&command);
+    if parts.is_empty() {
+        return Err(Error::Exit("no agent is set: Preferences → Integrations → flacli → Agent for plain sentences".to_owned()));
+    }
+    let program = parts.remove(0);
+    gio::spawn_blocking(move || {
+        let output = Command::new(&program)
+            .args(&parts)
+            .arg("--append-system-prompt")
+            .arg(AGENT_BRIEF)
+            .arg(&sentence)
+            // A Claude Code session refuses to start inside another one.
+            .env_remove("CLAUDECODE")
+            .output()
+            .map_err(Error::Spawn)?;
+        Ok(Answer {
+            stdout: String::from_utf8_lossy(&output.stdout).into_owned(),
+            stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
+            ok: output.status.success(),
+        })
+    })
+    .await
+    .unwrap_or(Err(Error::Thread))
+}
+
 /// Spawn `flacli --compact <args>` off the main thread and parse its JSON.
 pub(super) async fn run<T>(args: Vec<String>) -> Result<T, Error>
 where

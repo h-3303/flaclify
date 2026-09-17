@@ -87,12 +87,18 @@
     <child>
       <object class="AdwPreferencesGroup">
         <property name="title" translatable="true">flacli</property>
-        <property name="description" translatable="true">The incoming indicator, the ghost rows in a synced playlist and the releases an artist page lacks read flacli's status. They appear only when flacli is on the PATH and files into the folder MPD serves; nothing is written.</property>
+        <property name="description" translatable="true">The incoming indicator, the ghost rows in a synced playlist, the releases an artist page lacks and the Get, Requests, Tidy and Ask flacli pages all go through flacli's command line. They appear only when flacli is on the PATH and files into the folder MPD serves.</property>
         <child>
           <object class="AdwActionRow" id="flacli_status">
             <property name="title" translatable="true">Status</property>
             <property name="subtitle" translatable="true">Not checked yet</property>
             <property name="use-markup">false</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwEntryRow" id="agent_command">
+            <property name="title" translatable="true">Agent for plain sentences on the Ask flacli page</property>
+            <property name="tooltip-text" translatable="true">A command line; the sentence is appended as its last argument. Default: Claude Code in print mode with the flacli plugin's tools allowed. Empty refuses sentences.</property>
           </object>
         </child>
       </object>

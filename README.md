@@ -133,9 +133,13 @@ sidebar while flacli is set up:
   it stands (searching, needs a decision, queued, downloading, not found), a skip per row and one
   for the rest. A track leaves the list as it is filed, and is then simply in the library. It is
   never stored as a playlist in MPD.
-- **Ask flacli** is a console for any flacli command, for the cases the buttons do not cover:
-  what follows `flacli` on the command line, run as typed, with the answer as flacli gives it.
-  Commands and Guide are one click away.
+- **Ask flacli** is a console for the cases the buttons do not cover. A line that starts with a
+  flacli command runs as typed, the answer as flacli gives it. Anything else is a sentence for an
+  agent: by default Claude Code in print mode with the flacli plugin's tools allowed, so "black
+  box recorder has songs that belong in England Made Me, in a duplicate album" gets read, looked
+  into and answered. The agent fetches on a plain request and stops before anything destructive,
+  saying what it would run. The command is a setting under Preferences → Integrations → flacli;
+  any program that takes the sentence as its last argument will do.
 - **Tidy** runs `flacli tidy` as a dry run, shows the plan and the report, and applies it on the
   yes with every deletion named first; files new arrivals; and fills what the player shows but the
   library lacks (artist bios and album wikis, artist pictures, album covers), with the missing
