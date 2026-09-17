@@ -56,7 +56,14 @@ fn count(value: &Value, key: &str) -> u64 {
 }
 
 fn plural(n: u64, word: &str) -> String {
-    format!("{n} {word}{}", if n == 1 { "" } else { "s" })
+    let ending = if n == 1 {
+        ""
+    } else if word.ends_with("sh") || word.ends_with("ch") || word.ends_with('s') || word.ends_with('x') {
+        "es"
+    } else {
+        "s"
+    };
+    format!("{n} {word}{ending}")
 }
 
 /// What a dry run found, in one line.
@@ -97,6 +104,9 @@ fn plan_summary(plan: &Value) -> String {
         line.push_str(&open.join(", "));
         line.push_str(" (resolved in approved.py)");
     }
+    if count(&questions, "path_clashes") > 0 {
+        line.push_str(". Apply waits on the path clashes below");
+    }
     let unreadable = count(plan, "unreadable");
     if unreadable > 0 {
         line.push_str(&format!(". {} unreadable", plural(unreadable, "file")));
@@ -129,6 +139,37 @@ fn variant_lines(plan: &Value) -> Vec<String> {
                     let s = |k: &str| v.get(k).and_then(Value::as_str).unwrap_or("?");
                     let files = count(v, "files");
                     format!("{} → {}  ({}, {})", s("variant"), s("canonical"), s("artist"), plural(files, "file"))
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// The path clashes of a plan, one line each: what would move onto what.
+fn clash_lines(plan: &Value) -> Vec<String> {
+    plan.get("open_questions")
+        .and_then(|q| q.get("clashes"))
+        .and_then(Value::as_array)
+        .map(|groups| {
+            groups
+                .iter()
+                .map(|g| {
+                    let target = g.get("target").and_then(Value::as_str).unwrap_or("?");
+                    let files: Vec<String> = g
+                        .get("files")
+                        .and_then(Value::as_array)
+                        .map(|fs| {
+                            fs.iter()
+                                .map(|f| {
+                                    let path = f.get("path").and_then(Value::as_str).unwrap_or("?");
+                                    let secs = f.get("seconds").and_then(Value::as_f64).unwrap_or(0.0);
+                                    let moves = f.get("moves").and_then(Value::as_bool).unwrap_or(false);
+                                    format!("{path} ({secs:.0} s{})", if moves { ", would move" } else { ", in place" })
+                                })
+                                .collect()
+                        })
+                        .unwrap_or_default();
+                    format!("{target}:\n    {}", files.join("\n    "))
                 })
                 .collect()
         })
@@ -217,6 +258,7 @@ pub struct TidyView {
     report_row: adw::ExpanderRow,
     report: gtk::TextView,
     variants_row: adw::ActionRow,
+    clashes_row: adw::ActionRow,
     wiki_row: adw::ActionRow,
     avatar_row: adw::ActionRow,
     cover_row: adw::ActionRow,
@@ -271,6 +313,17 @@ impl TidyView {
             .build();
         variants_row.add_suffix(&accept_btn);
         files_group.add(&variants_row);
+        let keep_existing_btn = suffix_button("Keep what is there", "The file already in place stays; the copy that would move onto it is marked for deletion");
+        let keep_incoming_btn = suffix_button("Keep the newcomers", "The file that would move in stays; the one in place is marked for deletion");
+        let clashes_row = adw::ActionRow::builder()
+            .title("Two files would land on one path")
+            .subtitle("")
+            .use_markup(false)
+            .visible(false)
+            .build();
+        clashes_row.add_suffix(&keep_existing_btn);
+        clashes_row.add_suffix(&keep_incoming_btn);
+        files_group.add(&clashes_row);
         let (report_pane, report) = monospace_pane(320);
         let report_row = adw::ExpanderRow::builder()
             .title("Report")
@@ -348,6 +401,8 @@ impl TidyView {
                 apply_btn.clone(),
                 new_btn.clone(),
                 accept_btn.clone(),
+                keep_existing_btn.clone(),
+                keep_incoming_btn.clone(),
                 fill_all_btn.clone(),
                 wiki_btn.clone(),
                 avatar_btn.clone(),
@@ -360,6 +415,7 @@ impl TidyView {
             report_row,
             report,
             variants_row,
+            clashes_row,
             wiki_row,
             avatar_row,
             cover_row,
@@ -379,6 +435,8 @@ impl TidyView {
         hook(&apply_btn, &this, |v| v.apply());
         hook(&new_btn, &this, |v| v.file_new());
         hook(&accept_btn, &this, |v| v.accept_variants());
+        hook(&keep_existing_btn, &this, |v| v.resolve_clashes("existing"));
+        hook(&keep_incoming_btn, &this, |v| v.resolve_clashes("incoming"));
         hook(&refresh_btn, &this, |v| v.refresh_counts());
         hook(&fill_all_btn, &this, |v| v.fill_all());
         hook(&wiki_btn, &this, |v| v.fill(Content::Wiki));
@@ -493,6 +551,9 @@ impl TidyView {
         let variants = variant_lines(&plan);
         self.variants_row.set_visible(!variants.is_empty());
         self.variants_row.set_subtitle(&variants.join("\n"));
+        let clashes = clash_lines(&plan);
+        self.clashes_row.set_visible(!clashes.is_empty());
+        self.clashes_row.set_subtitle(&clashes.join("\n"));
         let report_path = plan.get("report_path").and_then(Value::as_str).unwrap_or("").to_owned();
         match std::fs::read_to_string(&report_path) {
             Ok(text) if !report_path.is_empty() => {
@@ -594,6 +655,25 @@ impl TidyView {
                     self.show_plan(plan);
                 }
                 Err(e) => self.failed("Accept", e),
+            }
+            self.finish();
+        });
+    }
+
+    /// Settle the path clashes as deletions in approved.py and plan again.
+    fn resolve_clashes(self: Rc<Self>, keep: &'static str) {
+        if !self.start() {
+            return;
+        }
+        glib::spawn_future_local(async move {
+            self.log_line(&format!("Settling the path clashes, keeping the {}…", if keep == "existing" { "files in place" } else { "newcomers" }));
+            match run::<Value>(args(&["tidy", "--resolve-clashes", keep])).await {
+                Ok(plan) => {
+                    let marked = count(&plan, "marked_for_deletion");
+                    self.log_line(&format!("{} marked for deletion in approved.py; the plan below carries them. Apply does it.", plural(marked, "file")));
+                    self.show_plan(plan);
+                }
+                Err(e) => self.failed("Settle clashes", e),
             }
             self.finish();
         });
