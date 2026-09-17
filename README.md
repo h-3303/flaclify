@@ -1,5 +1,8 @@
 # Flaclify
 
+Site and theme gallery: https://flaclify.vercel.app · Theme author and developer guide:
+[docs/THEMING.md](docs/THEMING.md)
+
 A personal fork of [Euphonica](https://github.com/htkhiem/euphonica), the GTK4 + libadwaita MPD
 client by htkhiem, renamed so it can be installed and hacked on alongside the upstream package.
 
@@ -40,7 +43,9 @@ window { font-family: "Inter", sans-serif; }
 button { border-radius: 0; }
 ```
 
-The bundled themes in `src/themes/` are the reference for which selectors the app exposes
+The full guideline is [docs/THEMING.md](docs/THEMING.md): header keys, the selector hooks the
+app exposes, contrast rules for reversed states, corner geometry, icon sets and a pre-ship
+checklist. The bundled themes in `src/themes/` are the worked examples
 (`.sidebar-btn`, `.player-bar`, `.cover-shadow`, `.border-radius-6`, and so on). One GTK
 quirk to know: ellipsized labels are measured without `letter-spacing`, so tracked text gets
 cut short. Keep tracking to buttons, tooltips and other labels that never ellipsize.

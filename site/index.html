@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flaclify — an MPD client that changes its clothes</title>
+<meta name="description" content="Flaclify is a fork of Euphonica with a live theme engine: seven bundled looks, user themes that hot-reload, per-theme icon sets. Guidelines for making your own.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  html { background: var(--dtw-paper-2nd); }
+  body { margin: 0; color: var(--dtw-toner); font: 400 15px/1.5 var(--dtw-font-serif); }
+  a { color: inherit; }
+  a:hover { color: var(--dtw-cardinal); }
+  .sheet { max-width: 1080px; margin: 28px auto 60px; background: var(--dtw-paper); border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); }
+  .sheet > * { padding-left: 44px; padding-right: 44px; }
+  @media (max-width: 720px) { .sheet > * { padding-left: 20px; padding-right: 20px; } .sheet { margin: 12px; } }
+
+  /* masthead */
+  .mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-top: 34px; padding-bottom: 22px; border-bottom: 1px solid var(--dtw-ink); flex-wrap: wrap; }
+  .mast__title { font: 400 64px/0.9 var(--dtw-font-blackletter); letter-spacing: .01em; margin: 0; }
+  .mast__tag { font: 400 10px var(--dtw-font-typewriter); letter-spacing: .3em; color: var(--dtw-label); margin-top: 10px; text-transform: uppercase; }
+  .mast__links { font: 400 11px var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; display: flex; gap: 22px; flex-wrap: wrap; }
+  .mast__links a { text-decoration: none; border-bottom: 1px solid var(--dtw-ink); padding-bottom: 2px; }
+
+  /* section furniture */
+  .sec { padding-top: 34px; padding-bottom: 8px; }
+  .sec__head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 18px; }
+  .sec__num { font: 400 15px/1 var(--dtw-font-fell); }
+  .sec__title { font: 700 22px/1.1 var(--dtw-font-serif); letter-spacing: .02em; text-transform: uppercase; margin: 0; }
+  .sec__title::after { content: "."; }
+  .lede { font: 400 16.5px/1.5 var(--dtw-font-serif); text-align: justify; max-width: 720px; margin: 0 0 16px; }
+  .lede .dropcap { float: left; font: 400 54px/0.78 var(--dtw-font-blackletter); padding: 4px 8px 0 0; }
+  .tw { font: 400 11.5px/1.7 var(--dtw-font-typewriter); letter-spacing: .04em; }
+  .label { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .22em; color: var(--dtw-label); text-transform: uppercase; }
+  .rule { height: 1px; background: var(--dtw-ink); margin: 26px 0 0; }
+  .ornament { display: flex; align-items: center; gap: 10px; margin: 30px 0 0; }
+  .ornament span { flex: 1; height: 1px; background: var(--dtw-toner); }
+  .ornament i { width: 8px; height: 8px; background: var(--dtw-toner); transform: rotate(45deg); }
+
+  /* theme plates */
+  .plates { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px 22px; }
+  .plate { display: flex; flex-direction: column; gap: 8px; }
+  .plate__img { border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-paper); display: block; width: 100%; height: auto; }
+  .plate__t { font: 700 13.5px/1.2 var(--dtw-font-serif); margin-top: 4px; }
+  .plate__t small { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); margin-left: 8px; text-transform: uppercase; }
+  .plate__d { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); margin: 0; }
+
+  /* guide */
+  .guide { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; }
+  @media (max-width: 800px) { .guide { grid-template-columns: 1fr; } }
+  .g h4 { font: 700 13px/1.2 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
+  .g h4::after { content: "."; }
+  .g p { font: 400 13.5px/1.5 var(--dtw-font-serif); margin: 0 0 10px; text-align: justify; }
+  .g ul { margin: 0 0 10px; padding-left: 18px; font: 400 13.5px/1.5 var(--dtw-font-serif); }
+  .g li { margin-bottom: 4px; }
+  pre { background: var(--dtw-paper); border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); padding: 12px 14px; margin: 8px 0 14px; font: 400 11px/1.55 var(--dtw-font-typewriter); overflow-x: auto; }
+  code { font: 400 .92em var(--dtw-font-typewriter); background: rgba(20,20,18,.07); padding: 0 4px; }
+  pre code { background: none; padding: 0; }
+  table { border-collapse: collapse; width: 100%; margin: 6px 0 14px; font: 400 12.5px/1.4 var(--dtw-font-serif); }
+  th { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .2em; text-transform: uppercase; color: var(--dtw-label-faint); text-align: left; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--dtw-ink); }
+  td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--dtw-grey-2); vertical-align: top; }
+  td code { white-space: nowrap; }
+  .check { list-style: none; padding: 0; }
+  .check li::before { content: "☐"; font-family: var(--dtw-font-serif); margin-right: 8px; }
+  .stamp { display: inline-block; border: 2px solid var(--dtw-cardinal); color: var(--dtw-cardinal); font: 400 9px/1.2 var(--dtw-font-typewriter); letter-spacing: .14em; padding: 4px 8px; text-transform: uppercase; transform: rotate(-3deg); }
+
+  /* icon sheets */
+  .sheets { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
+  .sheets figure { margin: 0; }
+  .sheets img { display: block; width: 100%; height: auto; border: 1px solid var(--dtw-toner); }
+  .sheets figcaption { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .12em; text-transform: uppercase; color: var(--dtw-label); margin-top: 6px; }
+  .sheets figcaption b { font-weight: 400; color: var(--dtw-toner); }
+  .plc { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+  .plc img { width: 96px; height: 96px; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); }
+
+  .colophon { border-top: 1px solid var(--dtw-ink); padding-top: 16px; padding-bottom: 26px; margin-top: 34px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; color: var(--dtw-label); }
+</style>
+</head>
+<body>
+<main class="sheet dtw-xerox">
+
+  <header class="mast">
+    <div>
+      <h1 class="mast__title">Flaclify</h1>
+      <div class="mast__tag">Music · Player · Daemon · a fork of Euphonica with a wardrobe</div>
+    </div>
+    <nav class="mast__links">
+      <a href="#themes">Themes</a>
+      <a href="#guide">Making one</a>
+      <a href="#icons">Icons</a>
+      <a href="#dev">Developers</a>
+      <a href="https://github.com/h-3303/flaclify">GitHub</a>
+    </nav>
+  </header>
+
+  <section class="sec">
+    <p class="lede"><span class="dropcap">F</span>laclify is <a href="https://github.com/htkhiem/euphonica">Euphonica</a>, the GTK4 and libadwaita client for the Music Player Daemon, forked so it can be installed beside the original and taught to change its clothes. A theme is one CSS file with a short header. It can recolour the window, square or round every corner, swap the typefaces, bring its own icon set and album-art plate, and decide whether album art is allowed to tint the accent or wash the background. Themes apply while the music plays: from the menu, with <code>Ctrl+T</code>, from <code>gsettings</code>, or by saving a file.</p>
+    <p class="tw">Seven looks ship. Two of them, Broadsheet and Reversed Spine, are directions 1a and 1b of the <em>Euphonica × Moirai Digital</em> canvas, drawn in the Death to the World design language. The rest exist to prove the range: a paper folio, a phosphor terminal, a neon room, a Bauhaus poster.</p>
+  </section>
+
+  <section class="sec" id="themes">
+    <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The bundled themes</h2></div>
+    <div class="plates">
+      <figure class="plate"><img class="plate__img" src="img/broadsheet.jpg" alt="Broadsheet theme" loading="lazy"><div class="plate__t">Broadsheet<small>1a · light</small></div><p class="plate__d">Toner on paper. Typewriter labels, Old Standard titles, a blackletter masthead, one-pixel line-ink rules, no rounding. Red is one gesture, held to the seekbar. Typewriter glyph icons.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/reversed-spine.jpg" alt="Reversed Spine theme" loading="lazy"><div class="plate__t">Reversed Spine<small>1b · light</small></div><p class="plate__d">Imports Broadsheet and reverses the spine: a toner sidebar with paper knocked out of it, the current view reversed back to paper, a black transport band, titles set in inline toner chips.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/folio.jpg" alt="Folio theme" loading="lazy"><div class="plate__t">Folio<small>light</small></div><p class="plate__d">Laid paper, engraver's ink, a little gilt. Serif throughout, square plates, double rules for the masthead and the transport. Hairline icons with round terminals.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/terminal.jpg" alt="Terminal theme" loading="lazy"><div class="plate__t">Terminal<small>dark</small></div><p class="plate__d">Phosphor on black. Monospace, one-pixel rules, hover and selection invert instead of tinting. Icons are ASCII wherever ASCII reads: <code>&lt; &gt; + - / x * ♪ @</code>.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/neon.jpg" alt="Neon theme" loading="lazy"><div class="plate__t">Neon<small>dark</small></div><p class="plate__d">Violet ground, magenta and cyan light, pill buttons and glow. The one theme that lets album art take the accent, so the glow follows the cover.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/bauhaus.jpg" alt="Bauhaus theme" loading="lazy"><div class="plate__t">Bauhaus<small>light</small></div><p class="plate__d">Off-white, primary blocks, two-pixel black rules and hard offset shadows. Icons are solid geometry; the placeholder is a black disc, a red square and a yellow bar.</p></figure>
+      <figure class="plate"><img class="plate__img" src="img/default.jpg" alt="Adwaita, the stock look" loading="lazy"><div class="plate__t">Adwaita<small>stock</small></div><p class="plate__d">Euphonica as it ships: libadwaita's own palette, the blurred album-art wash, accents lifted from the cover. Kept as the baseline every theme is measured against.</p></figure>
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
+
+  <section class="sec" id="guide">
+    <div class="sec__head"><span class="sec__num">II</span><h2 class="sec__title">Making a theme</h2></div>
+    <p class="lede">Drop a file into <code>~/.config/flaclify/themes/</code>. The directory is watched, so the theme appears under <b>Custom</b> and every save re-applies it. The full guideline, with the selector table and the developer notes, is <a href="https://github.com/h-3303/flaclify/blob/main/docs/THEMING.md"><code>docs/THEMING.md</code></a> in the repository. What follows is the part you must not skip.</p>
+
+    <div class="guide">
+      <div class="g">
+        <h4>Anatomy</h4>
+<pre><code>/* @name: Midnight
+ * @scheme: dark
+ * @auto-accent: off
+ * @art-background: off
+ * @icons: terminal
+ */
+:root {
+  --window-bg-color: #101418;
+  --window-fg-color: #e6edf3;
+  --accent-bg-color: #6fb3ff;
+  --accent-fg-color: #08111c;
+}
+window { font-family: "Inter", sans-serif; }
+button { border-radius: 0; }</code></pre>
+        <table>
+          <tr><th>Key</th><th>Values</th><th>Does</th></tr>
+          <tr><td><code>@name</code></td><td>text</td><td>Menu label. Defaults to the file stem.</td></tr>
+          <tr><td><code>@scheme</code></td><td><code>light</code> <code>dark</code> <code>follow</code></td><td>Forces the colour scheme. Set it whenever the palette is hard-coded.</td></tr>
+          <tr><td><code>@auto-accent</code></td><td><code>off</code> <code>on</code></td><td><code>off</code> keeps album art and the system accent from overriding yours.</td></tr>
+          <tr><td><code>@art-background</code></td><td><code>off</code> <code>on</code></td><td><code>off</code> hides the blurred album-art wash without touching the user's setting.</td></tr>
+          <tr><td><code>@icons</code></td><td>set name</td><td>A bundled icon set, searched before the stock icons; also supplies the placeholder plate.</td></tr>
+        </table>
+        <p>A theme may build on a bundled one: <code>@import url("resource:///io/github/h3303/Flaclify/themes/broadsheet.css");</code> and then override only what differs. That is how Reversed Spine is made.</p>
+      </div>
+
+      <div class="g">
+        <h4>Rules of the hand</h4>
+        <ul>
+          <li><b>Own every variable you rely on.</b> Set the libadwaita colours on <code>:root</code>: window, view, headerbar, sidebar, card, popover, dialog, accent, border and shade. Give each <code>*-shade-color</code> a translucent version of its pane; that is what shows through the album-art wash.</li>
+          <li><b>Never track an ellipsizing label.</b> GTK measures ellipsized labels without their <code>letter-spacing</code>, so tracked text gets cut short. Sidebar labels, cell captions, window titles and the player bar all ellipsize. Tracking is safe on buttons, tooltips and toasts.</li>
+          <li><b>Reversed states set their own colours.</b> Captions carry their own ink; inside a checked button or a selected row they inherit nothing and vanish. End the theme with a contrast block for <code>:checked</code>, <code>:active</code> and <code>:selected</code>.</li>
+          <li><b>Scope the masthead to <code>.light-right-edge</code>.</b> The queue's "Now Playing" pane is also a <code>.sidebar-pane</code> and will take the blackletter if you let it.</li>
+          <li><b>One vertical rule, two equal headers.</b> If you draw rules, silence libadwaita's inset sidebar line and the pane border, let the page edge draw the divider, and pin both header bars to measured heights so the rules cross once.</li>
+          <li><b>Long-form text has its own font.</b> Wikis and bios use libadwaita's document style; set <code>--document-font-family</code> or they stay in the system face.</li>
+        </ul>
+        <h4>Before you ship</h4>
+        <ul class="check">
+          <li>Checked nav, selected album, selected queue row, active toggle: all readable.</li>
+          <li>Album-art wash on <em>and</em> off both look intentional.</li>
+          <li>Popovers, tooltips, toasts, preferences and the queue view checked, not only the grid.</li>
+          <li>Header rules meet the divider in a single cross.</li>
+        </ul>
+        <span class="stamp">Then pass it on</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
+
+  <section class="sec" id="icons">
+    <div class="sec__head"><span class="sec__num">III</span><h2 class="sec__title">Icons and plates</h2></div>
+    <p class="lede">Each theme names an icon set. The set is searched ahead of the stock icons while the theme is active, so a theme can differ in concept and not only in weight: the broadsheet sets use real Special Elite glyphs, Terminal uses ASCII, Bauhaus fills its shapes. Every set is generated from one geometry spec per icon by <code>tools/gen_icons.py</code>, rendered as fill-only paths so GTK's symbolic recolouring always applies. Each set also ships a 512-pixel album-art plate in its own idiom, and the artist avatar becomes a themed mark on a themed plate instead of a random-colour initial.</p>
+    <div class="sheets">
+      <figure><img src="sheets/dttw.png" alt="Broadsheet and Reversed Spine icon set" loading="lazy"><figcaption><b>dttw</b> · Broadsheet, Reversed Spine · typewriter glyphs, hairline rules, ✦ stars, hatched plates</figcaption></figure>
+      <figure><img src="sheets/terminal.png" alt="Terminal icon set" loading="lazy"><figcaption><b>terminal</b> · one-pixel, square caps, ASCII where it reads</figcaption></figure>
+      <figure><img src="sheets/neon.png" alt="Neon icon set" loading="lazy"><figcaption><b>neon</b> · two-pixel strokes, round caps and joins</figcaption></figure>
+      <figure><img src="sheets/bauhaus.png" alt="Bauhaus icon set" loading="lazy"><figcaption><b>bauhaus</b> · solid geometry, heavy bars</figcaption></figure>
+      <figure><img src="sheets/folio.png" alt="Folio icon set" loading="lazy"><figcaption><b>folio</b> · engraver's hairlines, round terminals</figcaption></figure>
+    </div>
+    <div class="label" style="margin-top:22px">Album-art plates</div>
+    <div class="plc">
+      <img src="sheets/placeholder-dttw.svg" alt="Broadsheet placeholder">
+      <img src="sheets/placeholder-terminal.svg" alt="Terminal placeholder">
+      <img src="sheets/placeholder-neon.svg" alt="Neon placeholder">
+      <img src="sheets/placeholder-bauhaus.svg" alt="Bauhaus placeholder">
+      <img src="sheets/placeholder-folio.svg" alt="Folio placeholder">
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
+
+  <section class="sec" id="dev">
+    <div class="sec__head"><span class="sec__num">IV</span><h2 class="sec__title">For developers</h2></div>
+    <div class="guide">
+      <div class="g">
+        <h4>The engine</h4>
+        <p><code>src/theme/mod.rs</code> owns one <code>CssProvider</code> at user priority, installed from the app's startup handler before any window exists. The window's accent provider is added later at the same priority, so it cascades over the theme; that is what lets album-art accents win when a theme allows them.</p>
+        <p><code>apply(id)</code> loads the CSS, switches the icon set, forces the colour scheme if declared, saves the id and notifies listeners. The window refreshes its accent provider and re-evaluates the album-art wash; the application keeps the stateful <code>app.theme</code> action in step so the menu's radio mark follows whatever changed the theme. The user directory is watched with a debounced <code>GFileMonitor</code>; the settings key is watched so <code>gsettings</code> writes apply live.</p>
+        <h4>Icon sets</h4>
+        <p><code>apply_icon_set()</code> puts <code>/iconsets/&lt;set&gt;/icons</code> first in the display's icon-theme resource path. Names that Adwaita also provides carry an <code>fl-</code> prefix in the UI files, because the system theme is searched before app resources and an unprefixed override is never picked. Placeholders go through a <code>ThemedPlaceholder</code> paintable that swaps its texture and invalidates itself, so cells already showing one repaint on their own.</p>
+      </div>
+      <div class="g">
+        <h4>Build and run</h4>
+<pre><code>meson setup build -Dprofile=dev -Dprefix=$HOME/.local
+ninja -C build install
+flaclify</code></pre>
+        <p>The app ID is <code>io.github.h3303.Flaclify</code> with its own settings, cache and config, so it does not interfere with a system Euphonica. The one thing deliberately shared is the MPD password in the keyring, and the MPD sticker keys, so metadata still round-trips with other Euphonica clients.</p>
+        <h4>Adding a bundled theme</h4>
+        <ul>
+          <li><code>src/themes/&lt;stem&gt;.css</code> with the header keys.</li>
+          <li>A <code>&lt;file&gt;</code> entry in the <code>/themes/</code> block of <code>src/flaclify.gresource.xml</code>.</li>
+          <li>Own icons: a new style in <code>gen_icons.py</code>, regenerate, <code>@icons: &lt;style&gt;</code>.</li>
+          <li>Rebuild and walk the checklist with the album-art wash on and off.</li>
+        </ul>
+<pre><code>python3 -m venv build/venv &amp;&amp; build/venv/bin/pip install fonttools
+build/venv/bin/python tools/gen_icons.py</code></pre>
+        <p>Screenshots beat trusting CSS. Views can be switched from outside the app over D-Bus (<code>org.gtk.Actions.Activate view-albums</code> on the window object) so a script can walk every theme through every view.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <span>Flaclify · GPL-3.0-or-later · forked from Euphonica by htkhiem</span>
+    <span>Type: Pirata One, Old Standard TT, Special Elite, IM Fell English SC · OFL</span>
+    <span>One sheet · photocopied · pass it on</span>
+  </footer>
+</main>
+</body>
+</html>
