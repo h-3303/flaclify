@@ -48,6 +48,7 @@ def fc_match(pattern):
 
 FONTS["mono"] = fc_match("DejaVu Sans Mono")
 FONTS["sans-bold"] = fc_match("DejaVu Sans:bold")
+FONTS["plex-mono"] = fc_match("IBM Plex Mono")   # blueprint annotations; falls back to the system mono
 
 # ---------------------------------------------------------------------------
 # Styles
@@ -71,6 +72,18 @@ STYLES = {
     "folio": dict(w=1.0, cap="round", shapes="stroke", dot=1.0, text="old-standard-bold",
                   glyphs=False, ground="#ece3cc", ink="#221b0f",
                   title="Folio", blurb="Engraver's hairlines with round terminals."),
+    "blueprint": dict(w=1.0, cap="butt", shapes="stroke", dot=0.8, text="plex-mono",
+                      glyphs=False, ground="#10294a", ink="#d9e8f7",
+                      title="Blueprint", blurb="Pen-plotter hairlines with butt caps; drafting line-work."),
+    "nocturne": dict(w=1.25, cap="round", shapes="stroke", dot=1.0, text="old-standard-italic",
+                     glyphs=False, ground="#1a1511", ink="#d9a441",
+                     title="Nocturne", blurb="Inked hairlines with round terminals; engraved, candlelit."),
+    "cassette": dict(w=1.5, cap="round", shapes="fill", dot=1.2, text="sans-bold",
+                     glyphs=False, ground="#e9dfcc", ink="#291f16",
+                     title="Cassette", blurb="Silk-screened control-panel pictograms: filled and rounded."),
+    "marshmallow": dict(w=1.75, cap="round", shapes="fill", dot=1.5, text="sans-bold",
+                        glyphs=False, ground="#fbf3f1", ink="#c2557a",
+                        title="Marshmallow", blurb="Plump rounded strokes, closed shapes filled; toy-like."),
 }
 
 # ---------------------------------------------------------------------------
@@ -383,6 +396,8 @@ HATCH_DISC = [("ring", 8, 8, 6), ("line", 3, 9.5, 9.5, 3), ("line", 3.5, 12, 12,
 ICONS["avatar"] = dict(geo=[("circle", 8, 5, 3), ("pline", [(2.5, 14), (2.5, 11.5), (5, 9.5), (11, 9.5), (13.5, 11.5), (13.5, 14)])],
                        styles={"dttw": HATCH_DISC}, glyphs={"terminal": ("@", (1, 1, 14, 14))})
 ICONS["folder"]["styles"] = {"dttw": HATCH_PLATE}
+# Nocturne's avatar reads better as an engraved bust ring than the stock figure.
+ICONS["avatar"]["styles"]["nocturne"] = [("ring", 8, 8, 6), ("circle", 8, 6, 2), ("pline", arc(8, 12.5, 3.5, 200, 340, 10))]
 ICONS["star-large"]["styles"] = {"dttw": [("solid", STAR4)]}
 ICONS["star-outline-rounded"]["styles"] = {"dttw": [("outline", STAR4)]}
 ICONS["star-outline-half-left"]["styles"] = {"dttw": [("outline", STAR4), ("solid", [pt for pt in STAR4 if pt[0] <= 8.01] + [(8, 14.5), (8, 1.5)])]}
@@ -462,6 +477,39 @@ def placeholder_svg(key):
         body = [f'<rect width="{S}" height="{S}" fill="#f6f0df"/>',
                 '<rect x="10.5" y="10.5" width="491" height="491" fill="none" stroke="#b3a683"/>',
                 '<rect x="16.5" y="16.5" width="479" height="479" fill="none" stroke="#c8bc9f"/>', label]
+    elif key == "blueprint":
+        # drafting sheet: grid, centre crosshair, mono annotation
+        r.text("NO DRAWING ON FILE", (76, 240, 360, 26), font="plex-mono", tracking=0.08)
+        label = "".join(f'<path d="{d}" fill="#d9e8f7"/>' for d, _ in r.paths)
+        body = [f'<rect width="{S}" height="{S}" fill="#10294a"/>',
+                '<defs><pattern id="bpgrid" width="32" height="32" patternUnits="userSpaceOnUse">'
+                '<path d="M32 0H0V32" fill="none" stroke="#d9e8f7" stroke-opacity=".14"/></pattern></defs>',
+                f'<rect width="{S}" height="{S}" fill="url(#bpgrid)"/>',
+                '<path d="M256 176V336 M176 256H336" stroke="#d9e8f7" stroke-opacity=".5"/>',
+                '<circle cx="256" cy="256" r="60" fill="none" stroke="#d9e8f7" stroke-opacity=".5"/>',
+                label,
+                f'<rect x="8.5" y="8.5" width="{S-17}" height="{S-17}" fill="none" stroke="#d9e8f7" stroke-opacity=".55"/>']
+    elif key == "nocturne":
+        # a bookplate: double rule, italic label
+        r.text("ex libris", (166, 236, 180, 40), font="old-standard-italic")
+        label = "".join(f'<path d="{d}" fill="#d9a441"/>' for d, _ in r.paths)
+        body = [f'<rect width="{S}" height="{S}" fill="#221b15"/>',
+                '<rect x="14.5" y="14.5" width="483" height="483" fill="none" stroke="#d9a441" stroke-opacity=".55"/>',
+                '<rect x="22.5" y="22.5" width="467" height="467" fill="none" stroke="#d9a441" stroke-opacity=".3"/>', label]
+    elif key == "cassette":
+        # a tape label: cream card, orange stripe, two reels
+        body = [f'<rect width="{S}" height="{S}" fill="#262019"/>',
+                '<rect x="48" y="96" width="416" height="320" fill="#f2ead9"/>',
+                '<rect x="48" y="150" width="416" height="34" fill="#d95f18"/>',
+                '<circle cx="180" cy="300" r="52" fill="none" stroke="#291f16" stroke-width="8"/>',
+                '<circle cx="332" cy="300" r="52" fill="none" stroke="#291f16" stroke-width="8"/>',
+                '<rect x="48.5" y="96.5" width="415" height="319" fill="none" stroke="#291f16" stroke-width="3"/>']
+    elif key == "marshmallow":
+        # a soft rounded blob with a note-dot
+        body = [f'<rect width="{S}" height="{S}" fill="#f8e7ec"/>',
+                '<rect x="72" y="72" width="368" height="368" rx="96" fill="#ffffff"/>',
+                '<circle cx="230" cy="316" r="46" fill="#c2557a"/>',
+                '<rect x="268" y="150" width="16" height="170" rx="8" fill="#c2557a"/>']
     return (f'<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" viewBox="0 0 {S} {S}">'
             + "".join(body) + "</svg>\n")
 

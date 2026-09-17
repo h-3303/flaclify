@@ -1,0 +1,474 @@
+/* @name: Cassette
+ * @scheme: light
+ * @auto-accent: off
+ * @art-background: off
+ * @icons: cassette
+ *
+ * A '70s hi-fi deck: cream fascia, a walnut side panel, a charcoal faceplate
+ * for the transport, one VU-meter orange. Small radii like machined bezels,
+ * hairline hardware borders, gentle top-light on raised controls. Numerals in
+ * mono like a tape counter.
+ *
+ * Voices: Archivo for the window, JetBrains Mono (or system mono) for
+ * counters, times and badges.
+ */
+
+:root {
+  --window-bg-color: #e9dfcc;
+  --window-fg-color: #291f16;
+  --view-bg-color: #f2ead9;
+  --view-fg-color: #291f16;
+
+  --headerbar-bg-color: #e9dfcc;
+  --headerbar-fg-color: #291f16;
+  --headerbar-backdrop-color: #e9dfcc;
+  --headerbar-border-color: #b6a488;
+  --headerbar-shade-color: rgb(41 31 22 / 14%);
+  --headerbar-darker-shade-color: rgb(41 31 22 / 24%);
+
+  /* The walnut side panel. */
+  --sidebar-bg-color: #43301f;
+  --sidebar-fg-color: #efe3cf;
+  --sidebar-backdrop-color: #43301f;
+  --sidebar-border-color: #b6a488;
+  --sidebar-shade-color: rgb(67 48 31 / 84%);
+  --secondary-sidebar-bg-color: #e9dfcc;
+  --secondary-sidebar-fg-color: #291f16;
+  --secondary-sidebar-backdrop-color: #e9dfcc;
+  --secondary-sidebar-border-color: #b6a488;
+  --secondary-sidebar-shade-color: rgb(233 223 204 / 82%);
+
+  --card-bg-color: #f2ead9;
+  --card-fg-color: #291f16;
+  --card-shade-color: rgb(41 31 22 / 12%);
+  --dialog-bg-color: #f2ead9;
+  --dialog-fg-color: #291f16;
+  --popover-bg-color: #f6efe0;
+  --popover-fg-color: #291f16;
+  --popover-shade-color: rgb(41 31 22 / 12%);
+  --thumbnail-bg-color: #e2d5bd;
+  --thumbnail-fg-color: #291f16;
+
+  --accent-bg-color: #d95f18;
+  --accent-fg-color: #fff6ea;
+  --accent-color: #c1500e;
+  --destructive-bg-color: #a8402f;
+  --destructive-fg-color: #fff6ea;
+  --destructive-color: #a8402f;
+  --success-color: #5d7036;
+  --warning-color: #a8731a;
+  --error-color: #a8402f;
+
+  --shade-color: rgb(41 31 22 / 10%);
+  --border-color: #b6a488;
+  --scrollbar-outline-color: #f2ead9;
+  --dim-opacity: 0.62;
+}
+
+window {
+  font-family: "Archivo", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif;
+  font-size: 10pt;
+}
+
+/* Masthead: a badge plate on the walnut panel. */
+.light-right-edge headerbar {
+  background-color: #43301f;
+  color: #efe3cf;
+}
+.light-right-edge headerbar .title,
+.light-right-edge headerbar windowtitle > .title {
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #efe3cf;
+}
+.light-right-edge headerbar .subtitle,
+.light-right-edge headerbar windowtitle > .subtitle {
+  font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  color: rgb(239 227 207 / 65%);
+}
+.light-right-edge headerbar button:not(.flat),
+.light-right-edge headerbar menubutton > button {
+  border: 1px solid rgb(239 227 207 / 45%);
+  background: transparent;
+  color: #efe3cf;
+  box-shadow: none;
+}
+.light-right-edge headerbar button:hover {
+  background: rgb(239 227 207 / 12%);
+}
+headerbar {
+  box-shadow: none;
+  border-bottom: 1px solid #b6a488;
+}
+headerbar .title,
+headerbar windowtitle > .title {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.title-1, .title-2, .title-3, .title-4, .heading {
+  font-weight: 700;
+}
+.caption,
+.dim-label,
+.dimmed {
+  font-size: 8.5pt;
+  color: #6b5c48;
+}
+.caption-heading {
+  font-size: 10pt;
+  font-weight: 700;
+}
+.numeric,
+.count-badge,
+.seekbar2 label {
+  font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+}
+
+/* Machined bezels: small, consistent radius. */
+button,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd,
+switch,
+scale > trough,
+scale > trough > highlight,
+progressbar > trough,
+progressbar > trough > progress,
+checkbutton > check,
+gridview > child,
+listview > row,
+.avatar-tag,
+.plain-tag,
+.toast {
+  border-radius: 4px;
+}
+
+/* Sidebar nav: silk-screened labels on walnut; the active input lights cream. */
+.sidebar-btn {
+  border-radius: 4px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.sidebar-btn,
+.sidebar-btn label {
+  color: #efe3cf;
+}
+.sidebar-btn label {
+  font-weight: 600;
+  font-size: 9.5pt;
+  text-transform: uppercase;
+}
+.sidebar-btn:hover {
+  background: rgb(239 227 207 / 10%);
+}
+button.flat.sidebar-btn:checked,
+button.flat.sidebar-btn:checked:hover {
+  background: #efe3cf;
+  color: #43301f;
+}
+.flaclify-sidebar separator {
+  background: rgb(239 227 207 / 22%);
+  min-height: 1px;
+}
+.flaclify-sidebar label {
+  color: #efe3cf;
+}
+.flaclify-sidebar .caption,
+.flaclify-sidebar .dim-label,
+.flaclify-sidebar .dimmed {
+  color: rgb(239 227 207 / 65%);
+}
+.light-right-edge scrollbar > range > trough > slider {
+  background: rgb(239 227 207 / 45%);
+}
+.light-right-edge *:focus-visible {
+  outline-color: #efe3cf;
+}
+
+/* Buttons: raised hardware keys with a top-light. */
+button:not(.flat) {
+  background: linear-gradient(180deg, #faf3e2, #e8dcc4);
+  border: 1px solid #b6a488;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 70%), 0 1px 2px rgb(41 31 22 / 18%);
+  color: #291f16;
+  font-weight: 600;
+}
+button:not(.flat):hover {
+  background: linear-gradient(180deg, #fdf8ea, #eee3cd);
+}
+button:not(.flat):active,
+button:not(.flat):checked {
+  background: #d8cbb0;
+  box-shadow: inset 0 1px 3px rgb(41 31 22 / 30%);
+}
+button.flat:hover {
+  background: rgb(41 31 22 / 7%);
+}
+button.suggested-action,
+button.suggested-action:hover,
+.play-button,
+.play-button:hover {
+  background: linear-gradient(180deg, #e8712a, #c1500e);
+  color: #fff6ea;
+  border: 1px solid #a8440a;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 30%), 0 1px 2px rgb(41 31 22 / 25%);
+}
+button.destructive-action {
+  background: transparent;
+  color: #a8402f;
+  border: 1px solid #a8402f;
+  box-shadow: none;
+}
+
+/* Plates: bezel line, faint lift. */
+.cover-shadow {
+  box-shadow: 0 0 0 1px #b6a488, 0 2px 5px rgb(41 31 22 / 18%);
+}
+.card,
+.boxed-list {
+  border: 1px solid #b6a488;
+  box-shadow: 0 1px 3px rgb(41 31 22 / 12%);
+}
+popover > contents {
+  border: 1px solid #b6a488;
+  box-shadow: 0 6px 18px rgb(41 31 22 / 22%);
+}
+tooltip {
+  background: #291f16;
+  color: #efe3cf;
+  border: none;
+  font-size: 8.5pt;
+}
+entry {
+  background: #faf5e8;
+  border: 1px solid #b6a488;
+  box-shadow: inset 0 1px 2px rgb(41 31 22 / 12%);
+}
+entry:focus-within {
+  border-color: #c1500e;
+  outline: none;
+}
+
+/* Lists. */
+listview > row,
+.boxed-list > row {
+  border-bottom: 1px solid rgb(182 164 136 / 45%);
+}
+listview > row:hover,
+gridview > child:hover,
+.navigation-sidebar > row:hover {
+  background: rgb(41 31 22 / 6%);
+}
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected,
+gridview > child:selected {
+  background: rgb(217 95 24 / 16%);
+  box-shadow: inset 3px 0 0 #d95f18;
+  color: #291f16;
+}
+
+/* Transport: the charcoal faceplate with the VU-orange seek. */
+.player-bar {
+  border-top: 2px solid #191512;
+  background: #262019;
+  color: #efe3cf;
+}
+.player-bar label,
+.player-bar .heading {
+  color: #efe3cf;
+}
+.player-bar .caption,
+.player-bar .dim-label,
+.player-bar .dimmed {
+  color: rgb(239 227 207 / 65%);
+}
+.player-bar button,
+.player-bar button.flat {
+  color: #efe3cf;
+}
+.player-bar button:not(.flat) {
+  background: linear-gradient(180deg, #3a322a, #211b15);
+  border: 1px solid #4c4237;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 12%);
+  color: #efe3cf;
+}
+.player-bar button.flat:hover {
+  background: rgb(239 227 207 / 10%);
+}
+.player-bar separator {
+  background: rgb(239 227 207 / 18%);
+}
+.seekbar2 label,
+.seekbar2 * {
+  color: #efe3cf;
+}
+.player-bar scale > trough {
+  background: #17120e;
+  border: 1px solid #4c4237;
+  min-height: 6px;
+}
+.player-bar scale > trough > highlight {
+  background: linear-gradient(180deg, #f08030, #d95f18);
+}
+.player-bar scale > trough > slider {
+  background: #efe3cf;
+  border: 1px solid #17120e;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 40%);
+  min-width: 10px;
+  min-height: 14px;
+  margin: -4px;
+  border-radius: 2px;
+}
+.player-bar .border-radius-6,
+.player-bar .cover-shadow {
+  box-shadow: 0 0 0 1px #4c4237;
+}
+
+scale > trough {
+  background: #ddd0b6;
+  border: 1px solid #b6a488;
+  min-height: 5px;
+  min-width: 5px;
+}
+scale > trough > highlight {
+  background: #d95f18;
+}
+scale > trough > slider {
+  background: #faf3e2;
+  border: 1px solid #8a7a60;
+  box-shadow: 0 1px 2px rgb(41 31 22 / 25%);
+  min-width: 12px;
+  min-height: 12px;
+  border-radius: 3px;
+}
+progressbar > trough {
+  background: #ddd0b6;
+}
+progressbar > trough > progress {
+  background: #d95f18;
+}
+.discography-line {
+  border-radius: 0;
+  background: #b6a488;
+  min-height: 1px;
+}
+
+/* Furniture. */
+switch {
+  background: #ddd0b6;
+  border: 1px solid #b6a488;
+}
+switch:checked {
+  background: #d95f18;
+  border-color: #a8440a;
+}
+switch > slider {
+  background: #faf3e2;
+  border: 1px solid #8a7a60;
+  box-shadow: 0 1px 1px rgb(41 31 22 / 25%);
+  min-width: 14px;
+  min-height: 14px;
+  margin: 2px;
+}
+checkbutton > check,
+checkbutton > radio {
+  background: #faf5e8;
+  border: 1px solid #b6a488;
+  box-shadow: inset 0 1px 1px rgb(41 31 22 / 10%);
+}
+checkbutton > check:checked,
+checkbutton > radio:checked {
+  background: #d95f18;
+  color: #fff6ea;
+}
+scrollbar > range > trough {
+  background: transparent;
+}
+scrollbar > range > trough > slider {
+  background: #a08e70;
+  border-radius: 4px;
+  min-width: 5px;
+  min-height: 5px;
+}
+separator {
+  background: #b6a488;
+}
+.toast {
+  background: #291f16;
+  color: #efe3cf;
+  box-shadow: 0 4px 14px rgb(41 31 22 / 30%);
+}
+.osd {
+  background: rgb(38 32 25 / 92%);
+  color: #efe3cf;
+}
+*:focus-visible {
+  outline: 1px solid #c1500e;
+  outline-offset: 1px;
+}
+
+/* ---- Corner geometry ------------------------------------------------------
+ * The walnut panel's own edge is the divider, like Reversed Spine: no drawn
+ * vertical rule. Header bars still pin so the fascia rule meets the panel
+ * cleanly. Starting values follow the 15px masthead; re-measure per
+ * THEMING.md §4 after any masthead change. */
+:root {
+  --sidebar-border-color: transparent;
+  --secondary-sidebar-border-color: transparent;
+}
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: none;
+  box-shadow: none;
+}
+.light-right-edge { border-right: none; }
+.light-left-edge { border-left: 1px solid #b6a488; }
+headerbar { min-height: 46px; }
+.sidebar-pane headerbar { min-height: 49px; }
+toolbarview > revealer.top-bar,
+toolbarview > .top-bar,
+.top-bar > box,
+.top-bar { box-shadow: none; }
+undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states ------------------------------------------ */
+button.flat.sidebar-btn:checked label,
+button.flat.sidebar-btn:checked image {
+  color: #43301f;
+}
+button.flat.sidebar-btn:checked .caption,
+button.flat.sidebar-btn:checked .dim-label {
+  color: #43301f;
+  opacity: 0.8;
+}
+button.suggested-action label, button.suggested-action image,
+.play-button label, .play-button image { color: #fff6ea; }
+listview > row:selected label, gridview > child:selected label,
+listview > row:selected image, gridview > child:selected image { color: #291f16; }
+listview > row:selected .caption, gridview > child:selected .caption { color: #291f16; opacity: 0.72; }
+
+/* ---- Avatars and long-form text ------------------------------------------- */
+avatar { background-color: #e2d5bd; color: #43301f; border: 1px solid #b6a488; border-radius: 4px; }
+avatar image { color: #43301f; }
+:root { --document-font-family: "Archivo", "Cantarell", "DejaVu Sans", sans-serif; --document-font-size: 10.5pt;
+        --monospace-font-family: "JetBrains Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; }
+.document, textview, textview text { font-family: "Archivo", "Cantarell", "DejaVu Sans", sans-serif; font-size: 10.5pt; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #e2d5bd; color: #43301f; }

@@ -1,0 +1,423 @@
+/* @name: Blueprint
+ * @scheme: dark
+ * @auto-accent: off
+ * @art-background: off
+ * @icons: blueprint
+ *
+ * Chalk line-work on Prussian blue. Drafting-table discipline: one hairline
+ * weight, butt caps, no rounding, no shadows, no tints. The current view and
+ * selections reverse to chalk; red pencil is one gesture, held to destructive
+ * actions and the seekbar slider. Labels read like title-block annotations.
+ *
+ * Voices: IBM Plex Sans for the window, IBM Plex Mono for captions, numerals
+ * and furniture (falls back to system mono).
+ */
+
+:root {
+  --window-bg-color: #10294a;
+  --window-fg-color: #d9e8f7;
+  --view-bg-color: #0d2340;
+  --view-fg-color: #d9e8f7;
+
+  --headerbar-bg-color: #10294a;
+  --headerbar-fg-color: #d9e8f7;
+  --headerbar-backdrop-color: #10294a;
+  --headerbar-border-color: rgb(217 232 247 / 35%);
+  --headerbar-shade-color: rgb(4 12 24 / 40%);
+  --headerbar-darker-shade-color: rgb(4 12 24 / 60%);
+
+  --sidebar-bg-color: #0f2745;
+  --sidebar-fg-color: #d9e8f7;
+  --sidebar-backdrop-color: #0f2745;
+  --sidebar-border-color: rgb(217 232 247 / 35%);
+  --sidebar-shade-color: rgb(15 39 69 / 82%);
+  --secondary-sidebar-bg-color: #0e2542;
+  --secondary-sidebar-fg-color: #d9e8f7;
+  --secondary-sidebar-backdrop-color: #0e2542;
+  --secondary-sidebar-border-color: rgb(217 232 247 / 35%);
+  --secondary-sidebar-shade-color: rgb(14 37 66 / 82%);
+
+  --card-bg-color: #10294a;
+  --card-fg-color: #d9e8f7;
+  --card-shade-color: rgb(4 12 24 / 40%);
+  --dialog-bg-color: #10294a;
+  --dialog-fg-color: #d9e8f7;
+  --popover-bg-color: #0f2745;
+  --popover-fg-color: #d9e8f7;
+  --popover-shade-color: rgb(4 12 24 / 40%);
+  --thumbnail-bg-color: #0d2340;
+  --thumbnail-fg-color: #d9e8f7;
+
+  /* Accent is chalk: reversed panels, never a tint. Red pencil for danger. */
+  --accent-bg-color: #d9e8f7;
+  --accent-fg-color: #10294a;
+  --accent-color: #d9e8f7;
+  --destructive-bg-color: #ff6b57;
+  --destructive-fg-color: #2a0b06;
+  --destructive-color: #ff6b57;
+  --success-color: #d9e8f7;
+  --warning-color: #ffd57a;
+  --error-color: #ff6b57;
+
+  --shade-color: rgb(4 12 24 / 35%);
+  --border-color: rgb(217 232 247 / 32%);
+  --scrollbar-outline-color: rgb(4 12 24 / 60%);
+  --dim-opacity: 0.6;
+}
+
+window {
+  font-family: "IBM Plex Sans", "Cantarell", "Noto Sans", "DejaVu Sans", sans-serif;
+  font-size: 10pt;
+}
+
+/* Masthead: annotation caps over a hairline. */
+.light-right-edge headerbar .title,
+.light-right-edge headerbar windowtitle > .title {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.light-right-edge headerbar .subtitle,
+.light-right-edge headerbar windowtitle > .subtitle {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+  color: rgb(217 232 247 / 65%);
+}
+headerbar {
+  box-shadow: none;
+  border-bottom: 1px solid var(--border-color);
+}
+headerbar .title,
+headerbar windowtitle > .title {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Small labels are title-block annotations. */
+.caption,
+.dim-label,
+.dimmed {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  color: rgb(217 232 247 / 72%);
+}
+.caption-heading {
+  font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif;
+  font-size: 10pt;
+  font-weight: 600;
+  text-transform: none;
+}
+.numeric,
+.count-badge,
+.seekbar2 label {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+}
+.heading,
+.title-1, .title-2, .title-3, .title-4 {
+  font-weight: 600;
+}
+
+/* Nothing rounded: this is drawn with a straightedge. */
+button,
+button.circular,
+button.pill,
+entry,
+.card,
+.boxed-list,
+.boxed-list > row,
+popover > contents,
+.border-radius-6,
+.border-radius-12,
+.radius-6,
+dropdown > button,
+menubutton > button,
+tooltip,
+.osd,
+switch,
+switch > slider,
+scale > trough,
+scale > trough > highlight,
+scale > trough > slider,
+progressbar > trough,
+progressbar > trough > progress,
+checkbutton > check,
+gridview > child,
+listview > row,
+.avatar-tag,
+.plain-tag,
+.toast {
+  border-radius: 0;
+}
+
+/* Sidebar nav: annotations; the current sheet reverses to chalk. */
+.sidebar-btn {
+  border-radius: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.sidebar-btn label {
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  text-transform: uppercase;
+}
+.sidebar-btn:hover {
+  background: rgb(217 232 247 / 10%);
+}
+.sidebar-btn:checked,
+.sidebar-btn:checked:hover {
+  background: #d9e8f7;
+  color: #10294a;
+}
+.flaclify-sidebar separator {
+  background: rgb(217 232 247 / 22%);
+  min-height: 1px;
+}
+
+/* Buttons: line-work slips; primary action reverses to chalk. */
+button:not(.flat) {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  color: #d9e8f7;
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+button:not(.flat):hover,
+button.flat:hover {
+  background: rgb(217 232 247 / 10%);
+}
+button.suggested-action,
+button.suggested-action:hover,
+.play-button,
+.play-button:hover {
+  background: #d9e8f7;
+  color: #10294a;
+  border: 1px solid #d9e8f7;
+}
+button.suggested-action:hover,
+.play-button:hover {
+  opacity: 0.88;
+}
+button.destructive-action {
+  background: transparent;
+  color: #ff6b57;
+  border: 1px solid #ff6b57;
+}
+
+/* Plates and slips: one hairline, nothing floats. */
+.cover-shadow {
+  box-shadow: 0 0 0 1px var(--border-color);
+}
+.card,
+.boxed-list {
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+popover > contents {
+  border: 1px solid rgb(217 232 247 / 55%);
+  box-shadow: none;
+}
+popover modelbutton {
+  border-radius: 0;
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  text-transform: uppercase;
+}
+popover modelbutton:hover {
+  background: rgb(217 232 247 / 10%);
+}
+tooltip {
+  background: #d9e8f7;
+  color: #10294a;
+  border: none;
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+}
+entry {
+  background: #0d2340;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+  caret-color: #d9e8f7;
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+}
+entry:focus-within {
+  border-color: #d9e8f7;
+  outline: none;
+}
+searchbar > revealer > box {
+  background: #10294a;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: none;
+}
+
+/* Lists: ruled ledger, selection reverses. */
+listview > row,
+.boxed-list > row {
+  border-bottom: 1px solid rgb(217 232 247 / 14%);
+}
+listview > row:hover,
+gridview > child:hover,
+.navigation-sidebar > row:hover {
+  background: rgb(217 232 247 / 8%);
+}
+listview > row:selected,
+listview > row:selected:hover,
+.navigation-sidebar > row:selected,
+gridview > child:selected {
+  background: #d9e8f7;
+  color: #10294a;
+}
+
+/* Seekbar: a drawn dimension line; the red pencil marks the position. */
+scale > trough {
+  background: rgb(217 232 247 / 22%);
+  border: none;
+  min-height: 2px;
+  min-width: 2px;
+}
+scale > trough > highlight {
+  background: #d9e8f7;
+}
+scale > trough > slider {
+  background: #ff6b57;
+  border: none;
+  box-shadow: none;
+  min-width: 5px;
+  min-height: 11px;
+  margin: -4px;
+}
+progressbar > trough {
+  background: rgb(217 232 247 / 22%);
+}
+progressbar > trough > progress {
+  background: #d9e8f7;
+}
+.player-bar {
+  border-top: 1px solid var(--border-color);
+}
+.discography-line {
+  border-radius: 0;
+  background: rgb(217 232 247 / 45%);
+  min-height: 1px;
+}
+
+/* Furniture. */
+switch {
+  background: transparent;
+  border: 1px solid var(--border-color);
+}
+switch:checked {
+  background: #d9e8f7;
+}
+switch > slider {
+  background: #d9e8f7;
+  border: none;
+  box-shadow: none;
+  min-width: 12px;
+  min-height: 12px;
+  margin: 2px;
+}
+switch:checked > slider {
+  background: #10294a;
+}
+checkbutton > check,
+checkbutton > radio {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  box-shadow: none;
+}
+checkbutton > check:checked,
+checkbutton > radio:checked {
+  background: #d9e8f7;
+  color: #10294a;
+}
+scrollbar > range > trough {
+  background: transparent;
+}
+scrollbar > range > trough > slider {
+  background: rgb(217 232 247 / 45%);
+  border-radius: 0;
+  min-width: 4px;
+  min-height: 4px;
+}
+separator {
+  background: rgb(217 232 247 / 22%);
+}
+.toast,
+.osd {
+  background: #d9e8f7;
+  color: #10294a;
+  box-shadow: none;
+  font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  text-transform: uppercase;
+}
+*:focus-visible {
+  outline: 1px solid #d9e8f7;
+  outline-offset: 1px;
+}
+
+/* ---- Corner geometry ------------------------------------------------------
+ * One vertical rule only, owned by the sidebar page edge (.light-right-edge);
+ * libadwaita's own inset sidebar line and the pane border are switched off so
+ * nothing doubles it. Both header bars are pinned so the horizontal rules meet
+ * the vertical one in a single cross. Starting values below follow the mono
+ * masthead at 13px; re-measure per THEMING.md §4 after any masthead change. */
+:root {
+  --sidebar-border-color: transparent;
+  --secondary-sidebar-border-color: transparent;
+}
+.sidebar-pane,
+.flaclify-sidebar {
+  border-right: none;
+  box-shadow: none;
+}
+.light-right-edge { border-right: 1px solid rgb(217 232 247 / 32%); }
+.light-left-edge { border-left: 1px solid rgb(217 232 247 / 32%); }
+headerbar { min-height: 45px; }
+.sidebar-pane headerbar { min-height: 48px; }
+toolbarview > revealer.top-bar,
+toolbarview > .top-bar,
+.top-bar > box,
+.top-bar { box-shadow: none; }
+undershoot.top { background-image: none; box-shadow: none; }
+
+/* ---- Contrast in reversed states: blue ink on chalk ----------------------- */
+button:checked label, button:checked image,
+button:active label, button:active image,
+button.flat:checked label, button.flat:checked image,
+listview > row:selected label, listview > row:selected image,
+gridview > child:selected label, gridview > child:selected image,
+.navigation-sidebar > row:selected label,
+.sidebar-btn:checked label, .sidebar-btn:checked image {
+  color: #10294a;
+}
+button:checked .caption, button:checked .dim-label, button:checked .dimmed,
+listview > row:selected .caption, listview > row:selected .dim-label,
+gridview > child:selected .caption, gridview > child:selected .dim-label {
+  color: #10294a;
+  opacity: 0.78;
+}
+button:checked, button.flat:checked, button:active, button.flat:active {
+  background: #d9e8f7;
+  color: #10294a;
+}
+
+/* ---- Avatars and long-form text ------------------------------------------- */
+avatar { background-color: #0d2340; color: #d9e8f7; border: 1px solid rgb(217 232 247 / 32%); border-radius: 0; }
+avatar image { color: #d9e8f7; }
+:root { --document-font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif; --document-font-size: 10.5pt;
+        --monospace-font-family: "IBM Plex Mono", "Adwaita Mono", "DejaVu Sans Mono", monospace; }
+.document, textview, textview text { font-family: "IBM Plex Sans", "Cantarell", "DejaVu Sans", sans-serif; font-size: 10.5pt; }
+
+/* libadwaita hands avatars a random gradient per name; a theme has one plate colour. */
+avatar, avatar.color1, avatar.color2, avatar.color3, avatar.color4, avatar.color5, avatar.color6, avatar.color7, avatar.color8, avatar.color9, avatar.color10, avatar.color11, avatar.color12, avatar.color13, avatar.color14 { background-image: none; background-color: #0d2340; color: #d9e8f7; }
