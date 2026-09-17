@@ -267,7 +267,7 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
 
   <section class="sec" id="roadmap">
     <div class="sec__head"><span class="sec__num">VI</span><h2 class="sec__title">The roadmap</h2></div>
-    <p class="lede">Flaclify and flacli are one stack. The shell fetches and files; the player shows. What remains is laid out in tiers: first the player reflects what the shell has done, then it drives the shell, and last, if ever, a model sits inside the player. Each tier is a label on the issue tracker and every line below is an issue, so the boxes here follow the tracker and not the other way round. No dates are promised.</p>
+    <p class="lede">Flaclify and flacli are one stack. The shell fetches and files; the player shows. What remains is laid out in tiers: first the player reflects what the shell has done, then it drives the shell, then, if ever, a model sits inside the player, and last the whole stack leaves the desk for a device in the pocket. Each tier is a label on the issue tracker and every line below is an issue, so the boxes here follow the tracker and not the other way round. No dates are promised.</p>
 
     <ol class="tiers">
       <li class="tier tier--done">
@@ -318,10 +318,24 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
         <div>
           <span class="tier__num">Tier 3</span>
           <h4 class="tier__t">An agent inside the player</h4>
-          <p class="tier__d">Deliberately last, and optional. Claude Code with the flacli plugin, or any MCP client, already is this agent; the cheaper version of "all in one" is the player reflecting state well.</p>
+          <p class="tier__d">Optional, and opened only once Tiers 1 and 2 are in. Claude Code with the flacli plugin, or any MCP client, already is this agent; the cheaper version of "all in one" is the player reflecting state well.</p>
         </div>
         <ul>
           <li><span>A chat pane where a model drives flacli from inside Flaclify, with <code>flacli guide</code> as its instructions. Claude through the API or a local model through Ollama; pluggable, off by default.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/9">№ 9</a></li>
+        </ul>
+      </li>
+
+      <li class="tier">
+        <div>
+          <span class="tier__num">Tier 4</span>
+          <h4 class="tier__t">One device</h4>
+          <p class="tier__d">The stack off the desk. A digital audio player that carries MPD, a Nicotine+ core with the bridge, and flacli, so a device in a pocket fetches, files and plays with no service behind it. Adapt a player that boots Linux, or build one from a board, a DAC and a battery. Nothing hosted, nothing bought from anyone, nothing that phones home.</p>
+          <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/4">a headless Nicotine+ runtime, aarch64</a></p>
+        </div>
+        <ul>
+          <li><span>The hardware: an existing player that boots a Linux we can install, against a board build with a DAC HAT, a battery and a small touch display. Decided by whether it runs Python, a headless Nicotine+ core and MPD; a written comparison and one chosen target.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/10">№ 10</a></li>
+          <li><span>The device image from one script: MPD, the headless core with the bridge, <code>flacli serve</code> as a service, the front end on login. The device's storage is the library, synced both ways with the desktop over the LAN, sidecar files included.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/11">№ 11</a></li>
+          <li><span>Flaclify on the device's own screen, in a compact layout for a small touch display; a leaner front end only if GTK proves too heavy for the chosen board.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/12">№ 12</a></li>
         </ul>
       </li>
     </ol>

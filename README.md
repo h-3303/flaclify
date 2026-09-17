@@ -99,7 +99,8 @@ files* has the switch and the music directory (empty means the XDG music folder)
 [flacli](https://flacli.vercel.app) writes exactly these files (`flacli wiki`, `flacli avatar`),
 tells MPD to rescan the folders it filed downloads into, and stores each synced playlist in MPD by
 name, so what an agent fetches appears here without a rescan. The further steps, from an
-"incoming" indicator to fetching a missing release from the artist page, are tracked as the
+"incoming" indicator to fetching a missing release from the artist page, and at the end a pocket
+device running the whole stack, are tracked as the
 [roadmap](https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap).
 
 ## Build
