@@ -621,13 +621,9 @@ impl AlbumView {
                 if term.is_empty() {
                     return;
                 }
-                // Searching by album title: tell flacli it is an album so MusicBrainz expands it.
-                let item = if this.imp().search_mode.selected() == 1 {
-                    format!("{term} (album)")
-                } else {
-                    term.clone()
-                };
-                crate::flacli::fetch(&window, vec![item], format!("“{term}”"));
+                // Open the Get music dialog on the term: the user picks the songs or albums
+                // by name, and only then does flacli fetch.
+                crate::flacli::get_music(&window, Some(&term));
             }
         ));
         settings

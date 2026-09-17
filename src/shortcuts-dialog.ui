@@ -259,6 +259,12 @@
         <property name="title" translatable="yes">Other</property>
         <child>
           <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Get Music (flacli)</property>
+            <property name="action-name">app.get-music</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
             <property name="title" translatable="yes">Refresh</property>
             <property name="action-name">app.refresh</property>
           </object>

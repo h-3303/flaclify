@@ -331,6 +331,10 @@
         <attribute name="action">app.update-db</attribute>
       </item>
       <item>
+        <attribute name="label" translatable="yes">_Get Music…</attribute>
+        <attribute name="action">app.get-music</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">_Preferences</attribute>
         <attribute name="action">app.preferences</attribute>
       </item>

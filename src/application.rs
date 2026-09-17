@@ -283,6 +283,7 @@ mod imp {
             obj.set_accels_for_action("app.fullscreen", &["F11"]);
             obj.set_accels_for_action("app.refresh", &["F5"]);
             obj.set_accels_for_action("app.update-db", &["F6"]);
+            obj.set_accels_for_action("app.get-music", &["<Ctrl><Shift>g"]);
             obj.set_accels_for_action("app.toggle-visualizer", &["F8"]);
 
             // Playback shortcuts
@@ -415,6 +416,14 @@ impl EuphonicaApplication {
             .build();
         let preferences_action = gio::ActionEntry::builder("preferences")
             .activate(move |this: &Self, _, _| this.show_preferences())
+            .build();
+        // flacli: search MusicBrainz for songs, albums and artists, pick, and let flacli fetch.
+        let get_music_action = gio::ActionEntry::builder("get-music")
+            .activate(move |this: &Self, _, _| {
+                if let Some(win) = this.active_window().and_downcast::<EuphonicaWindow>() {
+                    crate::flacli::get_music(&win, None);
+                }
+            })
             .build();
 
         let player_toggle_playback_action = gio::ActionEntry::builder("toggle-playback")
@@ -684,6 +693,7 @@ impl EuphonicaApplication {
             quit_action,
             about_action,
             preferences_action,
+            get_music_action,
             player_toggle_playback_action,
             player_next_song_action,
             player_prev_song_action,

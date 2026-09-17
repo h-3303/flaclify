@@ -120,9 +120,12 @@ local socket). Preferences → Integrations → *flacli* shows the verdict.
 
 From the same surfaces the player drives the shell, still through the CLI (`flacli get`, `sync`,
 `queue`, `review`, `approve`, `skip`, `cancel`; D-Bus comes when polling gets clumsy or Flatpak
-needs it). The shell's rules hold. Naming the music is the yes: **Get this** on a missing release
-and **Search Soulseek** under an album search that matches nothing hand the name to `flacli get`,
-which fetches the confident matches at once. A playlist is never queued until the totals have been
+needs it). The shell's rules hold. Naming the music is the yes: **Get music** (menu, Ctrl+Shift+G,
+or **Get it…** under an album search that matches nothing) searches MusicBrainz for songs, albums
+and artists, an artist opens onto their albums and an album onto its tracklist, and every tick
+is one name handed to `flacli get`, which fetches the confident matches at once. **Get this** on a
+missing release does the same for one album. MusicBrainz supplies names only; nothing is fetched
+that has not been ticked. A playlist is never queued until the totals have been
 seen: the **import** button in the playlist view takes a TIDAL, Deezer or YouTube Music link and
 matches it in the background, then Incoming offers **Queue**, which shows tracks, folders, size
 and users before the yes, and **Review**, a dialog that lists each doubtful match with flacli's

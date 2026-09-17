@@ -68,18 +68,29 @@ fn summarise(group: ReleaseGroup) -> Option<ReleaseGroupSummary> {
     })
 }
 
-/// Every studio album and EP MusicBrainz credits to the artist, newest first. Respects the
-/// MusicBrainz provider's "enabled" switch: off means an empty list, no request.
-pub fn browse_release_groups(artist_mbid: &str) -> Result<Vec<ReleaseGroupSummary>, MBError> {
-    if !meta_provider_settings(PROVIDER_KEY).boolean("enabled") {
-        return Ok(Vec::new());
-    }
+/// Whether the MusicBrainz provider is switched on in Preferences.
+pub fn enabled() -> bool {
+    meta_provider_settings(PROVIDER_KEY).boolean("enabled")
+}
+
+/// A blocking client with the app's user agent and the configured retry count.
+pub(super) fn client() -> MusicBrainzClient {
     let mut client = MusicBrainzClient::default();
     client.max_retries = settings_manager()
         .child("metaprovider")
         .uint("n-tries")
         .max(1);
     let _ = client.set_user_agent(APPLICATION_USER_AGENT);
+    client
+}
+
+/// Every studio album and EP MusicBrainz credits to the artist, newest first. Respects the
+/// MusicBrainz provider's "enabled" switch: off means an empty list, no request.
+pub fn browse_release_groups(artist_mbid: &str) -> Result<Vec<ReleaseGroupSummary>, MBError> {
+    if !enabled() {
+        return Ok(Vec::new());
+    }
+    let client = client();
 
     let mut groups: Vec<ReleaseGroupSummary> = Vec::new();
     let mut offset: u16 = 0;

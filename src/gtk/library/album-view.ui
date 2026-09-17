@@ -127,8 +127,8 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="soulseek_btn">
-                            <property name="label" translatable="true">Search Soulseek</property>
-                            <property name="tooltip-text" translatable="true">Ask flacli to find it on Soulseek and fetch it</property>
+                            <property name="label" translatable="true">Get it…</property>
+                            <property name="tooltip-text" translatable="true">Look it up on MusicBrainz, pick the songs or albums, and let flacli fetch them</property>
                             <property name="valign">3</property>
                           </object>
                         </child>
