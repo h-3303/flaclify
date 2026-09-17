@@ -1,6 +1,7 @@
 mod base;
 mod chain;
 pub mod lastfm;
+pub mod local;
 pub mod lrclib;
 pub mod models;
 pub mod musicbrainz;

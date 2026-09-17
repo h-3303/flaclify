@@ -228,6 +228,29 @@
 		<child schema="io.github.h3303.Flaclify.metaprovider.lastfm" name="lastfm"/>
 		<child schema="io.github.h3303.Flaclify.metaprovider.musicbrainz" name="musicbrainz"/>
 		<child schema="io.github.h3303.Flaclify.metaprovider.lrclib" name="lrclib"/>
+		<child schema="io.github.h3303.Flaclify.metaprovider.local" name="local"/>
+	</schema>
+
+	<schema id="io.github.h3303.Flaclify.metaprovider.local" path="/io/github/h3303/Flaclify/metaprovider/local/">
+		<key name="name" type="s">
+			<default>'Library files'</default>
+		</key>
+		<key name="enabled" type="b">
+			<default>true</default>
+			<summary>Read bios, wikis and artist pictures kept beside the music</summary>
+			<description>
+			Artist/artist.md, Artist/Album/wiki.md and Artist/artist.jpg, as flacli writes them. Read before
+			any remote provider, and again whenever a file is newer than the cached copy. Not part of the
+			provider chain order.
+			</description>
+		</key>
+		<key name="music-directory" type="s">
+			<default>''</default>
+			<summary>Where the library is on this machine</summary>
+			<description>
+			MPD's music directory as a local path. Empty means the XDG music folder (usually ~/Music).
+			</description>
+		</key>
 	</schema>
 
 	<schema id="io.github.h3303.Flaclify.metaprovider.lastfm" path="/io/github/h3303/Flaclify/metaprovider/lastfm/">

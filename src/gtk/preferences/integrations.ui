@@ -70,6 +70,22 @@
     </child>
     <child>
       <object class="AdwPreferencesGroup">
+        <property name="title" translatable="true">Library files</property>
+        <property name="description" translatable="true">Bios, wikis and artist pictures kept beside the music, as flacli writes them: Artist/artist.md, Artist/Album/wiki.md and Artist/artist.jpg. Read before any provider below, and again whenever a file changes. Needs the library on this machine.</property>
+        <child>
+          <object class="AdwSwitchRow" id="local_enabled">
+            <property name="title" translatable="true">Read files beside the music</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwEntryRow" id="local_music_directory">
+            <property name="title" translatable="true">Music directory (empty: the XDG music folder)</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="AdwPreferencesGroup">
         <property name="title" translatable="true">Last.fm</property>
         <property name="description" translatable="true">You can optionally connect to Last.fm to fetch additional information, such as album wikis and artist bios.</property>
         <child>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Flaclify — an MPD client that changes its clothes</title>
-<meta name="description" content="Flaclify is a fork of Euphonica with a live theme engine: seven bundled looks, user themes that hot-reload, per-theme icon sets. Guidelines for making your own.">
+<meta name="description" content="Flaclify is a fork of Euphonica with a live theme engine: seven bundled looks, user themes that hot-reload, per-theme icon sets. Reads bios, wikis and artist pictures kept beside the music, as flacli writes them.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/dtw/dtw.css">
 <link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -222,6 +222,22 @@ flaclify</code></pre>
 <pre><code>python3 -m venv build/venv &amp;&amp; build/venv/bin/pip install fonttools
 build/venv/bin/python tools/gen_icons.py</code></pre>
         <p>Screenshots beat trusting CSS. Views can be switched from outside the app over D-Bus (<code>org.gtk.Actions.Activate view-albums</code> on the window object) so a script can walk every theme through every view.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="flacli">
+    <div class="sec__head"><span class="sec__num">V</span><h2 class="sec__title">Files beside the music, and flacli</h2></div>
+    <div class="guide">
+      <div class="g">
+        <h4>What the player reads</h4>
+        <p>A bio under each artist and a wiki under each album, and most libraries have neither. Before asking Last.fm or MusicBrainz, Flaclify looks next to the files: <code>&lt;Artist&gt;/artist.md</code> (or <code>.wiki/&lt;Artist&gt;.md</code> for an artist without a folder), <code>&lt;Artist&gt;/&lt;Album&gt;/wiki.md</code>, and <code>&lt;Artist&gt;/artist.jpg</code> for the picture. A text file is optional front matter between <code>---</code> rules (<code>attribution</code> and <code>url</code> are used) and plain prose below.</p>
+        <p>The file is handed to the provider chain as the starting document, so a refresh keeps its text and only fills in tags and images from the providers you have enabled. It is read again whenever it is newer than the cached copy, so an edit on disk shows on the next visit. The switch and the music directory are under Preferences → Integrations → <em>Library files</em>; the directory defaults to the XDG music folder.</p>
+      </div>
+      <div class="g">
+        <h4>flacli</h4>
+        <p><a href="https://flacli.vercel.app">flacli</a> is the other half: a command line any agent can drive that fetches named songs, albums or whole playlists and files them as <code>Artist/Album/NN - Title</code>. It writes exactly the files above (<code>flacli wiki</code>, <code>flacli avatar</code>), asks MPD to rescan just the folders it filed downloads into, and stores each synced playlist in MPD by name. What an agent fetches is in this window, with its bio and its playlist, without a rescan and without anything written into the player's database.</p>
+        <p>What comes next lives in the player rather than the shell and is tracked as the <a href="https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap">roadmap</a>: an indicator for downloads under way, ghost rows for the tracks a playlist still lacks, the releases an artist page could fetch, and the review of doubtful matches as a dialog instead of a JSON field.</p>
       </div>
     </div>
   </section>

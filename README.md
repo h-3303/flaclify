@@ -11,6 +11,10 @@ Additions over upstream:
 - **Themes.** Switchable, strongly contrasting looks (palette, shape, density, type) applied live
   from the primary menu or by keyboard, plus user theme files in `~/.config/flaclify/themes/`
   that hot-reload on save.
+- **Library files.** Artist bios, album wikis and artist pictures kept beside the music
+  (`artist.md`, `wiki.md`, `artist.jpg`) are read before any online provider, and re-read when
+  they change. This is how [flacli](https://github.com/h-3303/flacli) hands text and pictures to
+  the player without touching its database.
 
 ## Themes
 
@@ -73,6 +77,30 @@ build/venv/bin/python tools/gen_icons.py     # writes the sets, the gresource se
 
 Icon names that also exist in Adwaita carry an `fl-` prefix in the UI files, because the
 system icon theme is searched ahead of app resources and would otherwise always win.
+
+## Library files and flacli
+
+Flaclify shows a bio under each artist and a wiki under each album, and for most libraries they
+are empty. Rather than relying on Last.fm alone, it first looks for files beside the music:
+
+| File | Shown as |
+| --- | --- |
+| `<Artist>/artist.md` (or `.wiki/<Artist>.md` when the artist has no folder) | the artist's bio |
+| `<Artist>/<Album>/wiki.md` | the album's wiki |
+| `<Artist>/artist.jpg` (`.jpeg`, `.png`, `.webp`) | the artist's picture |
+
+A text file is optional front matter (`key: value` lines between `---` rules, `attribution` and
+`url` are used) followed by plain prose. It is read before any provider in the chain, handed to
+the chain as the starting document so a refresh keeps the text and only fills in tags and images,
+and read again whenever the file is newer than the cached copy. The cached copy carries a local
+timestamp, so the usual "back up to MPD" button applies. Preferences → Integrations → *Library
+files* has the switch and the music directory (empty means the XDG music folder).
+
+[flacli](https://flacli.vercel.app) writes exactly these files (`flacli wiki`, `flacli avatar`),
+tells MPD to rescan the folders it filed downloads into, and stores each synced playlist in MPD by
+name, so what an agent fetches appears here without a rescan. The further steps, from an
+"incoming" indicator to fetching a missing release from the artist page, are tracked as the
+[roadmap](https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap).
 
 ## Build
 

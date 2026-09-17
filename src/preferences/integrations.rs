@@ -26,6 +26,11 @@ mod imp {
         pub xdg_warn_row: TemplateChild<adw::ActionRow>,
 
         #[template_child]
+        pub local_enabled: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub local_music_directory: TemplateChild<adw::EntryRow>,
+
+        #[template_child]
         pub lastfm_key: TemplateChild<adw::EntryRow>,
         #[template_child]
         pub lastfm_download_album_art: TemplateChild<adw::SwitchRow>,
@@ -141,6 +146,15 @@ impl IntegrationsPreferences {
         if !settings.boolean("background-portal-available") {
             xdg_warn.set_visible(true);
         }
+
+        // Files beside the music (flacli's sidecars)
+        let local_settings = utils::meta_provider_settings("local");
+        local_settings
+            .bind("enabled", &imp.local_enabled.get(), "active")
+            .build();
+        local_settings
+            .bind("music-directory", &imp.local_music_directory.get(), "text")
+            .build();
 
         // Set up Last.fm settings
         let lastfm_settings = utils::meta_provider_settings("lastfm");

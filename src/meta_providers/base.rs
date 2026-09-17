@@ -110,6 +110,10 @@ pub mod utils {
     /// This function will handle its own retries. Callers should NOT loop it
     /// for that purpose.
     fn get_file(url: &str) -> Option<Vec<u8>> {
+        // A picture beside the music (see meta_providers::local): no request, no retries.
+        if let Some(path) = url.strip_prefix("file://") {
+            return std::fs::read(path).ok();
+        }
         let client = Client::default();
         let settings = settings_manager().child("metaprovider");
         // This empty check comes in handy for certain metadata providers who, instead of

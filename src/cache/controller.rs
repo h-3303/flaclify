@@ -23,7 +23,7 @@ use crate::{
     client::{Error as ClientError, ImageHandle, MpdWrapper},
     common::{AlbumInfo, ArtistInfo},
     meta_providers::{
-        MetadataChain,
+        MetadataChain, local,
         models::{self, AlbumMeta},
         prelude::*,
         utils::get_best_image,
@@ -872,10 +872,35 @@ impl Cache {
         overwrite: bool, // overwrite existing with external if any (will also skip the exists check)
         window: Option<&EuphonicaWindow>,
     ) -> Result<Option<(models::AlbumMeta, OffsetDateTime, models::MetaSource)>> {
-        if !(overwrite && external)
-            && let Ok(Some(local_res)) = self.get_local_album_meta(album).await
-        {
-            return Ok(Some(local_res));
+        // Text beside the music (wiki.md, as flacli writes it) comes before anything remote, and
+        // again whenever the file is newer than what is cached. It is also handed to the provider
+        // chain as the starting document, so a refresh keeps it and only fills in the rest.
+        let sidecar = if local::enabled() {
+            let key = album.clone();
+            self.pool
+                .push_future(move || local::album_meta(&key))
+                .expect("get_album_meta: threadpool error")
+                .await
+                .expect("get_album_meta: threadpool error")
+        } else {
+            None
+        };
+
+        if !(overwrite && external) {
+            let cached = self.get_local_album_meta(album).await.ok().flatten();
+            if let Some((fresh, modified)) = sidecar.as_ref()
+                && cached.as_ref().is_none_or(|(_, ts, _)| modified > ts)
+            {
+                let meta = match cached {
+                    Some((old, _, _)) => fresh.clone().merge(old),
+                    None => fresh.clone(),
+                };
+                let ts = sqlite::write_album_meta(album, &meta, None, true).map_err(Error::Sqlite)?;
+                return Ok(Some((meta, ts, models::MetaSource::Local)));
+            }
+            if let Some(local_res) = cached {
+                return Ok(Some(local_res));
+            }
         }
 
         if external && (album.mbid.is_some() || album.albumartist.is_some()) {
@@ -884,7 +909,7 @@ impl Cache {
             }
             if let Some(meta) = self
                 .meta_providers
-                .get_album_meta(album.clone(), None, window)
+                .get_album_meta(album.clone(), sidecar.map(|(meta, _)| meta), window)
                 .await
             {
                 let ts =
@@ -973,10 +998,33 @@ impl Cache {
         overwrite: bool,
         window: Option<&EuphonicaWindow>,
     ) -> Result<Option<(models::ArtistMeta, OffsetDateTime, models::MetaSource)>> {
-        if !(overwrite && external)
-            && let Ok(Some(local_res)) = self.get_local_artist_meta(artist).await
-        {
-            return Ok(Some(local_res));
+        // artist.md (and artist.jpg) beside the music first; see get_album_meta.
+        let sidecar = if local::enabled() {
+            let key = artist.clone();
+            self.pool
+                .push_future(move || local::artist_meta(&key))
+                .expect("get_artist_meta: threadpool error")
+                .await
+                .expect("get_artist_meta: threadpool error")
+        } else {
+            None
+        };
+
+        if !(overwrite && external) {
+            let cached = self.get_local_artist_meta(artist).await.ok().flatten();
+            if let Some((fresh, modified)) = sidecar.as_ref()
+                && cached.as_ref().is_none_or(|(_, ts, _)| modified > ts)
+            {
+                let meta = match cached {
+                    Some((old, _, _)) => fresh.clone().merge(old),
+                    None => fresh.clone(),
+                };
+                let ts = sqlite::write_artist_meta(artist, &meta, true).map_err(Error::Sqlite)?;
+                return Ok(Some((meta, ts, models::MetaSource::Local)));
+            }
+            if let Some(local_res) = cached {
+                return Ok(Some(local_res));
+            }
         }
 
         if external && artist.mbid.is_some() {
@@ -985,7 +1033,7 @@ impl Cache {
             }
             if let Some(meta) = self
                 .meta_providers
-                .get_artist_meta(artist.clone(), None, window)
+                .get_artist_meta(artist.clone(), sidecar.map(|(meta, _)| meta), window)
                 .await
             {
                 let ts = sqlite::write_artist_meta(artist, &meta, true).map_err(Error::Sqlite)?;
@@ -1162,6 +1210,19 @@ impl Cache {
             Err(e) => {
                 return Err(e);
             }
+        }
+
+        // A picture beside the music (artist.jpg, as flacli files it) wins, even after an earlier
+        // lookup found nothing.
+        if external && local::enabled() && let Some(picture) = local::artist_picture(artist) {
+            let name = artist.name.clone();
+            let images = vec![local::picture_meta(&picture)];
+            return self
+                .external
+                .call(move |_| {
+                    download_image_from_provider(&name, Some("avatar"), &images, thumbnail, None)
+                })
+                .await;
         }
 
         // Failing the above, ask external providers
