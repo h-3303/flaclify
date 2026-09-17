@@ -623,7 +623,19 @@ impl MpdWrapper {
     /// local socket; the flacli integration uses it to decide whether MPD and flacli share a library.
     pub async fn get_music_directory(&self) -> ClientResult<String> {
         let (s, r) = oneshot::channel();
-        self.foreground(Task::GetMusicDirectory(s), r).await
+        let _guard = TaskGuard::new(self.state.clone(), false);
+        self.fg_sender
+            .send(Task::GetMusicDirectory(s))
+            .await
+            .expect("Broken FG sender");
+        let res = r.await.expect("Broken oneshot receiver");
+        // MPD refuses `config` over TCP with a permission error. That is the command's own
+        // limit, not a failed login, so it must not put the connection into the
+        // unauthenticated state (which opens the "Authentication failed" alert).
+        match res {
+            Err(ClientError::Mpd(MpdError::Server(ref e))) if matches!(e.code, MpdErrorCode::Permission) => res,
+            other => self.handle_error(other).await,
+        }
     }
 
     pub async fn get_playlists(&self) -> ClientResult<Vec<INode>> {
