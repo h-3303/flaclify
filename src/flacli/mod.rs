@@ -7,7 +7,7 @@ mod get_view;
 mod tidy_view;
 mod state;
 
-pub use actions::{cancel_job, fetch, import_from_service, queue, review};
+pub use actions::{cancel_job, fetch, import_from_service, queue, review, skip_rest};
 pub use finder::get_music;
 pub use get_view::GetView;
 pub use tidy_view::TidyView;

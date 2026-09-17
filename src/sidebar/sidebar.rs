@@ -8,7 +8,7 @@ use crate::{
     cache::Cache,
     client::state::StickersSupportLevel,
     common::{INode, ImageStack, View},
-    flacli::{FlacliState, PlaylistStatus, cancel_job, flacli, queue, review},
+    flacli::{FlacliState, PlaylistStatus, cancel_job, flacli, queue, review, skip_rest},
     utils,
     window::EuphonicaWindow,
 };
@@ -130,6 +130,16 @@ fn incoming_row(window: &EuphonicaWindow, playlist: &PlaylistStatus) -> (gtk::Bo
             row.append(&queue_btn);
         }
     }
+    // Always there: give up on what is still missing.
+    let skip_btn = action("window-close-symbolic", "Skip the rest: stop, cancel queued downloads, forget what is not on disk");
+    skip_btn.connect_clicked(clone!(
+        #[weak]
+        window,
+        #[strong]
+        playlist,
+        move |_| skip_rest(&window, playlist.clone())
+    ));
+    row.append(&skip_btn);
     (row, open)
 }
 

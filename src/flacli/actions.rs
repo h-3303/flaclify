@@ -184,6 +184,42 @@ pub fn queue(window: &EuphonicaWindow, playlist: PlaylistStatus) {
     ));
 }
 
+/// Give up on what a playlist still lacks: stop its job, cancel its queued transfers in
+/// Nicotine+, skip every track not yet on disk. What is on disk stays.
+pub fn skip_rest(window: &EuphonicaWindow, playlist: PlaylistStatus) {
+    let remaining: u32 = playlist
+        .counts
+        .iter()
+        .filter(|(status, _)| !matches!(status.as_str(), "done" | "in_library" | "skipped"))
+        .map(|(_, n)| *n)
+        .sum();
+    let dialog = adw::AlertDialog::builder()
+        .heading(format!("Give up on the rest of “{}”?", playlist.name))
+        .body(format!(
+            "{remaining} track{} not yet on disk are marked skipped, the running job is stopped and queued downloads are cancelled in Nicotine+. Tracks already filed stay; flacli forgets nothing else.",
+            if remaining == 1 { " is" } else { "s are" }
+        ))
+        .build();
+    dialog.add_response("back", "_Back");
+    dialog.add_response("skip", "_Skip the rest");
+    dialog.set_response_appearance("skip", adw::ResponseAppearance::Destructive);
+    dialog.set_default_response(Some("back"));
+    dialog.set_close_response("back");
+    glib::spawn_future_local(clone!(
+        #[weak]
+        window,
+        async move {
+            if dialog.choose_future(Some(&window)).await != "skip" {
+                return;
+            }
+            match flacli().skip_remaining(playlist.playlist_id).await {
+                Ok(line) => window.send_simple_toast(&format!("{line} in “{}”.", playlist.name), 6),
+                Err(e) => failed(&window, "flacli could not skip", e),
+            }
+        }
+    ));
+}
+
 /// Stop the running job of a playlist.
 pub fn cancel_job(window: &EuphonicaWindow, playlist: PlaylistStatus) {
     glib::spawn_future_local(clone!(

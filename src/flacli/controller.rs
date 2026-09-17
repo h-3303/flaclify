@@ -895,6 +895,25 @@ impl Flacli {
         Ok(line)
     }
 
+    /// `flacli skip <id> --remaining`: stop the job, cancel queued transfers, skip every track
+    /// not yet on disk. The sentence says what happened.
+    pub async fn skip_remaining(self: &Rc<Self>, playlist_id: u32) -> Result<String, Error> {
+        let id = playlist_id.to_string();
+        let result = run::<serde_json::Value>(args(&["skip", &id, "--remaining"])).await;
+        self.refresh();
+        let result = result?;
+        let skipped = result.get("skipped").and_then(|v| v.as_u64()).unwrap_or(0);
+        let cancelled = result.get("cancelled_downloads").and_then(|v| v.as_u64()).unwrap_or(0);
+        let mut line = format!("Skipped {skipped} track{}", if skipped == 1 { "" } else { "s" });
+        if cancelled > 0 {
+            line.push_str(&format!(", {cancelled} download{} cancelled in Nicotine+", if cancelled == 1 { "" } else { "s" }));
+        }
+        if let Some(note) = result.get("cancel_error").and_then(|v| v.as_str()) {
+            line.push_str(&format!("; {note}"));
+        }
+        Ok(line)
+    }
+
     /// `flacli cancel <id>`: stop the running job.
     pub async fn cancel(self: &Rc<Self>, playlist_id: u32) -> Result<(), Error> {
         let id = playlist_id.to_string();
