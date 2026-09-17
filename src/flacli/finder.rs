@@ -54,6 +54,18 @@ impl Pick {
     }
 }
 
+impl Pick {
+    /// One line of the confirmation: "Artist – Title" or "Artist – Album (whole album)".
+    fn describe(&self) -> String {
+        match self {
+            Pick::Song { artist, title, .. } if artist.is_empty() => title.clone(),
+            Pick::Song { artist, title, .. } => format!("{artist} – {title}"),
+            Pick::Album { artist, title } if artist.is_empty() => format!("{title} (whole album)"),
+            Pick::Album { artist, title } => format!("{artist} – {title} (whole album)"),
+        }
+    }
+}
+
 type Basket = Rc<RefCell<BTreeMap<String, Pick>>>;
 type Changed = Rc<dyn Fn()>;
 
@@ -192,50 +204,44 @@ fn song_row(song: &FoundSong, basket: &Basket, changed: &Changed) -> adw::Action
     check_row(&song.title, &subtitle, &format_length(song.length_ms), format!("song:{}", song.mbid), pick, basket, changed).0
 }
 
-/// An album row: tick the whole album, or open it and tick tracks. The tracklist is fetched on
-/// the first opening. While the album itself is ticked its tracks are greyed out, since flacli's
-/// album mode fetches the whole folder.
+/// An album row: open it to tick tracks, or tick its first inner row for the whole album. The
+/// tracklist is fetched on the first opening. While the whole album is ticked its tracks are
+/// greyed out, since flacli's album mode fetches the whole folder.
 fn album_row(album: &FoundAlbum, basket: &Basket, changed: &Changed) -> adw::ExpanderRow {
     let key = format!("album:{}", album.mbid);
-    let album_check = gtk::CheckButton::builder()
-        .valign(gtk::Align::Center)
-        .active(basket.borrow().contains_key(&key))
-        .tooltip_text("The whole album")
-        .build();
     let row = adw::ExpanderRow::builder()
         .title(&album.title)
         .subtitle(album.describe())
         .use_markup(false)
         .show_enable_switch(false)
         .build();
-    row.add_prefix(&album_check);
 
     let track_checks: Rc<RefCell<Vec<gtk::CheckButton>>> = Rc::new(RefCell::new(Vec::new()));
-    let pick = Pick::Album {
-        artist: album.artist.clone(),
-        title: album.title.clone(),
-    };
-    album_check.connect_toggled(clone!(
-        #[strong]
+    let (whole_row, album_check) = check_row(
+        "Whole album",
+        "Every track, as one folder from one share",
+        "",
+        key,
+        Pick::Album {
+            artist: album.artist.clone(),
+            title: album.title.clone(),
+        },
         basket,
-        #[strong]
         changed,
+    );
+    whole_row.add_css_class("property");
+    row.add_row(&whole_row);
+    album_check.connect_toggled(clone!(
         #[strong]
         track_checks,
         move |check| {
             let whole = check.is_active();
-            if whole {
-                basket.borrow_mut().insert(key.clone(), pick.clone());
-            } else {
-                basket.borrow_mut().remove(&key);
-            }
             for track in track_checks.borrow().iter() {
                 if whole {
                     track.set_active(false);
                 }
                 track.set_sensitive(!whole);
             }
-            changed();
         }
     ));
 
@@ -639,6 +645,7 @@ pub fn get_music(window: &EuphonicaWindow, term: Option<&str>) {
         .child(&toolbar)
         .build();
 
+    // Show exactly what goes to flacli before it goes: a whole album is a whole folder.
     get_btn.connect_clicked(clone!(
         #[weak]
         window,
@@ -647,16 +654,43 @@ pub fn get_music(window: &EuphonicaWindow, term: Option<&str>) {
         #[strong]
         basket,
         move |_| {
-            let picks = basket.borrow();
-            if picks.is_empty() {
-                return;
-            }
-            let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
-            let label = describe_picks(songs, picks.len() - songs);
-            let items: Vec<String> = picks.values().map(Pick::item).collect();
-            drop(picks);
-            dialog.close();
-            fetch(&window, items, label);
+            let (label, lines, items) = {
+                let picks = basket.borrow();
+                if picks.is_empty() {
+                    return;
+                }
+                let songs = picks.values().filter(|p| matches!(p, Pick::Song { .. })).count();
+                (
+                    describe_picks(songs, picks.len() - songs),
+                    picks.values().map(Pick::describe).collect::<Vec<String>>(),
+                    picks.values().map(Pick::item).collect::<Vec<String>>(),
+                )
+            };
+            let confirm = adw::AlertDialog::builder()
+                .heading(format!("Get {label}?"))
+                .body(format!(
+                    "{}\n\nflacli searches Soulseek for each line, fetches the confident matches and files them as Artist/Album/NN - Title. Doubtful ones wait in Incoming for review.",
+                    lines.join("\n")
+                ))
+                .build();
+            confirm.add_response("back", "_Back");
+            confirm.add_response("get", "_Get");
+            confirm.set_response_appearance("get", adw::ResponseAppearance::Suggested);
+            confirm.set_default_response(Some("get"));
+            confirm.set_close_response("back");
+            glib::spawn_future_local(clone!(
+                #[weak]
+                window,
+                #[weak]
+                dialog,
+                async move {
+                    if confirm.choose_future(Some(&dialog)).await != "get" {
+                        return;
+                    }
+                    dialog.close();
+                    fetch(&window, items, label);
+                }
+            ));
         }
     ));
 
@@ -678,6 +712,14 @@ mod tests {
         assert_eq!(describe_picks(1, 0), "1 song");
         assert_eq!(describe_picks(0, 2), "2 albums");
         assert_eq!(describe_picks(2, 1), "2 songs and 1 album");
+    }
+
+    #[test]
+    fn picks_describe_albums_as_whole() {
+        let album = Pick::Album { artist: "Black Box Recorder".into(), title: "England Made Me".into() };
+        assert_eq!(album.describe(), "Black Box Recorder – England Made Me (whole album)");
+        let song = Pick::Song { artist: String::new(), title: "Royals".into(), album: String::new() };
+        assert_eq!(song.describe(), "Royals");
     }
 
     #[test]
