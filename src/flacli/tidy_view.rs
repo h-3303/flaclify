@@ -78,6 +78,7 @@ fn plan_summary(plan: &Value) -> String {
     }
     let mut open: Vec<String> = Vec::new();
     for (key, word) in [
+        ("album_title_variants", "album title variant"),
         ("strays", "stray file"),
         ("duplicate_edit_groups", "possible duplicate group"),
         ("path_clashes", "path clash"),
@@ -114,6 +115,24 @@ fn has_work(plan: &Value) -> bool {
         || count(plan, "deletions") > 0
         || count(plan, "extras_to_file") > 0
         || count(plan, "download_reports") > 0
+}
+
+/// The album-title merges a plan suggests, one line each.
+fn variant_lines(plan: &Value) -> Vec<String> {
+    plan.get("open_questions")
+        .and_then(|q| q.get("album_title_variants"))
+        .and_then(Value::as_array)
+        .map(|items| {
+            items
+                .iter()
+                .map(|v| {
+                    let s = |k: &str| v.get(k).and_then(Value::as_str).unwrap_or("?");
+                    let files = count(v, "files");
+                    format!("{} → {}  ({}, {})", s("variant"), s("canonical"), s("artist"), plural(files, "file"))
+                })
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 /// The deletions of a plan by name, for the confirmation.
@@ -197,6 +216,7 @@ pub struct TidyView {
     apply_btn: gtk::Button,
     report_row: adw::ExpanderRow,
     report: gtk::TextView,
+    variants_row: adw::ActionRow,
     wiki_row: adw::ActionRow,
     avatar_row: adw::ActionRow,
     cover_row: adw::ActionRow,
@@ -242,6 +262,15 @@ impl TidyView {
             .build();
         new_row.add_suffix(&new_btn);
         files_group.add(&new_row);
+        let accept_btn = suffix_button("Accept", "Write these merges into approved.py and plan again; nothing moves until Apply");
+        let variants_row = adw::ActionRow::builder()
+            .title("Album titles that are variants of another album")
+            .subtitle("")
+            .use_markup(false)
+            .visible(false)
+            .build();
+        variants_row.add_suffix(&accept_btn);
+        files_group.add(&variants_row);
         let (report_pane, report) = monospace_pane(320);
         let report_row = adw::ExpanderRow::builder()
             .title("Report")
@@ -318,6 +347,7 @@ impl TidyView {
                 analyse_btn.clone(),
                 apply_btn.clone(),
                 new_btn.clone(),
+                accept_btn.clone(),
                 fill_all_btn.clone(),
                 wiki_btn.clone(),
                 avatar_btn.clone(),
@@ -329,6 +359,7 @@ impl TidyView {
             apply_btn: apply_btn.clone(),
             report_row,
             report,
+            variants_row,
             wiki_row,
             avatar_row,
             cover_row,
@@ -347,6 +378,7 @@ impl TidyView {
         hook(&analyse_btn, &this, |v| v.analyse());
         hook(&apply_btn, &this, |v| v.apply());
         hook(&new_btn, &this, |v| v.file_new());
+        hook(&accept_btn, &this, |v| v.accept_variants());
         hook(&refresh_btn, &this, |v| v.refresh_counts());
         hook(&fill_all_btn, &this, |v| v.fill_all());
         hook(&wiki_btn, &this, |v| v.fill(Content::Wiki));
@@ -453,26 +485,34 @@ impl TidyView {
 
     // Tidy
 
+    /// A dry run's result onto the page: the summary line, the merges offered, the report.
+    fn show_plan(&self, plan: Value) {
+        let summary = plan_summary(&plan);
+        self.plan_row.set_subtitle(&summary);
+        self.log_line(&format!("Analysed: {summary}"));
+        let variants = variant_lines(&plan);
+        self.variants_row.set_visible(!variants.is_empty());
+        self.variants_row.set_subtitle(&variants.join("\n"));
+        let report_path = plan.get("report_path").and_then(Value::as_str).unwrap_or("").to_owned();
+        match std::fs::read_to_string(&report_path) {
+            Ok(text) if !report_path.is_empty() => {
+                self.report.buffer().set_text(&text);
+                self.report_row.set_subtitle(&report_path);
+                self.report_row.set_sensitive(true);
+            }
+            _ => {
+                self.report_row.set_subtitle("No report written");
+                self.report_row.set_sensitive(false);
+            }
+        }
+        *self.plan.borrow_mut() = Some(plan);
+    }
+
     async fn analyse_inner(&self) -> bool {
         self.plan_row.set_subtitle("Reading every file…");
         match run::<Value>(args(&["tidy"])).await {
             Ok(plan) => {
-                let summary = plan_summary(&plan);
-                self.plan_row.set_subtitle(&summary);
-                self.log_line(&format!("Analysed: {summary}"));
-                let report_path = plan.get("report_path").and_then(Value::as_str).unwrap_or("").to_owned();
-                match std::fs::read_to_string(&report_path) {
-                    Ok(text) if !report_path.is_empty() => {
-                        self.report.buffer().set_text(&text);
-                        self.report_row.set_subtitle(&report_path);
-                        self.report_row.set_sensitive(true);
-                    }
-                    _ => {
-                        self.report_row.set_subtitle("No report written");
-                        self.report_row.set_sensitive(false);
-                    }
-                }
-                *self.plan.borrow_mut() = Some(plan);
+                self.show_plan(plan);
                 true
             }
             Err(e) => {
@@ -535,6 +575,25 @@ impl TidyView {
                     self.failed("Apply", e);
                     self.plan_row.set_subtitle("Apply failed; see the log.");
                 }
+            }
+            self.finish();
+        });
+    }
+
+    /// Write the suggested album-title merges into approved.py and plan again.
+    fn accept_variants(self: Rc<Self>) {
+        if !self.start() {
+            return;
+        }
+        glib::spawn_future_local(async move {
+            self.log_line("Accepting the album-title merges into approved.py…");
+            match run::<Value>(args(&["tidy", "--accept-album-variants"])).await {
+                Ok(plan) => {
+                    let accepted = count(&plan, "accepted_album_variants");
+                    self.log_line(&format!("Accepted {}; the plan below now carries the moves. Apply does them.", plural(accepted, "merge")));
+                    self.show_plan(plan);
+                }
+                Err(e) => self.failed("Accept", e),
             }
             self.finish();
         });

@@ -2008,6 +2008,16 @@ impl EuphonicaWindow {
         let view_queue_action = gio::ActionEntry::builder("view-queue")
             .activate(move |this: &Self, _, _| this.switch_to_view("queue"))
             .build();
+        // flacli's pages, so a script can walk them too (docs/THEMING.md, screenshots).
+        let view_get_action = gio::ActionEntry::builder("view-get")
+            .activate(move |this: &Self, _, _| this.switch_to_view("get"))
+            .build();
+        let view_requests_action = gio::ActionEntry::builder("view-requests")
+            .activate(move |this: &Self, _, _| this.switch_to_view("requests"))
+            .build();
+        let view_tidy_action = gio::ActionEntry::builder("view-tidy")
+            .activate(move |this: &Self, _, _| this.switch_to_view("tidy"))
+            .build();
         let search_current_view_action = gio::ActionEntry::builder("search-current-view")
             .activate(move |this: &Self, _, _| this.maybe_trigger_search_mode())
             .build();
@@ -2036,6 +2046,9 @@ impl EuphonicaWindow {
             view_folders_action,
             view_dyn_playlists_action,
             view_playlists_action,
+            view_get_action,
+            view_requests_action,
+            view_tidy_action,
             view_queue_action,
             save_action,
             search_current_view_action,
