@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Flaclify — an MPD client that changes its clothes</title>
-<meta name="description" content="Flaclify is a fork of Euphonica with a live theme engine: eleven bundled looks, user themes that hot-reload, per-theme icon sets. Reads bios, wikis and artist pictures kept beside the music, as flacli writes them.">
+<title>Flaclify — the player half of a fetch-and-file stack</title>
+<meta name="description" content="Flaclify is a fork of Euphonica, the GTK4 MPD client, that reads bios, wikis and pictures kept beside the music and drives flacli: get music by name, watch requests land, tidy the library, fill what is missing. Eleven themes, hot-reloading.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/dtw/dtw.css">
 <link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -50,7 +50,26 @@
   .plate__t small { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); margin-left: 8px; text-transform: uppercase; }
   .plate__d { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); margin: 0; }
 
-  /* guide */
+  /* UI shots */
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 800px) { .shots { grid-template-columns: 1fr; } }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+  .shot--hero { grid-column: 1 / -1; }
+  .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-paper); }
+  .shot figcaption { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); }
+  .shot figcaption b { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .18em; text-transform: uppercase; color: var(--dtw-toner); display: block; margin-bottom: 3px; }
+
+  /* theme strip */
+  .strip { position: relative; }
+  .strip__track { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 4px 2px 14px; scrollbar-width: thin; }
+  .plates.strip__track { display: flex; gap: 18px; justify-content: flex-start; }
+  .strip__track .plate { flex: 0 0 228px; scroll-snap-align: start; }
+  .strip__track .plate__d { font-size: 11.5px; }
+  .strip__nav { display: flex; gap: 8px; justify-content: flex-end; margin: 0 0 10px; }
+  .strip__nav button { font: 400 10px var(--dtw-font-typewriter); letter-spacing: .18em; text-transform: uppercase; background: var(--dtw-paper); color: var(--dtw-toner); border: 1px solid var(--dtw-toner); padding: 5px 10px; cursor: pointer; }
+  .strip__nav button:hover { background: var(--dtw-toner); color: var(--dtw-paper); }
+
+  /* guide
   .guide { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; }
   @media (max-width: 800px) { .guide { grid-template-columns: 1fr; } }
   .g h4 { font: 700 13px/1.2 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
@@ -107,9 +126,11 @@
   <header class="mast">
     <div>
       <h1 class="mast__title">Flaclify</h1>
-      <div class="mast__tag">Music · Player · Daemon · a fork of Euphonica with a wardrobe</div>
+      <div class="mast__tag">Music · Player · Daemon · the player half of a fetch-and-file stack</div>
     </div>
     <nav class="mast__links">
+      <a href="#player">The player</a>
+      <a href="#flacli">flacli</a>
       <a href="#themes">Themes</a>
       <a href="#guide">Making one</a>
       <a href="#icons">Icons</a>
@@ -120,13 +141,48 @@
   </header>
 
   <section class="sec">
-    <p class="lede"><span class="dropcap">F</span>laclify is <a href="https://github.com/htkhiem/euphonica">Euphonica</a>, the GTK4 and libadwaita client for the Music Player Daemon, forked so it can be installed beside the original and taught to change its clothes. A theme is one CSS file with a short header. It can recolour the window, square or round every corner, swap the typefaces, bring its own icon set and album-art plate, and decide whether album art is allowed to tint the accent or wash the background. Themes apply while the music plays: from the menu, with <code>Ctrl+T</code>, from <code>gsettings</code>, or by saving a file.</p>
-    <p class="tw">Eleven looks ship. Two of them, Broadsheet and Reversed Spine, are directions 1a and 1b of the <em>Euphonica × Moirai Digital</em> canvas, drawn in the Death to the World design language. The rest exist to prove the range: a paper folio, a phosphor terminal, a neon room, a Bauhaus poster, a drafting sheet, a lamplit study, a cassette deck, a marshmallow.</p>
+    <p class="lede"><span class="dropcap">F</span>laclify is <a href="https://github.com/htkhiem/euphonica">Euphonica</a>, the GTK4 and libadwaita client for the Music Player Daemon, forked so it can be installed beside the original and made the front of a stack. The back is <a href="https://flacli.vercel.app">flacli</a>, a command line that fetches named music from Soulseek and files it as <code>Artist/Album/NN - Title</code>, with the bio, the wiki and the pictures beside it. Flaclify reads those files, shows what flacli is doing, and drives it: music by name from MusicBrainz, a list of what is on its way, the library tidied and filled from one page, and a console for the rest. It also changes its clothes: eleven themes, one CSS file each, applied while the music plays.</p>
+    <p class="tw">Nothing is written into the player's database. What the shell fetches appears here with its bio and its cover, and a track asked for leaves the Requests page the moment it lands in the library.</p>
   </section>
 
+  <section class="sec" id="player">
+    <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The player</h2></div>
+    <div class="shots">
+      <figure class="shot shot--hero"><img src="img/ui-albums.jpg" alt="The album grid, in the Reversed Spine theme"><figcaption><b>Albums</b>The library as MPD serves it, covers from the files themselves. Left, the views; below Folders, flacli's own pages while it is set up: Get, Requests, Tidy, Ask flacli.</figcaption></figure>
+      <figure class="shot"><img src="img/ui-artist.jpg" alt="An artist page with the bio and picture read from beside the music" loading="lazy"><figcaption><b>Artist</b>Bio and picture read from <code>artist.md</code> and <code>artist.jpg</code> in the artist's folder, as flacli writes them. Under the discography, the studio albums MusicBrainz knows and the library lacks, each with a Get this.</figcaption></figure>
+      <figure class="shot"><img src="img/ui-get.jpg" alt="The Get page: MusicBrainz results with tick boxes" loading="lazy"><figcaption><b>Get</b>One search, three pages: songs, albums, artists, from MusicBrainz. An artist opens onto their albums, an album onto its tracklist. Every tick is one name to flacli, listed before it goes. By name takes the names typed, one a line.</figcaption></figure>
+      <figure class="shot"><img src="img/ui-requests.jpg" alt="The Requests page listing tracks on their way" loading="lazy"><figcaption><b>Requests</b>What was asked for and has not landed: one row per track with where it stands, a skip each and one for the rest. A track leaves the list as it is filed. Never a playlist in MPD.</figcaption></figure>
+      <figure class="shot"><img src="img/ui-tidy.jpg" alt="The Tidy page with the plan, the missing counts and the log" loading="lazy"><figcaption><b>Tidy</b>The dry run, its plan and report, Apply on the yes with every deletion named first. Below, what the player shows and the library lacks, counted per kind, with a Fill for each.</figcaption></figure>
+      <figure class="shot"><img src="img/ui-queue.jpg" alt="The queue and the now-playing bar" loading="lazy"><figcaption><b>Queue</b>Euphonica's queue and transport, dressed by the theme. Playback, outputs, the visualiser and the dynamic playlists are upstream's and untouched.</figcaption></figure>
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
+
+  <section class="sec" id="flacli">
+    <div class="sec__head"><span class="sec__num">II</span><h2 class="sec__title">Files beside the music, and flacli</h2></div>
+    <div class="guide">
+      <div class="g">
+        <h4>What the player reads</h4>
+        <p>A bio under each artist and a wiki under each album, and most libraries have neither. Before asking Last.fm or MusicBrainz, Flaclify looks next to the files: <code>&lt;Artist&gt;/artist.md</code> (or <code>.wiki/&lt;Artist&gt;.md</code> for an artist without a folder), <code>&lt;Artist&gt;/&lt;Album&gt;/wiki.md</code>, and <code>&lt;Artist&gt;/artist.jpg</code> for the picture. A text file is optional front matter between <code>---</code> rules (<code>attribution</code> and <code>url</code> are used) and plain prose below.</p>
+        <p>The file is handed to the provider chain as the starting document, so a refresh keeps its text and only fills in tags and images from the providers you have enabled. It is read again whenever it is newer than the cached copy, so an edit on disk shows on the next visit. The switch and the music directory are under Preferences → Integrations → <em>Library files</em>; the directory defaults to the XDG music folder.</p>
+      </div>
+      <div class="g">
+        <h4>flacli</h4>
+        <p><a href="https://flacli.vercel.app">flacli</a> is the other half: a command line any agent can drive that fetches named songs, albums or whole playlists and files them as <code>Artist/Album/NN - Title</code>. It writes exactly the files above (<code>flacli wiki</code>, <code>flacli avatar</code>), asks MPD to rescan just the folders it filed downloads into, and stores each synced playlist in MPD by name. What an agent fetches is in this window, with its bio and its playlist, without a rescan and without anything written into the player's database.</p>
+        <p>The player reads the shell's state and drives it, through the same command line an agent uses. An Incoming section in the sidebar follows the downloads; a synced playlist shows ghost rows for the tracks it still lacks; doubtful matches are reviewed in a dialog with the <em>why</em> the shell computed. The four pages above cover the rest, and Ask flacli covers anything they do not: whatever would follow <code>flacli</code> on the command line, run as typed. What comes next is set out in the <a href="#roadmap">roadmap</a> below.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
+
   <section class="sec" id="themes">
-    <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The bundled themes</h2></div>
-    <div class="plates">
+    <div class="sec__head"><span class="sec__num">III</span><h2 class="sec__title">The bundled themes</h2></div>
+    <p class="lede">A theme is one CSS file with a short header. It can recolour the window, square or round every corner, swap the typefaces, bring its own icon set and album-art plate, and decide whether album art may tint the accent or wash the background. Themes apply while the music plays: from the menu, with <code>Ctrl+T</code>, from <code>gsettings</code>, or by saving a file. Two, Broadsheet and Reversed Spine, are directions 1a and 1b of the <em>Euphonica × Moirai Digital</em> canvas; the rest prove the range.</p>
+    <div class="strip">
+    <div class="strip__nav"><button type="button" data-strip="-1" aria-label="Previous themes">← Prev</button><button type="button" data-strip="1" aria-label="Next themes">Next →</button></div>
+    <div class="plates strip__track">
       <figure class="plate"><img class="plate__img" src="img/broadsheet.jpg" alt="Broadsheet theme" loading="lazy"><div class="plate__t">Broadsheet<small>1a · light</small></div><p class="plate__d">Toner on paper. Typewriter labels, Old Standard titles, a blackletter masthead, one-pixel line-ink rules, no rounding. Red is one gesture, held to the seekbar. Typewriter glyph icons.</p></figure>
       <figure class="plate"><img class="plate__img" src="img/reversed-spine.jpg" alt="Reversed Spine theme" loading="lazy"><div class="plate__t">Reversed Spine<small>1b · light</small></div><p class="plate__d">Imports Broadsheet and reverses the spine: a toner sidebar with paper knocked out of it, the current view reversed back to paper, a black transport band, titles set in inline toner chips.</p></figure>
       <figure class="plate"><img class="plate__img" src="img/folio.jpg" alt="Folio theme" loading="lazy"><div class="plate__t">Folio<small>light</small></div><p class="plate__d">Laid paper, engraver's ink, a little gilt. Serif throughout, square plates, double rules for the masthead and the transport. Hairline icons with round terminals.</p></figure>
@@ -139,12 +195,13 @@
       <figure class="plate"><img class="plate__img" src="img/marshmallow.jpg" alt="Marshmallow theme" loading="lazy"><div class="plate__t">Marshmallow<small>light</small></div><p class="plate__d">Warm white, plush radii, pill buttons, a single rose accent. Shadows are wide and faint, like things resting on felt. Icons are plump rounded strokes with closed shapes filled.</p></figure>
       <figure class="plate"><img class="plate__img" src="img/default.jpg" alt="Adwaita, the stock look" loading="lazy"><div class="plate__t">Adwaita<small>stock</small></div><p class="plate__d">Euphonica as it ships: libadwaita's own palette, the blurred album-art wash, accents lifted from the cover. Kept as the baseline every theme is measured against.</p></figure>
     </div>
+    </div>
   </section>
 
   <div class="ornament"><span></span><i></i><span></span></div>
 
   <section class="sec" id="guide">
-    <div class="sec__head"><span class="sec__num">II</span><h2 class="sec__title">Making a theme</h2></div>
+    <div class="sec__head"><span class="sec__num">IV</span><h2 class="sec__title">Making a theme</h2></div>
     <p class="lede">Drop a file into <code>~/.config/flaclify/themes/</code>. The directory is watched, so the theme appears under <b>Custom</b> and every save re-applies it. The full guideline, with the selector table and the developer notes, is <a href="https://github.com/h-3303/flaclify/blob/main/docs/THEMING.md"><code>docs/THEMING.md</code></a> in the repository. What follows is the part you must not skip.</p>
 
     <div class="guide">
@@ -200,7 +257,7 @@ button { border-radius: 0; }</code></pre>
   <div class="ornament"><span></span><i></i><span></span></div>
 
   <section class="sec" id="icons">
-    <div class="sec__head"><span class="sec__num">III</span><h2 class="sec__title">Icons and plates</h2></div>
+    <div class="sec__head"><span class="sec__num">V</span><h2 class="sec__title">Icons and plates</h2></div>
     <p class="lede">Each theme names an icon set. The set is searched ahead of the stock icons while the theme is active, so a theme can differ in concept and not only in weight: the broadsheet sets use real Special Elite glyphs, Terminal uses ASCII, Bauhaus fills its shapes. Every set is generated from one geometry spec per icon by <code>tools/gen_icons.py</code>, rendered as fill-only paths so GTK's symbolic recolouring always applies. Each set also ships a 512-pixel album-art plate in its own idiom, and the artist avatar becomes a themed mark on a themed plate instead of a random-colour initial.</p>
     <div class="sheets">
       <figure><img src="sheets/dttw.png" alt="Broadsheet and Reversed Spine icon set" loading="lazy"><figcaption><b>dttw</b> · Broadsheet, Reversed Spine · typewriter glyphs, hairline rules, ✦ stars, hatched plates</figcaption></figure>
@@ -230,7 +287,7 @@ button { border-radius: 0; }</code></pre>
   <div class="ornament"><span></span><i></i><span></span></div>
 
   <section class="sec" id="dev">
-    <div class="sec__head"><span class="sec__num">IV</span><h2 class="sec__title">For developers</h2></div>
+    <div class="sec__head"><span class="sec__num">VI</span><h2 class="sec__title">For developers</h2></div>
     <div class="guide">
       <div class="g">
         <h4>The engine</h4>
@@ -259,26 +316,10 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
     </div>
   </section>
 
-  <section class="sec" id="flacli">
-    <div class="sec__head"><span class="sec__num">V</span><h2 class="sec__title">Files beside the music, and flacli</h2></div>
-    <div class="guide">
-      <div class="g">
-        <h4>What the player reads</h4>
-        <p>A bio under each artist and a wiki under each album, and most libraries have neither. Before asking Last.fm or MusicBrainz, Flaclify looks next to the files: <code>&lt;Artist&gt;/artist.md</code> (or <code>.wiki/&lt;Artist&gt;.md</code> for an artist without a folder), <code>&lt;Artist&gt;/&lt;Album&gt;/wiki.md</code>, and <code>&lt;Artist&gt;/artist.jpg</code> for the picture. A text file is optional front matter between <code>---</code> rules (<code>attribution</code> and <code>url</code> are used) and plain prose below.</p>
-        <p>The file is handed to the provider chain as the starting document, so a refresh keeps its text and only fills in tags and images from the providers you have enabled. It is read again whenever it is newer than the cached copy, so an edit on disk shows on the next visit. The switch and the music directory are under Preferences → Integrations → <em>Library files</em>; the directory defaults to the XDG music folder.</p>
-      </div>
-      <div class="g">
-        <h4>flacli</h4>
-        <p><a href="https://flacli.vercel.app">flacli</a> is the other half: a command line any agent can drive that fetches named songs, albums or whole playlists and files them as <code>Artist/Album/NN - Title</code>. It writes exactly the files above (<code>flacli wiki</code>, <code>flacli avatar</code>), asks MPD to rescan just the folders it filed downloads into, and stores each synced playlist in MPD by name. What an agent fetches is in this window, with its bio and its playlist, without a rescan and without anything written into the player's database.</p>
-        <p>The player now reads the shell's state and drives it: an indicator for downloads under way, ghost rows for the tracks a playlist still lacks, the releases an artist page can fetch, and the review of doubtful matches as a dialog instead of a JSON field. What comes next is set out in the <a href="#roadmap">roadmap</a> below.</p>
-      </div>
-    </div>
-  </section>
-
   <div class="ornament"><span></span><i></i><span></span></div>
 
   <section class="sec" id="roadmap">
-    <div class="sec__head"><span class="sec__num">VI</span><h2 class="sec__title">The roadmap</h2></div>
+    <div class="sec__head"><span class="sec__num">VII</span><h2 class="sec__title">The roadmap</h2></div>
     <p class="lede">Flaclify and flacli are one stack. The shell fetches and files; the player shows. What remains is laid out in tiers: first the player reflects what the shell has done, then it drives the shell, then, if ever, a model sits inside the player, and last the whole stack leaves the desk for a device in the pocket. Each tier is a label on the issue tracker and every line below is an issue, so the boxes here follow the tracker and not the other way round. No dates are promised.</p>
 
     <ol class="tiers">
@@ -364,5 +405,14 @@ build/venv/bin/python tools/gen_icons.py</code></pre>
     <span>One sheet · photocopied · pass it on</span>
   </footer>
 </main>
+<script>
+  document.querySelectorAll('[data-strip]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var track = button.closest('.strip').querySelector('.strip__track');
+      var step = track.querySelector('.plate').getBoundingClientRect().width + 18;
+      track.scrollBy({ left: step * 2 * Number(button.dataset.strip), behavior: 'smooth' });
+    });
+  });
+</script>
 </body>
 </html>
