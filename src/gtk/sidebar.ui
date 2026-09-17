@@ -123,6 +123,12 @@
 										<property name="label" translatable="true">Tidy</property>
 									</object>
 								</child>
+								<child>
+									<object class="EuphonicaSidebarButton" id="ask_btn">
+										<property name="group">recent_btn</property>
+										<property name="label" translatable="true">Ask flacli</property>
+									</object>
+								</child>
 							</object>
 						</child>
 						<child>

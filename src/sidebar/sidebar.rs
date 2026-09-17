@@ -187,6 +187,8 @@ mod imp {
         #[template_child]
         pub tidy_btn: TemplateChild<SidebarButton>,
         #[template_child]
+        pub ask_btn: TemplateChild<SidebarButton>,
+        #[template_child]
         pub queue_btn: TemplateChild<gtk::ToggleButton>,
         #[template_child]
         pub queue_len: TemplateChild<gtk::Label>,
@@ -341,6 +343,15 @@ impl Sidebar {
             move |btn| {
                 if btn.is_active() {
                     stack.set_visible_child_name("tidy");
+                }
+            }
+        ));
+        self.imp().ask_btn.connect_toggled(clone!(
+            #[weak]
+            stack,
+            move |btn| {
+                if btn.is_active() {
+                    stack.set_visible_child_name("ask");
                 }
             }
         ));
@@ -781,6 +792,7 @@ impl Sidebar {
             "get" => self.imp().get_btn.set_active(true),
             "requests" => self.imp().requests_btn.set_active(true),
             "tidy" => self.imp().tidy_btn.set_active(true),
+            "ask" => self.imp().ask_btn.set_active(true),
             _ => {
                 eprintln!("Unknown view: {}", view_name);
             }

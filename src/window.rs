@@ -199,6 +199,7 @@ mod imp {
         pub get_view: OnceCell<Rc<crate::flacli::GetView>>,
         pub requests_view: OnceCell<Rc<crate::flacli::RequestsView>>,
         pub tidy_view: OnceCell<Rc<crate::flacli::TidyView>>,
+        pub ask_view: OnceCell<Rc<crate::flacli::AskView>>,
 
         #[template_child]
         pub menu_btn: TemplateChild<gtk::MenuButton>,
@@ -1380,6 +1381,9 @@ impl EuphonicaWindow {
             let tidy_view = crate::flacli::TidyView::new(&win);
             stack.add_named(&tidy_view.widget, Some("tidy"));
             let _ = win.imp().tidy_view.set(tidy_view);
+            let ask_view = crate::flacli::AskView::new(&win);
+            stack.add_named(&ask_view.widget, Some("ask"));
+            let _ = win.imp().ask_view.set(ask_view);
             stack.connect_visible_child_name_notify(clone!(
                 #[weak]
                 win,
@@ -1395,6 +1399,11 @@ impl EuphonicaWindow {
                     if name.as_deref() == Some("tidy") {
                         if let Some(view) = win.imp().tidy_view.get() {
                             view.shown();
+                        }
+                    }
+                    if name.as_deref() == Some("ask") {
+                        if let Some(view) = win.imp().ask_view.get() {
+                            view.focus();
                         }
                     }
                 }
@@ -2018,6 +2027,9 @@ impl EuphonicaWindow {
         let view_tidy_action = gio::ActionEntry::builder("view-tidy")
             .activate(move |this: &Self, _, _| this.switch_to_view("tidy"))
             .build();
+        let view_ask_action = gio::ActionEntry::builder("view-ask")
+            .activate(move |this: &Self, _, _| this.switch_to_view("ask"))
+            .build();
         let search_current_view_action = gio::ActionEntry::builder("search-current-view")
             .activate(move |this: &Self, _, _| this.maybe_trigger_search_mode())
             .build();
@@ -2049,6 +2061,7 @@ impl EuphonicaWindow {
             view_get_action,
             view_requests_action,
             view_tidy_action,
+            view_ask_action,
             view_queue_action,
             save_action,
             search_current_view_action,

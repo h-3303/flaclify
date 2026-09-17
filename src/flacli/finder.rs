@@ -372,7 +372,7 @@ fn ask_page(window: &EuphonicaWindow) -> gtk::Box {
         .css_classes(["card"])
         .build();
     let get_btn = gtk::Button::builder()
-        .label("Ask flacli")
+        .label("Get these")
         .halign(gtk::Align::End)
         .css_classes(["suggested-action"])
         .sensitive(false)
@@ -481,7 +481,7 @@ impl Finder {
         view.add_titled(&songs.stack, Some(SONGS), "Songs");
         view.add_titled(&albums.stack, Some(ALBUMS), "Albums");
         view.add_titled(&artists.stack, Some(ARTISTS), "Artists");
-        view.add_titled(&ask_page(window), Some(ASK), "Ask flacli");
+        view.add_titled(&ask_page(window), Some(ASK), "By name");
         let switcher = adw::ViewSwitcher::builder()
             .stack(&view)
             .policy(adw::ViewSwitcherPolicy::Wide)

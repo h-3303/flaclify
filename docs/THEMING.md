@@ -282,5 +282,5 @@ gdbus call --session --dest io.github.h3303.Flaclify \
   --method org.gtk.Actions.Activate view-albums '[]' '{}'
 ```
 
-`view-recent`, `view-albums`, `view-artists`, `view-folders`, `view-playlists`, `view-get`, `view-requests`, `view-tidy` and
+`view-recent`, `view-albums`, `view-artists`, `view-folders`, `view-playlists`, `view-get`, `view-requests`, `view-tidy`, `view-ask` and
 `view-queue` exist; `app.cycle-theme` is on the application object path.

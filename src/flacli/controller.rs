@@ -583,6 +583,52 @@ where
     serde_json::from_str::<T>(&stdout).map_err(Error::Parse)
 }
 
+/// What a command printed, for the Ask flacli console.
+pub struct Answer {
+    pub stdout: String,
+    pub stderr: String,
+    pub ok: bool,
+}
+
+impl Answer {
+    /// JSON pretty-printed where flacli spoke JSON, else the text as it came; stderr appended.
+    pub fn pretty(&self) -> String {
+        let mut text = match serde_json::from_str::<serde_json::Value>(self.stdout.trim()) {
+            Ok(value) => serde_json::to_string_pretty(&value).unwrap_or_else(|_| self.stdout.clone()),
+            Err(_) => self.stdout.clone(),
+        };
+        let err = self.stderr.trim();
+        if !err.is_empty() {
+            if !text.trim().is_empty() {
+                text.push('\n');
+            }
+            text.push_str(err);
+        }
+        if !self.ok && !text.contains("error") {
+            text.push_str("\n(flacli exited with an error)");
+        }
+        text
+    }
+}
+
+/// Spawn `flacli --compact <args>` off the main thread and hand back what it printed, as is.
+pub(super) async fn run_raw(args: Vec<String>) -> Result<Answer, Error> {
+    gio::spawn_blocking(move || {
+        let output = Command::new("flacli")
+            .arg("--compact")
+            .args(&args)
+            .output()
+            .map_err(Error::Spawn)?;
+        Ok(Answer {
+            stdout: String::from_utf8_lossy(&output.stdout).into_owned(),
+            stderr: String::from_utf8_lossy(&output.stderr).into_owned(),
+            ok: output.status.success(),
+        })
+    })
+    .await
+    .unwrap_or(Err(Error::Thread))
+}
+
 /// Spawn `flacli --compact <args>` off the main thread and parse its JSON.
 pub(super) async fn run<T>(args: Vec<String>) -> Result<T, Error>
 where

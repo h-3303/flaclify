@@ -126,13 +126,16 @@ sidebar while flacli is set up:
 - **Get** (also the menu, Ctrl+Shift+G, and **Get it…** under an album search that matches
   nothing) searches MusicBrainz for songs, albums and artists; an artist opens onto their albums,
   an album onto its tracklist, and every tick is one name handed to `flacli get` after a
-  confirmation that lists them. Its **Ask flacli** page takes the names directly, one a line, as
+  confirmation that lists them. Its **By name** page takes the names directly, one a line, as
   the shell does. **Get this** on a missing release does the same for one album. MusicBrainz
   supplies names only; nothing is fetched that has not been named.
 - **Requests** is what has been asked of flacli and not yet landed: one row per track with where
   it stands (searching, needs a decision, queued, downloading, not found), a skip per row and one
   for the rest. A track leaves the list as it is filed, and is then simply in the library. It is
   never stored as a playlist in MPD.
+- **Ask flacli** is a console for any flacli command, for the cases the buttons do not cover:
+  what follows `flacli` on the command line, run as typed, with the answer as flacli gives it.
+  Commands and Guide are one click away.
 - **Tidy** runs `flacli tidy` as a dry run, shows the plan and the report, and applies it on the
   yes with every deletion named first; files new arrivals; and fills what the player shows but the
   library lacks (artist bios and album wikis, artist pictures, album covers), with the missing
