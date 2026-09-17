@@ -8,7 +8,10 @@
 			<object class="GtkBox">
 				<property name="spacing">12</property>
 				<child>
-					<object class="GtkBox" id="prefix_box"></object>
+					<object class="GtkBox" id="prefix_box">
+						<!-- Hidden until a prefix is set so the box spacing does not leave a gap. -->
+						<property name="visible">false</property>
+					</object>
 				</child>
 				<child>
 					<object class="GtkLabel" id="label_widget">

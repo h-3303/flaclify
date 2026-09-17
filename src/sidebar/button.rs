@@ -63,6 +63,7 @@ use super::*;
                 child.unparent();
             }
             prefix_box.append(&prefix);
+            prefix_box.set_visible(true);
             self.prefix_child.set(Some(&prefix));
         }
 
