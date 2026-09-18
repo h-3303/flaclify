@@ -15,5 +15,5 @@ pub use finder::get_music;
 pub use get_view::GetView;
 pub use requests_view::RequestsView;
 pub use tidy_view::TidyView;
-pub use controller::{MissingTrack, PlaylistStatus, flacli, init, status_label};
+pub use controller::{MissingTrack, PlaylistStatus, flacli, init, probe, status_label};
 pub use state::FlacliState;

@@ -140,15 +140,24 @@ struct MpdReport {
     same_library: bool,
 }
 
-#[derive(Debug, Deserialize)]
-struct Nicotine {
+/// The part of `flacli doctor` the player reads: the gate's bridge check, and the first-run
+/// wizard's verdict.
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct Doctor {
     #[serde(default)]
-    reachable: bool,
+    pub version: String,
+    #[serde(default)]
+    pub music_dir: String,
+    #[serde(default)]
+    pub nicotine: DoctorNicotine,
 }
 
-#[derive(Debug, Deserialize)]
-struct Doctor {
-    nicotine: Nicotine,
+#[derive(Debug, Clone, Default, Deserialize)]
+pub struct DoctorNicotine {
+    #[serde(default)]
+    pub reachable: bool,
+    #[serde(default)]
+    pub online: bool,
 }
 
 // Tier 2: what the write commands answer. The rules are flacli's: naming the music is the yes
@@ -526,7 +535,17 @@ pub fn status_label(status: &str) -> &'static str {
     }
 }
 
-fn find_on_path(name: &str) -> bool {
+pub fn find_on_path(name: &str) -> bool {
+    if crate::utils::is_flatpak() {
+        // The sandbox's PATH says nothing about the host; ask the host's shell.
+        return Command::new("flatpak-spawn")
+            .args(["--host", "sh", "-c"])
+            .arg(format!("command -v {name} >/dev/null 2>&1"))
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .status()
+            .is_ok_and(|s| s.success());
+    }
     std::env::var_os("PATH").is_some_and(|paths| {
         std::env::split_paths(&paths).any(|dir| {
             let candidate = dir.join(name);
@@ -563,11 +582,33 @@ pub fn same_library(mpd_dir: &str, music_dir: &str) -> bool {
     a == b || a.starts_with(&b) || b.starts_with(&a)
 }
 
+/// A command for a program on the host: `flacli` and the agent live outside the sandbox when
+/// Flaclify is a Flatpak, so they are reached through `flatpak-spawn --host`. The built-in
+/// player's socket goes along as `$MPD_HOST`, so flacli finds the same daemon without any
+/// configuration.
+pub fn host_command(program: &str) -> Command {
+    let mut cmd = if crate::utils::is_flatpak() {
+        let mut c = Command::new("flatpak-spawn");
+        c.arg("--host");
+        if let Some(host) = crate::local_mpd::mpd_host_env() {
+            c.arg(format!("--env=MPD_HOST={host}"));
+        }
+        c.arg(program);
+        c
+    } else {
+        Command::new(program)
+    };
+    if let Some(host) = crate::local_mpd::mpd_host_env() {
+        cmd.env("MPD_HOST", host);
+    }
+    cmd
+}
+
 fn run_blocking<T>(args: &[String]) -> Result<T, Error>
 where
     T: for<'de> Deserialize<'de>,
 {
-    let output = Command::new("flacli")
+    let output = host_command("flacli")
         .arg("--compact")
         .args(args)
         .output()
@@ -614,7 +655,7 @@ impl Answer {
 /// Spawn `flacli --compact <args>` off the main thread and hand back what it printed, as is.
 pub(super) async fn run_raw(args: Vec<String>) -> Result<Answer, Error> {
     gio::spawn_blocking(move || {
-        let output = Command::new("flacli")
+        let output = host_command("flacli")
             .arg("--compact")
             .args(&args)
             .output()
@@ -656,7 +697,7 @@ pub(super) async fn run_agent(sentence: String, session: Option<String>) -> Resu
         .file_name()
         .is_some_and(|n| n.to_string_lossy().starts_with("claude"));
     gio::spawn_blocking(move || {
-        let mut cmd = Command::new(&program);
+        let mut cmd = host_command(&program);
         cmd.args(&parts);
         if is_claude {
             cmd.arg("--append-system-prompt").arg(AGENT_BRIEF);
@@ -694,6 +735,17 @@ pub(super) async fn run_agent(sentence: String, session: Option<String>) -> Resu
     })
     .await
     .unwrap_or(Err(Error::Thread))
+}
+
+/// One look at flacli for the first-run wizard: on the path at all, and what its doctor says.
+pub async fn probe() -> Option<Result<Doctor, Error>> {
+    let on_path = gio::spawn_blocking(|| find_on_path("flacli"))
+        .await
+        .unwrap_or(false);
+    if !on_path {
+        return None;
+    }
+    Some(run::<Doctor>(args(&["doctor"])).await)
 }
 
 /// Spawn `flacli --compact <args>` off the main thread and parse its JSON.

@@ -4,7 +4,7 @@ use std::str::FromStr;
 use adw::prelude::*;
 use adw::subclass::prelude::*;
 use gtk::{
-    CompositeTemplate,
+    CompositeTemplate, gio,
     glib::{self, closure_local},
 };
 
@@ -90,6 +90,14 @@ mod imp {
     #[template(resource = "/io/github/h3303/Flaclify/gtk/preferences/client.ui")]
     pub struct ClientPreferences {
         // MPD
+        #[template_child]
+        pub managed_mpd: TemplateChild<adw::SwitchRow>,
+        #[template_child]
+        pub managed_music_dir: TemplateChild<adw::ActionRow>,
+        #[template_child]
+        pub managed_music_dir_btn: TemplateChild<gtk::Button>,
+        #[template_child]
+        pub managed_status: TemplateChild<adw::ActionRow>,
         #[template_child]
         pub mpd_use_unix_socket: TemplateChild<adw::SwitchRow>,
         #[template_child]
@@ -281,6 +289,13 @@ impl Default for ClientPreferences {
 }
 
 impl ClientPreferences {
+    fn refresh_managed_rows(&self) {
+        let imp = self.imp();
+        imp.managed_music_dir
+            .set_subtitle(&crate::local_mpd::music_dir().to_string_lossy());
+        imp.managed_status.set_subtitle(&crate::local_mpd::describe());
+    }
+
     fn on_connection_state_changed(&self, cs: &ClientState) {
         match cs.connection_state() {
             ConnectionState::NotConnected => {
@@ -389,6 +404,98 @@ impl ClientPreferences {
                 "active",
             )
             .build();
+
+        // The built-in player. The switch is bound; the rows below it are for the other mode.
+        conn_settings
+            .bind("managed-mpd", &imp.managed_mpd.get(), "active")
+            .build();
+        for row in [
+            imp.mpd_use_unix_socket.get().upcast::<gtk::Widget>(),
+            imp.mpd_unix_socket.get().upcast(),
+            imp.mpd_host.get().upcast(),
+            imp.mpd_port.get().upcast(),
+            imp.mpd_password.get().upcast(),
+        ] {
+            imp.managed_mpd
+                .bind_property("active", &row, "sensitive")
+                .invert_boolean()
+                .sync_create()
+                .build();
+        }
+        for row in [
+            imp.managed_music_dir.get().upcast::<gtk::Widget>(),
+            imp.managed_status.get().upcast(),
+        ] {
+            imp.managed_mpd
+                .bind_property("active", &row, "visible")
+                .sync_create()
+                .build();
+        }
+        self.refresh_managed_rows();
+        imp.managed_mpd.connect_active_notify(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[weak]
+            app,
+            move |row| {
+                this.refresh_managed_rows();
+                if row.is_active() {
+                    crate::local_mpd::apply_connection_settings();
+                    this.imp().mpd_use_unix_socket.set_active(true);
+                    this.imp()
+                        .mpd_unix_socket
+                        .set_text(&crate::local_mpd::socket_path().to_string_lossy());
+                } else {
+                    crate::local_mpd::stop();
+                }
+                glib::spawn_future_local(async move {
+                    if let Err(e) = app.refresh().await {
+                        dbg!(e);
+                    }
+                });
+            }
+        ));
+        imp.managed_music_dir_btn.connect_clicked(clone!(
+            #[weak(rename_to = this)]
+            self,
+            #[weak]
+            app,
+            move |_| {
+                let dialog = gtk::FileDialog::builder()
+                    .title("Music folder")
+                    .modal(true)
+                    .initial_folder(&gio::File::for_path(crate::local_mpd::music_dir()))
+                    .build();
+                let parent = this.root().and_downcast::<gtk::Window>();
+                dialog.select_folder(
+                    parent.as_ref(),
+                    gio::Cancellable::NONE,
+                    clone!(
+                        #[weak]
+                        this,
+                        #[weak]
+                        app,
+                        move |result| {
+                            if let Ok(folder) = result
+                                && let Some(path) = folder.path()
+                            {
+                                let _ = utils::settings_manager()
+                                    .child("client")
+                                    .set_string("managed-mpd-music-dir", &path.to_string_lossy());
+                                this.refresh_managed_rows();
+                                // A new folder means a new daemon: stop ours, refresh starts it.
+                                crate::local_mpd::stop();
+                                glib::spawn_future_local(async move {
+                                    if let Err(e) = app.refresh().await {
+                                        dbg!(e);
+                                    }
+                                });
+                            }
+                        }
+                    ),
+                );
+            }
+        ));
         imp.mpd_host.set_text(&conn_settings.string("mpd-host"));
         imp.mpd_unix_socket
             .set_text(&conn_settings.string("mpd-unix-socket"));

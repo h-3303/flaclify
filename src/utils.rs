@@ -56,6 +56,12 @@ pub fn tokio_runtime() -> &'static Runtime {
     RUNTIME.get_or_init(|| Runtime::new().expect("Setting up tokio runtime needs to succeed."))
 }
 
+/// Whether this process runs inside a Flatpak sandbox. Decides where the bundled mpd is and
+/// whether host programs (flacli, the agent) must be reached through `flatpak-spawn --host`.
+pub fn is_flatpak() -> bool {
+    std::env::var_os("FLATPAK_ID").is_some() || std::path::Path::new("/.flatpak-info").exists()
+}
+
 /// Get GSettings for the entire application.
 pub fn settings_manager() -> gio::Settings {
     // Trim the .Devel suffix if exists

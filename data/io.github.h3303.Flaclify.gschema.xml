@@ -76,6 +76,15 @@
 	</schema>
 
 	<schema id="io.github.h3303.Flaclify.client" path="/io/github/h3303/Flaclify/client/">
+		<key name="managed-mpd" type="b">
+			<default>false</default>
+			<summary>Run a Music Player Daemon of Flaclify's own</summary>
+			<description>Flaclify starts mpd itself on the folder below, over a private local socket, and stops it on quit. The host, port and socket settings are then written by Flaclify. Off means Flaclify connects to an MPD you run.</description>
+		</key>
+		<key name="managed-mpd-music-dir" type="s">
+			<default>''</default>
+			<summary>The folder the built-in player serves (empty: the XDG music folder)</summary>
+		</key>
 		<key name="mpd-auto-reconnect" type="b">
 			<default>true</default>
 		</key>

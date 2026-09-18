@@ -140,6 +140,12 @@ mod imp {
     }
 
     impl ApplicationImpl for EuphonicaApplication {
+        fn shutdown(&self) {
+            // Stop the mpd we started, if any, before the process ends.
+            crate::local_mpd::stop();
+            self.parent_shutdown();
+        }
+
         // We connect to the activate callback to create a window when the application
         // has been launched. Additionally, this callback notifies us when the user
         // tries to launch a "second instance" of the application. When they try
@@ -818,6 +824,12 @@ impl EuphonicaApplication {
     }
 
     pub async fn refresh(&self) -> ClientResult<()> {
+        // The built-in player: start (or find) our own mpd before connecting to it.
+        if crate::local_mpd::is_managed()
+            && let Err(e) = crate::local_mpd::ensure_running().await
+        {
+            eprintln!("Built-in player: {e}");
+        }
         self.get_client().connect().await?;
         self.get_library().clear();
         self.get_player().clear()?;

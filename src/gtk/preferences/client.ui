@@ -10,6 +10,33 @@
         <property name="title" translatable="true">Music Player Daemon</property>
         <property name="description" translatable="true">Change how Flaclify connects to your Music Player Daemon instance. Click Reconnect to save these settings and initiate a new connection.</property>
         <child>
+          <object class="AdwSwitchRow" id="managed_mpd">
+            <property name="title" translatable="true">Run a player of Flaclify's own</property>
+            <property name="subtitle" translatable="true">Flaclify starts mpd on the folder below over a private socket and stops it on quit. Turn off to connect to an MPD you run.</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow" id="managed_music_dir">
+            <property name="title" translatable="true">Music folder</property>
+            <property name="subtitle">~/Music</property>
+            <property name="subtitle-selectable">true</property>
+            <property name="activatable-widget">managed_music_dir_btn</property>
+            <child type="suffix">
+              <object class="GtkButton" id="managed_music_dir_btn">
+                <property name="valign">center</property>
+                <property name="label" translatable="true">Change…</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwActionRow" id="managed_status">
+            <property name="title" translatable="true">Built-in player</property>
+            <property name="subtitle">…</property>
+            <property name="subtitle-lines">3</property>
+          </object>
+        </child>
+        <child>
           <object class="AdwSwitchRow" id="mpd_use_unix_socket">
             <property name="title" translatable="true">Connect via local socket</property>
           </object>

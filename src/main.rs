@@ -25,6 +25,7 @@ mod common;
 mod config;
 mod flacli;
 mod library;
+mod local_mpd;
 mod meta_providers;
 mod player;
 mod preferences;
