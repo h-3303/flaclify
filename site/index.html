@@ -50,6 +50,18 @@
   .plate__t small { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); margin-left: 8px; text-transform: uppercase; }
   .plate__d { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); margin: 0; }
 
+  /* get it */
+  .get { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 40px; align-items: start; }
+  @media (max-width: 800px) { .get { grid-template-columns: 1fr; } }
+  .get__btn { display: inline-flex; flex-direction: column; gap: 4px; text-decoration: none; background: var(--dtw-toner); color: var(--dtw-paper); border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); padding: 14px 22px 12px; margin: 4px 0 14px; }
+  .get__btn:hover { background: var(--dtw-paper); color: var(--dtw-toner); }
+  .get__btn b { font: 700 18px/1.1 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; }
+  .get__btn small { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .2em; text-transform: uppercase; }
+  .get ol { margin: 0 0 12px; padding-left: 20px; font: 400 13.5px/1.55 var(--dtw-font-serif); }
+  .get ol li { padding: 3px 0; }
+  .get__note { font: 400 11.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .04em; color: var(--dtw-label); margin: 0 0 10px; }
+  .get__soon { display: inline-block; border: 1px solid var(--dtw-grey-2); color: var(--dtw-label); font: 400 9.5px/1.2 var(--dtw-font-typewriter); letter-spacing: .14em; padding: 4px 8px; text-transform: uppercase; margin-right: 8px; }
+
   /* UI shots */
   .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
   @media (max-width: 800px) { .shots { grid-template-columns: 1fr; } }
@@ -130,6 +142,7 @@
       <div class="mast__tag">Music · Player · Daemon · the player half of a fetch-and-file stack</div>
     </div>
     <nav class="mast__links">
+      <a href="#get">Get it</a>
       <a href="#player">The player</a>
       <a href="#flacli">flacli</a>
       <a href="#themes">Themes</a>
@@ -145,6 +158,28 @@
     <p class="lede"><span class="dropcap">F</span>laclify is <a href="https://github.com/htkhiem/euphonica">Euphonica</a>, the GTK4 and libadwaita client for the Music Player Daemon, forked so it can be installed beside the original and made the front of a stack. The back is <a href="https://flacli.vercel.app">flacli</a>, a command line that fetches named music from Soulseek and files it as <code>Artist/Album/NN - Title</code>, with the bio, the wiki and the pictures beside it. Flaclify reads those files, shows what flacli is doing, and drives it: music by name from MusicBrainz, a list of what is on its way, the library tidied and filled from one page, and a console for the rest. It also changes its clothes: eleven themes, one CSS file each, applied while the music plays.</p>
     <p class="tw">Nothing is written into the player's database. What the shell fetches appears here with its bio and its cover, and a track asked for leaves the Requests page the moment it lands in the library.</p>
   </section>
+
+  <section class="sec" id="get">
+    <div class="sec__head"><span class="sec__num">§</span><h2 class="sec__title">Get it</h2></div>
+    <div class="get">
+      <div>
+        <a class="get__btn" href="https://github.com/h-3303/flaclify/releases/latest/download/flaclify.flatpak" download><b>Download for Linux</b><small>Flatpak · x86_64 · beta</small></a>
+        <p class="get__note"><span class="get__soon">Next</span>Windows. The player is GTK4 and builds there; the daemon and the audio path are the work. Nothing to download yet.</p>
+        <p class="get__note">The bundle carries its own Music Player Daemon, so there is nothing to set up: point it at a folder and it plays. Wants the GNOME 49 runtime, which the install fetches from Flathub. All releases, with notes: <a href="https://github.com/h-3303/flaclify/releases">github.com/h-3303/flaclify/releases</a>.</p>
+      </div>
+      <div class="g">
+        <h4>Three steps, then a short first run</h4>
+        <ol>
+          <li>Open the downloaded <code>flaclify.flatpak</code>. Software, Discover and the like install it; from a terminal, <code>flatpak install flaclify.flatpak</code>. If Flathub is not yet a remote on your machine, <a href="https://flathub.org/setup">flathub.org/setup</a> is one line.</li>
+          <li>Launch Flaclify. The first run asks where your music is (it offers your Music folder), whether each album has its own folder, and whether you want <a href="https://flacli.vercel.app">flacli</a> beside it. flacli is optional: with it the player fetches music by name; without it, it is a player.</li>
+          <li>The library scans while you look around. Ctrl+T changes the theme. Everything the first run set is under Preferences.</li>
+        </ol>
+        <p class="get__note">Already run MPD? Say so on the first page and give the socket or the host; the built-in daemon is then never started. Built from source instead: see <a href="#dev">Developers</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="ornament"><span></span><i></i><span></span></div>
 
   <section class="sec" id="player">
     <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The player</h2></div>

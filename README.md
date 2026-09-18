@@ -153,6 +153,37 @@ checks that the Nicotine+ bridge answers. No Soulseek code lives in this reposit
 What comes next, an agent inside the player and a pocket device running the whole stack, is
 tracked as the [roadmap](https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap).
 
+## Install
+
+The site has the button: [flaclify.vercel.app](https://flaclify.vercel.app#get). It downloads
+`flaclify.flatpak` from the [latest release](https://github.com/h-3303/flaclify/releases/latest),
+built by [the Flatpak workflow](.github/workflows/flatpak.yml) from
+`io.github.h3303.Flaclify.json` on every tag. Open the file (Software, Discover) or:
+
+```sh
+flatpak install flaclify.flatpak
+flatpak run io.github.h3303.Flaclify
+```
+
+The bundle carries its own **Music Player Daemon** (mpd 0.24, built into the Flatpak), so nothing
+has to be set up first. The first run is a short wizard: where the music is, how the albums are
+laid out, and whether flacli should sit beside the player. It is optional; the player is a
+player without it. Every answer is under Preferences afterwards.
+
+**The built-in player.** With *Run a player of Flaclify's own* on (the first run's default),
+Flaclify writes an `mpd.conf` under `~/.local/share/flaclify/mpd/`, starts `mpd --no-daemon` on
+the chosen folder, listens on `$XDG_RUNTIME_DIR/flaclify/mpd.sock`, and stops it on quit. A
+native build does the same with the distribution's `mpd` package (or `$FLACLIFY_MPD`). An MPD
+you already run is never touched: say so on the first page, or turn the switch off in
+Preferences → Client, and Flaclify connects to yours as before. Programs Flaclify spawns
+(flacli, the agent) get the socket as `$MPD_HOST`, so flacli finds the same daemon; a shell of
+your own wants `flacli config set mpd $XDG_RUNTIME_DIR/flaclify/mpd.sock`.
+
+Inside the Flatpak, flacli and the agent run on the host through `flatpak-spawn --host`
+(`--talk-name=org.freedesktop.Flatpak`); the music folder is `xdg-music` unless you grant
+another with Flatseal. Windows is the next target; the Nix flake and the source build below
+remain.
+
 ## Build
 
 Dependencies are the same as upstream: `gtk4` >= 4.18, `libadwaita` >= 1.7, `meson`, `gettext`,
