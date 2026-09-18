@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For developers — Flaclify</title>
+<meta name="description" content="Under the hood of Flaclify: the theme engine, icon sets, how to build and run it, and how to add a bundled theme.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  .dev p { margin: 0 0 12px; font-size: 14.5px; line-height: 1.55; text-align: justify; text-wrap: pretty; }
+  .dev .sec-head { margin-bottom: 14px; }
+  .dev .sec-head--later { margin-top: 26px; }
+  .deps { margin: 12px 0 0; font: 400 10px/1.7 var(--dtw-font-typewriter); letter-spacing: .1em; color: var(--dtw-label); }
+</style>
+</head>
+<body>
+<div class="page dtw-xerox">
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="topbar__brand" href="./">Flaclify</a>
+      <span class="topbar__issue">MMXXVI · № 2</span>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="./">Home</a>
+        <a href="stack.html">The stack</a>
+        <a href="theming.html">Making a theme</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="developers.html" aria-current="page">Developers</a>
+        <a href="https://github.com/h-3303/flaclify">GitHub</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="dtw-xerox hero__in">
+      <div class="wrap">
+        <div class="kicker">Under the hood</div>
+        <h1 class="h1">For developers.</h1>
+        <p class="lede">Rust, GTK4 and libadwaita, forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> so it installs beside the original. The app ID is <code>io.github.h3303.Flaclify</code> with its own settings, cache and config. The one thing deliberately shared is the MPD password in the keyring, and the sticker keys, so metadata round-trips with other Euphonica clients.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="aged">
+    <div class="wrap cols dev">
+      <div>
+        <div class="sec-head"><span class="sec-num">I</span><h2 class="h2 h2--small">The theme engine.</h2></div>
+        <p><code>src/theme/mod.rs</code> owns one <code>CssProvider</code> at user priority, installed from the app's startup handler before any window exists. The window's accent provider is added later at the same priority, so it cascades over the theme — that is what lets album-art accents win when a theme allows them.</p>
+        <p><code>apply(id)</code> loads the CSS, switches the icon set, forces the colour scheme if declared, saves the id and notifies listeners. The user directory is watched with a debounced <code>GFileMonitor</code>; the settings key is watched so <code>gsettings</code> writes apply live.</p>
+        <div class="sec-head sec-head--later"><span class="sec-num">II</span><h2 class="h2 h2--small">Icon sets.</h2></div>
+        <p style="margin: 0;"><code>apply_icon_set()</code> puts <code>/iconsets/&lt;set&gt;/icons</code> first in the display's icon-theme resource path. Names that Adwaita also provides carry an <code>fl-</code> prefix in the UI files, because the system theme is searched before app resources and an unprefixed override is never picked. Placeholders go through a <code>ThemedPlaceholder</code> paintable that swaps its texture and invalidates itself.</p>
+      </div>
+      <div>
+        <div class="sec-head"><span class="sec-num">III</span><h2 class="h2 h2--small">Build and run.</h2></div>
+<pre class="dark r-n03">meson setup build -Dprofile=dev -Dprefix=$HOME/.local
+ninja -C build install
+flaclify</pre>
+        <p class="deps">gtk4 ≥ 4.18 · libadwaita ≥ 1.7 · meson · gettext · sqlite · pipewire · libsecret · MPD ≥ 0.24 · stable Rust</p>
+        <div class="sec-head sec-head--later" style="margin-bottom: 12px;"><span class="sec-num">IV</span><h2 class="h2 h2--small">Adding a bundled theme.</h2></div>
+        <div class="xrow" style="padding: 7px 0;"><span class="xrow__n">i</span><span><code>src/themes/&lt;stem&gt;.css</code> with the header keys.</span></div>
+        <div class="xrow" style="padding: 7px 0;"><span class="xrow__n">ii</span><span>A <code>&lt;file&gt;</code> entry in the <code>/themes/</code> block of <code>src/flaclify.gresource.xml</code>.</span></div>
+        <div class="xrow" style="padding: 7px 0;"><span class="xrow__n">iii</span><span>Own icons: a new style in <code>gen_icons.py</code>, regenerate, <code>@icons: &lt;style&gt;</code>.</span></div>
+        <div class="xrow" style="padding: 7px 0;"><span class="xrow__n">iv</span><span>Rebuild and walk the checklist with the album-art wash on and off.</span></div>
+<pre class="dark r-p03" style="margin-top: 18px;">python3 -m venv build/venv && build/venv/bin/pip install fonttools
+build/venv/bin/python tools/gen_icons.py</pre>
+        <p style="margin: 14px 0 0; font-size: 14px;">Screenshots beat trusting CSS. Views can be switched from outside the app over D-Bus (<code style="font-size: .85em;">org.gtk.Actions.Activate view-albums</code> on the window object), so a script can walk every theme through every view.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Flaclify · GPL-3.0-or-later · forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> by htkhiem</span>
+      <span><a href="https://github.com/h-3303/flaclify">Clone it on GitHub →</a></span>
+      <span>One repo · GPL · pass it on</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

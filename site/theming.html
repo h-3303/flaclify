@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Making a theme — Flaclify</title>
+<meta name="description" content="A Flaclify theme is one CSS file with five header keys, dropped into a watched folder that re-applies every save. The anatomy, the rules of the hand, and the icon sets.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  .hero .wrap { position: relative; }
+  .hero__stamp { position: absolute; top: 0; right: 28px; transform: rotate(3deg); }
+  @media (max-width: 800px) { .hero__stamp { position: static; display: inline-block; margin-top: 18px; } }
+  .anatomy pre.dark { padding: 18px 20px; }
+  .ship { margin-top: 26px; }
+  .ship__item { display: flex; gap: 10px; align-items: baseline; padding: 4px 0; font-size: 13.5px; line-height: 1.5; }
+  .sheets { display: flex; gap: 18px; overflow-x: auto; padding: 24px 2px 14px; scrollbar-width: thin; }
+  .sheets figure { margin: 0; flex: 0 0 280px; }
+  .sheets img { display: block; width: 100%; height: auto; aspect-ratio: 496 / 256; border: 1px solid var(--dtw-ink); background: var(--dtw-paper); }
+  .sheets figcaption { font: 400 9.5px/1.5 var(--dtw-font-typewriter); letter-spacing: .12em; text-transform: uppercase; color: var(--dtw-label); margin-top: 6px; }
+  .sheets figcaption b { color: var(--dtw-toner); font-weight: 400; }
+  .plates { display: flex; gap: 14px; flex-wrap: wrap; }
+  .plates img { width: 88px; height: 88px; border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); display: block; }
+</style>
+</head>
+<body>
+<div class="page dtw-xerox">
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="topbar__brand" href="./">Flaclify</a>
+      <span class="topbar__issue">MMXXVI · № 2</span>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="./">Home</a>
+        <a href="stack.html">The stack</a>
+        <a href="theming.html" aria-current="page">Making a theme</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="developers.html">Developers</a>
+        <a href="https://github.com/h-3303/flaclify">GitHub</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="dtw-xerox hero__in">
+      <div class="wrap">
+        <div class="kicker">For theme authors</div>
+        <h1 class="h1">One CSS file. That is the whole of it.</h1>
+        <p class="lede"><span class="dropcap">D</span>rop a file into <code>~/.config/flaclify/themes/</code>. The directory is watched, so the theme appears under <b>Custom</b> and every save re-applies it while the app runs. The full guideline, with the selector table, is <a href="https://github.com/h-3303/flaclify/blob/main/docs/THEMING.md"><code>docs/THEMING.md</code></a>. What follows is the part you must not skip.</p>
+        <span class="stamp hero__stamp">Hot-reloads on save</span>
+      </div>
+    </div>
+  </header>
+
+  <section class="aged">
+    <div class="wrap cols">
+      <div class="anatomy">
+        <div class="sec-head" style="margin-bottom: 16px;"><span class="sec-num">I</span><h2 class="h2 h2--small">Anatomy.</h2></div>
+<pre class="dark r-n04">/* @name: Midnight
+ * @scheme: dark
+ * @auto-accent: off
+ * @art-background: off
+ * @icons: terminal
+ */
+:root {
+  --window-bg-color: #101418;
+  --window-fg-color: #e6edf3;
+  --accent-bg-color: #6fb3ff;
+  --accent-fg-color: #08111c;
+}
+window { font-family: "Inter", sans-serif; }
+button { border-radius: 0; }</pre>
+        <table class="spec" style="font-size: 13px;">
+          <thead><tr><th>Key</th><th>Values</th><th>Does</th></tr></thead>
+          <tbody>
+            <tr><td><code>@name</code></td><td class="tw-cell">text</td><td>Menu label. Defaults to the file stem.</td></tr>
+            <tr><td><code>@scheme</code></td><td class="tw-cell">light · dark · follow</td><td>Forces the colour scheme. Set it whenever the palette is hard-coded.</td></tr>
+            <tr><td><code>@auto-accent</code></td><td class="tw-cell">off · on</td><td>off keeps album art and the system accent from overriding yours.</td></tr>
+            <tr><td><code>@art-background</code></td><td class="tw-cell">off · on</td><td>off hides the blurred album-art wash without touching the user's setting.</td></tr>
+            <tr><td><code>@icons</code></td><td class="tw-cell">set name</td><td>A bundled icon set, searched before the stock icons; also supplies the placeholder plate.</td></tr>
+          </tbody>
+        </table>
+        <p class="para" style="font-size: 14px; max-width: none; text-align: left;">A theme may build on a bundled one — <code style="font-size: .85em;">@import url("resource:///io/github/h3303/Flaclify/themes/broadsheet.css");</code> — and override only what differs. That is how Reversed Spine is made.</p>
+      </div>
+      <div>
+        <div class="sec-head" style="margin-bottom: 16px;"><span class="sec-num">II</span><h2 class="h2 h2--small">Rules of the hand.</h2></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>Own every variable you rely on.</b> Set the libadwaita colours on :root — window, view, headerbar, sidebar, card, popover, dialog, accent, border and shade. Give each *-shade-color a translucent version of its pane.</span></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>Never track an ellipsizing label.</b> GTK measures ellipsized labels without their letter-spacing, so tracked text gets cut short. Tracking is safe on buttons, tooltips and toasts.</span></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>Reversed states set their own colours.</b> Captions carry their own ink; inside a checked button or a selected row they inherit nothing and vanish. End the theme with a contrast block for :checked, :active and :selected.</span></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>Scope the masthead to .light-right-edge.</b> The queue’s Now Playing pane is also a .sidebar-pane and will take the blackletter if you let it.</span></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>One vertical rule, two equal headers.</b> Silence libadwaita’s inset sidebar line, let the page edge draw the divider, and pin both header bars to measured heights so the rules cross once.</span></div>
+        <div class="xrow"><span class="xrow__x">x</span><span><b>Long-form text has its own font.</b> Wikis and bios use libadwaita’s document style; set --document-font-family or they stay in the system face.</span></div>
+        <div class="box ship r-p05">
+          <div class="box__label" style="margin-bottom: 10px;">Before you ship</div>
+          <div class="ship__item"><span>☐</span><span>Checked nav, selected album, selected queue row, active toggle: all readable.</span></div>
+          <div class="ship__item"><span>☐</span><span>Album-art wash on and off both look intentional.</span></div>
+          <div class="ship__item"><span>☐</span><span>Popovers, tooltips, toasts, preferences and the queue view checked, not only the grid.</span></div>
+          <div class="ship__item"><span>☐</span><span>Header rules meet the divider in a single cross.</span></div>
+          <span class="stamp r-n3" style="margin-top: 14px; padding: 5px 10px;">Then pass it on</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="icons">
+    <div class="dtw-xerox sheet__in">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-num">III</span><h2 class="h2">Icons and plates.</h2></div>
+        <p class="para">Each theme names an icon set with <code>@icons</code>, searched ahead of the stock icons while it is active — so a theme differs in concept, not only in weight. Every set is generated from one geometry spec per icon by <code>tools/gen_icons.py</code>, rendered as fill-only paths so GTK's symbolic recolouring always applies. Each ships a 512-pixel album-art plate in its own idiom.</p>
+        <div class="sheets">
+          <figure><img src="sheets/dttw.png" width="496" height="256" alt="Broadsheet and Reversed Spine icon set" loading="lazy"><figcaption><b>dttw</b> · typewriter glyphs, hairline rules, ✦ stars</figcaption></figure>
+          <figure><img src="sheets/terminal.png" width="496" height="256" alt="Terminal icon set" loading="lazy"><figcaption><b>terminal</b> · one-pixel, square caps, ASCII where it reads</figcaption></figure>
+          <figure><img src="sheets/neon.png" width="496" height="256" alt="Neon icon set" loading="lazy"><figcaption><b>neon</b> · two-pixel strokes, round caps and joins</figcaption></figure>
+          <figure><img src="sheets/bauhaus.png" width="496" height="256" alt="Bauhaus icon set" loading="lazy"><figcaption><b>bauhaus</b> · solid geometry, heavy bars</figcaption></figure>
+          <figure><img src="sheets/folio.png" width="496" height="256" alt="Folio icon set" loading="lazy"><figcaption><b>folio</b> · engraver's hairlines, round terminals</figcaption></figure>
+          <figure><img src="sheets/blueprint.png" width="496" height="256" alt="Blueprint icon set" loading="lazy"><figcaption><b>blueprint</b> · pen-plotter hairlines, butt caps</figcaption></figure>
+          <figure><img src="sheets/nocturne.png" width="496" height="256" alt="Nocturne icon set" loading="lazy"><figcaption><b>nocturne</b> · inked hairlines, engraved bust avatar</figcaption></figure>
+          <figure><img src="sheets/cassette.png" width="496" height="256" alt="Cassette icon set" loading="lazy"><figcaption><b>cassette</b> · silk-screened pictograms, filled and rounded</figcaption></figure>
+          <figure><img src="sheets/marshmallow.png" width="496" height="256" alt="Marshmallow icon set" loading="lazy"><figcaption><b>marshmallow</b> · plump strokes, closed shapes filled</figcaption></figure>
+        </div>
+        <div class="kicker" style="letter-spacing: .22em; font-size: 9.5px; margin: 14px 0 10px;">Album-art plates</div>
+        <div class="plates">
+          <img src="sheets/placeholder-dttw.svg" alt="dttw placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-terminal.svg" alt="terminal placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-neon.svg" alt="neon placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-bauhaus.svg" alt="bauhaus placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-folio.svg" alt="folio placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-blueprint.svg" alt="blueprint placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-nocturne.svg" alt="nocturne placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-cassette.svg" alt="cassette placeholder plate" loading="lazy">
+          <img src="sheets/placeholder-marshmallow.svg" alt="marshmallow placeholder plate" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Flaclify · GPL-3.0-or-later · forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> by htkhiem</span>
+      <span><a href="developers.html">Next: for developers →</a></span>
+      <span>One file · watched · pass it on</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

@@ -7,449 +7,241 @@
 <meta name="description" content="Flaclify is a fork of Euphonica, the GTK4 MPD client, that reads bios, wikis and pictures kept beside the music and drives flacli: get music by name, watch requests land, tidy the library, fill what is missing. Eleven themes, hot-reloading.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="stylesheet" href="assets/site.css">
 <link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  html { background: var(--dtw-paper-2nd); }
-  body { margin: 0; color: var(--dtw-toner); font: 400 15px/1.5 var(--dtw-font-serif); }
-  a { color: inherit; }
-  a:hover { color: var(--dtw-cardinal); }
-  .sheet { max-width: 1080px; margin: 28px auto 60px; background: var(--dtw-paper); border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); }
-  .sheet > * { padding-left: 44px; padding-right: 44px; }
-  @media (max-width: 720px) { .sheet > * { padding-left: 20px; padding-right: 20px; } .sheet { margin: 12px; } }
-
-  /* masthead */
-  .mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-top: 34px; padding-bottom: 22px; border-bottom: 1px solid var(--dtw-ink); flex-wrap: wrap; }
-  .mast__title { font: 400 64px/0.9 var(--dtw-font-blackletter); letter-spacing: .01em; margin: 0; }
-  .mast__tag { font: 400 10px var(--dtw-font-typewriter); letter-spacing: .3em; color: var(--dtw-label); margin-top: 10px; text-transform: uppercase; }
-  .mast__links { font: 400 11px var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; display: flex; gap: 22px; flex-wrap: wrap; }
-  .mast__links a { text-decoration: none; border-bottom: 1px solid var(--dtw-ink); padding-bottom: 2px; }
-
-  /* section furniture */
-  .sec { padding-top: 34px; padding-bottom: 8px; }
-  .sec__head { display: flex; align-items: baseline; gap: 14px; margin: 0 0 18px; }
-  .sec__num { font: 400 15px/1 var(--dtw-font-fell); }
-  .sec__title { font: 700 22px/1.1 var(--dtw-font-serif); letter-spacing: .02em; text-transform: uppercase; margin: 0; }
-  .sec__title::after { content: "."; }
-  .lede { font: 400 16.5px/1.5 var(--dtw-font-serif); text-align: justify; max-width: 720px; margin: 0 0 16px; }
-  .lede .dropcap { float: left; font: 400 54px/0.78 var(--dtw-font-blackletter); padding: 4px 8px 0 0; }
-  .tw { font: 400 11.5px/1.7 var(--dtw-font-typewriter); letter-spacing: .04em; }
-  .label { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .22em; color: var(--dtw-label); text-transform: uppercase; }
-  .rule { height: 1px; background: var(--dtw-ink); margin: 26px 0 0; }
-  .ornament { display: flex; align-items: center; gap: 10px; margin: 30px 0 0; }
-  .ornament span { flex: 1; height: 1px; background: var(--dtw-toner); }
-  .ornament i { width: 8px; height: 8px; background: var(--dtw-toner); transform: rotate(45deg); }
-
-  /* theme plates */
-  .plates { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 26px 22px; }
-  .plate { display: flex; flex-direction: column; gap: 8px; }
-  .plate__img { border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-paper); display: block; width: 100%; height: auto; }
-  .plate__t { font: 700 13.5px/1.2 var(--dtw-font-serif); margin-top: 4px; }
-  .plate__t small { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); margin-left: 8px; text-transform: uppercase; }
-  .plate__d { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); margin: 0; }
+  .home-hero { position: relative; overflow: hidden; }
+  .home-hero__grain { position: absolute; inset: 0; }
+  .home-hero .wrap { position: relative; padding-top: 56px; padding-bottom: 72px; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 24px 48px; align-items: center; }
+  .home-hero .wrap > * { min-width: 0; }
+  @media (max-width: 800px) { .home-hero .wrap { grid-template-columns: 1fr; padding-top: 40px; padding-bottom: 48px; } }
+  .home-hero__title { margin: 10px 0 0; font: 400 clamp(72px, 9vw, 128px)/0.88 var(--dtw-font-blackletter); letter-spacing: .01em; transform: rotate(-.6deg); }
+  .home-hero__lede { margin: 26px 0 0; max-width: 46ch; font-size: 17.5px; line-height: 1.5; text-align: justify; text-wrap: pretty; }
+  .home-hero__ctas { display: flex; gap: 16px; margin-top: 30px; flex-wrap: wrap; align-items: center; }
+  .home-hero__ctas .btn small { display: block; font-size: 8.5px; letter-spacing: .2em; margin-top: 3px; opacity: .8; }
+  .home-hero__stack { margin-top: 34px; font: 400 9.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .22em; text-transform: uppercase; color: var(--dtw-label); }
+  .film { position: relative; }
+  .film video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-slip-dark); background: var(--dtw-toner); transform: rotate(.8deg); }
+  .film .stamp { position: absolute; top: -16px; right: 10px; transform: rotate(-4deg); }
+  .film__cap { margin-top: 10px; font: 400 9.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; color: var(--dtw-label); text-align: right; transform: rotate(.8deg); }
 
   /* get it */
-  .get { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 40px; align-items: start; }
+  .get { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 28px 40px; align-items: start; }
+  .get > * { min-width: 0; }
   @media (max-width: 800px) { .get { grid-template-columns: 1fr; } }
-  .get__btn { display: inline-flex; flex-direction: column; gap: 4px; text-decoration: none; background: var(--dtw-toner); color: var(--dtw-paper); border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); padding: 14px 22px 12px; margin: 4px 0 14px; }
-  .get__btn:hover { background: var(--dtw-paper); color: var(--dtw-toner); }
-  .get__btn b { font: 700 18px/1.1 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; }
-  .get__btn small { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .2em; text-transform: uppercase; }
-  .get ol { margin: 0 0 12px; padding-left: 20px; font: 400 13.5px/1.55 var(--dtw-font-serif); }
-  .get ol li { padding: 3px 0; }
-  .get__note { font: 400 11.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .04em; color: var(--dtw-label); margin: 0 0 10px; }
-  .get__soon { display: inline-block; border: 1px solid var(--dtw-grey-2); color: var(--dtw-label); font: 400 9.5px/1.2 var(--dtw-font-typewriter); letter-spacing: .14em; padding: 4px 8px; text-transform: uppercase; margin-right: 8px; }
+  .get__steps { margin: 14px 0 0; padding: 0; list-style: none; counter-reset: step; }
+  .get__steps li { display: flex; gap: 12px; align-items: baseline; padding: 8px 0; border-bottom: 1px dotted var(--dtw-grey-2); font-size: 14px; line-height: 1.5; }
+  .get__steps li::before { counter-increment: step; content: counter(step, lower-roman); font: 400 13px/1 var(--dtw-font-fell); color: var(--dtw-label); flex: none; min-width: 18px; }
+  .get__note { margin: 12px 0 0; font: 400 11px/1.65 var(--dtw-font-typewriter); letter-spacing: .04em; color: var(--dtw-label); }
+  .get__soon { display: inline-block; border: 1px solid var(--dtw-grey-5); color: var(--dtw-label); font: 400 9px/1.2 var(--dtw-font-typewriter); letter-spacing: .14em; padding: 3px 7px; text-transform: uppercase; margin-right: 8px; }
 
-  /* UI shots */
-  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  @media (max-width: 800px) { .shots { grid-template-columns: 1fr; } }
-  .shot { margin: 0; display: flex; flex-direction: column; gap: 8px; }
-  .shot--hero { grid-column: 1 / -1; }
-  .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-paper); }
-  .shot video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); background: var(--dtw-toner); }
-  .shot figcaption { font: 400 12px/1.45 var(--dtw-font-serif); color: var(--dtw-label); }
-  .shot figcaption b { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .18em; text-transform: uppercase; color: var(--dtw-toner); display: block; margin-bottom: 3px; }
+  /* theme picker */
+  .picker { margin-top: 30px; display: grid; grid-template-columns: minmax(190px, 230px) minmax(0, 1fr); gap: 26px; align-items: start; }
+  .picker > * { min-width: 0; }
+  @media (max-width: 720px) { .picker { grid-template-columns: 1fr; } }
+  .picker__list { display: flex; flex-direction: column; border: 1px solid var(--dtw-ink); background: var(--dtw-paper); box-shadow: var(--dtw-shadow-paste); }
+  .picker__tab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; width: 100%; text-align: left; font: 400 11px/1.4 var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; padding: 10px 14px; border: 0; border-bottom: 1px solid var(--dtw-grey-2); cursor: pointer; background: transparent; color: var(--dtw-toner); }
+  .picker__tab:last-child { border-bottom: 0; }
+  .picker__tab small { letter-spacing: .12em; font-size: 8.5px; opacity: .75; }
+  .picker__tab:hover, .picker__tab[aria-selected="true"] { background: var(--dtw-toner); color: var(--dtw-paper); }
+  @media (max-width: 720px) { .picker__list { flex-direction: row; flex-wrap: wrap; } .picker__tab { width: auto; flex: 1 1 45%; border-right: 1px solid var(--dtw-grey-2); } .picker__tab small { display: none; } }
+  .picker__plate { border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-slip-dark); background: var(--dtw-paper); transform: rotate(-.5deg); aspect-ratio: 1200 / 768; overflow: hidden; }
+  .picker__plate img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .picker figure { margin: 0; }
+  .picker figcaption { display: flex; gap: 18px; align-items: baseline; margin-top: 12px; flex-wrap: wrap; }
+  .picker__name { font: 700 17px/1.3 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .03em; white-space: nowrap; }
+  .picker__name::after { content: "."; }
+  .picker__desc { font-size: 13.5px; line-height: 1.5; color: var(--dtw-label); flex: 1; min-width: min(100%, 260px); text-align: justify; }
 
-  /* theme strip */
-  .strip { position: relative; }
-  .strip__track { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 4px 2px 14px; scrollbar-width: thin; }
-  .plates.strip__track { display: flex; gap: 18px; justify-content: flex-start; }
-  .strip__track .plate { flex: 0 0 228px; scroll-snap-align: start; }
-  .strip__track .plate__d { font-size: 11.5px; }
-  .strip__nav { display: flex; gap: 8px; justify-content: flex-end; margin: 0 0 10px; }
-  .strip__nav button { font: 400 10px var(--dtw-font-typewriter); letter-spacing: .18em; text-transform: uppercase; background: var(--dtw-paper); color: var(--dtw-toner); border: 1px solid var(--dtw-toner); padding: 5px 10px; cursor: pointer; }
-  .strip__nav button:hover { background: var(--dtw-toner); color: var(--dtw-paper); }
-
-  /* guide
-  .guide { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; }
-  @media (max-width: 800px) { .guide { grid-template-columns: 1fr; } }
-  .g h4 { font: 700 13px/1.2 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; margin: 0 0 8px; }
-  .g h4::after { content: "."; }
-  .g p { font: 400 13.5px/1.5 var(--dtw-font-serif); margin: 0 0 10px; text-align: justify; }
-  .g ul { margin: 0 0 10px; padding-left: 18px; font: 400 13.5px/1.5 var(--dtw-font-serif); }
-  .g li { margin-bottom: 4px; }
-  pre { background: var(--dtw-paper); border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); padding: 12px 14px; margin: 8px 0 14px; font: 400 11px/1.55 var(--dtw-font-typewriter); overflow-x: auto; }
-  code { font: 400 .92em var(--dtw-font-typewriter); background: rgba(20,20,18,.07); padding: 0 4px; }
-  pre code { background: none; padding: 0; }
-  table { border-collapse: collapse; width: 100%; margin: 6px 0 14px; font: 400 12.5px/1.4 var(--dtw-font-serif); }
-  th { font: 400 9px var(--dtw-font-typewriter); letter-spacing: .2em; text-transform: uppercase; color: var(--dtw-label-faint); text-align: left; padding: 6px 8px 6px 0; border-bottom: 1px solid var(--dtw-ink); }
-  td { padding: 6px 8px 6px 0; border-bottom: 1px solid var(--dtw-grey-2); vertical-align: top; }
-  td code { white-space: nowrap; }
-  .check { list-style: none; padding: 0; }
-  .check li::before { content: "☐"; font-family: var(--dtw-font-serif); margin-right: 8px; }
-  .stamp { display: inline-block; border: 2px solid var(--dtw-cardinal); color: var(--dtw-cardinal); font: 400 9px/1.2 var(--dtw-font-typewriter); letter-spacing: .14em; padding: 4px 8px; text-transform: uppercase; transform: rotate(-3deg); }
-
-  /* icon sheets */
-  .sheets { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 22px; }
-  .sheets figure { margin: 0; }
-  .sheets img { display: block; width: 100%; height: auto; border: 1px solid var(--dtw-toner); }
-  .sheets figcaption { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .12em; text-transform: uppercase; color: var(--dtw-label); margin-top: 6px; }
-  .sheets figcaption b { font-weight: 400; color: var(--dtw-toner); }
-  .plc { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
-  .plc img { width: 96px; height: 96px; border: 1px solid var(--dtw-toner); box-shadow: var(--dtw-shadow-paste); }
-
-  /* roadmap */
-  .tiers { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--dtw-ink); }
-  .tier { display: grid; grid-template-columns: 210px 1fr; gap: 8px 36px; padding: 18px 0 16px; border-bottom: 1px solid var(--dtw-grey-2); }
-  .tier:last-child { border-bottom: 1px solid var(--dtw-ink); }
-  @media (max-width: 720px) { .tier { grid-template-columns: 1fr; } }
-  .tier__num { display: block; font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .22em; text-transform: uppercase; color: var(--dtw-label); }
-  .tier__t { font: 700 14px/1.2 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .04em; margin: 5px 0 8px; }
-  .tier__t::after { content: "."; }
-  .tier__d { font: 400 12.5px/1.45 var(--dtw-font-serif); color: var(--dtw-label); margin: 0 0 10px; }
-  .tier ul { margin: 0; padding: 0; list-style: none; }
-  .tier ul li { font: 400 13.5px/1.5 var(--dtw-font-serif); padding: 5px 0; border-bottom: 1px dotted var(--dtw-grey-2); display: flex; gap: 10px; align-items: baseline; }
-  .tier ul li:last-child { border-bottom: 0; }
-  .tier ul li::before { content: "\2610"; flex: none; }
-  .tier ul li > span { flex: 1; }
-  .tier--done ul li::before { content: "\2611"; }
-  .tier__ref { font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); text-decoration: none; white-space: nowrap; margin-left: auto; padding-left: 12px; }
-  .tier__ref:hover { color: var(--dtw-cardinal); }
-  .tier__side { font: 400 11.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .04em; color: var(--dtw-label); margin: 10px 0 0; }
-  .tier__side a { text-decoration: none; border-bottom: 1px solid var(--dtw-grey-2); }
-
-  .colophon { border-top: 1px solid var(--dtw-ink); padding-top: 16px; padding-bottom: 26px; margin-top: 34px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; font: 400 9.5px var(--dtw-font-typewriter); letter-spacing: .14em; text-transform: uppercase; color: var(--dtw-label); }
+  /* teasers */
+  .teasers { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 28px; }
+  .teaser { text-decoration: none; display: block; background: var(--dtw-paper); border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); padding: 24px 24px 26px; color: var(--dtw-toner); }
+  .teaser:hover { box-shadow: 5px 5px 0 rgba(20, 20, 18, .25); color: var(--dtw-toner); }
+  .teaser__k { font: 400 9px/1.4 var(--dtw-font-typewriter); letter-spacing: .24em; text-transform: uppercase; color: var(--dtw-label); }
+  .teaser__t { margin: 10px 0 8px; font: 700 21px/1.1 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .02em; }
+  .teaser p { margin: 0 0 14px; font-size: 13.5px; line-height: 1.5; color: var(--dtw-label); text-align: justify; }
+  .teaser__cta { font: 400 10px/1.4 var(--dtw-font-typewriter); letter-spacing: .16em; text-transform: uppercase; border-bottom: 1px solid var(--dtw-ink); padding-bottom: 2px; }
 </style>
 </head>
 <body>
-<main class="sheet dtw-xerox">
+<div class="page dtw-xerox">
 
-  <header class="mast">
-    <div>
-      <h1 class="mast__title">Flaclify</h1>
-      <div class="mast__tag">Music · Player · Daemon · the player half of a fetch-and-file stack</div>
+  <div class="topbar">
+    <div class="wrap">
+      <a class="topbar__brand" href="./">Flaclify</a>
+      <span class="topbar__issue">MMXXVI · № 2</span>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="./" aria-current="page">Home</a>
+        <a href="stack.html">The stack</a>
+        <a href="theming.html">Making a theme</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="developers.html">Developers</a>
+        <a href="https://github.com/h-3303/flaclify">GitHub</a>
+      </nav>
     </div>
-    <nav class="mast__links">
-      <a href="#get">Get it</a>
-      <a href="#player">The player</a>
-      <a href="#flacli">flacli</a>
-      <a href="#themes">Themes</a>
-      <a href="#guide">Making one</a>
-      <a href="#icons">Icons</a>
-      <a href="#dev">Developers</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="https://github.com/h-3303/flaclify">GitHub</a>
-    </nav>
+  </div>
+
+  <header class="hero home-hero">
+    <div class="dtw-xerox home-hero__grain"></div>
+    <div class="wrap">
+      <div>
+        <div class="kicker">Music · Player · Daemon</div>
+        <h1 class="home-hero__title">Flaclify</h1>
+        <p class="home-hero__lede">The player half of a fetch-and-file stack. Name the music and it arrives — filed, tagged, with the bio and the cover beside it — while eleven themes change the player's clothes as it plays.</p>
+        <div class="home-hero__ctas">
+          <a class="btn btn--toner r-n1" href="https://github.com/h-3303/flaclify/releases/latest/download/flaclify.flatpak" download>Download for Linux<small>Flatpak · x86_64 · beta</small></a>
+          <a class="btn btn--paper r-p07" href="theming.html">Make a theme</a>
+        </div>
+        <div class="home-hero__stack">GTK4 · libadwaita · MPD · forked from Euphonica</div>
+      </div>
+      <div class="film">
+        <video src="video/flaclify-tour.mp4" poster="video/flaclify-tour.jpg" autoplay muted loop playsinline preload="metadata" aria-label="A tour of Flaclify's screens"></video>
+        <span class="stamp">The tour · half a minute</span>
+        <div class="film__cap">Every screen in one pass, recorded from the running player.</div>
+      </div>
+    </div>
   </header>
 
-  <section class="sec">
-    <p class="lede"><span class="dropcap">F</span>laclify is <a href="https://github.com/htkhiem/euphonica">Euphonica</a>, the GTK4 and libadwaita client for the Music Player Daemon, forked so it can be installed beside the original and made the front of a stack. The back is <a href="https://flacli.vercel.app">flacli</a>, a command line that fetches named music from Soulseek and files it as <code>Artist/Album/NN - Title</code>, with the bio, the wiki and the pictures beside it. Flaclify reads those files, shows what flacli is doing, and drives it: music by name from MusicBrainz, a list of what is on its way, the library tidied and filled from one page, and a console for the rest. It also changes its clothes: eleven themes, one CSS file each, applied while the music plays.</p>
-    <p class="tw">Nothing is written into the player's database. What the shell fetches appears here with its bio and its cover, and a track asked for leaves the Requests page the moment it lands in the library.</p>
-  </section>
-
-  <section class="sec" id="get">
-    <div class="sec__head"><span class="sec__num">§</span><h2 class="sec__title">Get it</h2></div>
-    <div class="get">
-      <div>
-        <a class="get__btn" href="https://github.com/h-3303/flaclify/releases/latest/download/flaclify.flatpak" download><b>Download for Linux</b><small>Flatpak · x86_64 · beta</small></a>
-        <p class="get__note"><span class="get__soon">Next</span>Windows. The player is GTK4 and builds there; the daemon and the audio path are the work. Nothing to download yet.</p>
-        <p class="get__note">The bundle carries its own Music Player Daemon, so there is nothing to set up: point it at a folder and it plays. Wants the GNOME 49 runtime, which the install fetches from Flathub. All releases, with notes: <a href="https://github.com/h-3303/flaclify/releases">github.com/h-3303/flaclify/releases</a>.</p>
-      </div>
-      <div class="g">
-        <h4>Three steps, then a short first run</h4>
-        <ol>
-          <li>Open the downloaded <code>flaclify.flatpak</code>. Software, Discover and the like install it; from a terminal, <code>flatpak install flaclify.flatpak</code>. If Flathub is not yet a remote on your machine, <a href="https://flathub.org/setup">flathub.org/setup</a> is one line.</li>
-          <li>Launch Flaclify. The first run asks where your music is (it offers your Music folder), whether each album has its own folder, and whether you want <a href="https://flacli.vercel.app">flacli</a> beside it. flacli is optional: with it the player fetches music by name; without it, it is a player.</li>
-          <li>The library scans while you look around. Ctrl+T changes the theme. Everything the first run set is under Preferences.</li>
-        </ol>
-        <p class="get__note">Already run MPD? Say so on the first page and give the socket or the host; the built-in daemon is then never started. Built from source instead: see <a href="#dev">Developers</a>.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="player">
-    <div class="sec__head"><span class="sec__num">I</span><h2 class="sec__title">The player</h2></div>
-    <div class="shots">
-      <figure class="shot shot--hero shot--film"><video src="video/flaclify-tour.mp4" poster="video/flaclify-tour.jpg" autoplay muted loop playsinline preload="metadata" aria-label="A tour of Flaclify's screens"></video><figcaption><b>The tour, half a minute</b>Every main screen in one pass, recorded from the running player: the album grid and an album, an artist with the bio and picture read from beside the music, Folders, the queue, a MusicBrainz search on Get with one result ticked, Requests, Tidy, a sentence typed for Ask flacli, then four themes applied while the music plays.</figcaption></figure>
-      <figure class="shot shot--hero"><img src="img/ui-albums.jpg" alt="The album grid, in the Reversed Spine theme"><figcaption><b>Albums</b>The library as MPD serves it, covers from the files themselves, in the Reversed Spine theme. Left, the views; flacli's own pages sit below Folders while it is set up: Get, Requests, Tidy, Ask flacli.</figcaption></figure>
-      <figure class="shot" hidden><img src="img/ui-artist.jpg" alt="An artist page with the bio and picture read from beside the music" loading="lazy"><figcaption><b>Artist</b>Bio and picture read from <code>artist.md</code> and <code>artist.jpg</code> in the artist's folder, as flacli writes them. Under the discography, the studio albums MusicBrainz knows and the library lacks, each with a Get this.</figcaption></figure>
-      <figure class="shot" hidden><img src="img/ui-get.jpg" alt="The Get page: MusicBrainz results with tick boxes" loading="lazy"><figcaption><b>Get</b>One search, three pages: songs, albums, artists, from MusicBrainz. An artist opens onto their albums, an album onto its tracklist. Every tick is one name to flacli, listed before it goes. By name takes the names typed, one a line.</figcaption></figure>
-      <figure class="shot" hidden><img src="img/ui-requests.jpg" alt="The Requests page listing tracks on their way" loading="lazy"><figcaption><b>Requests</b>What was asked for and has not landed: one row per track with where it stands, a skip each and one for the rest. A track leaves the list as it is filed. Never a playlist in MPD.</figcaption></figure>
-      <figure class="shot" hidden><img src="img/ui-tidy.jpg" alt="The Tidy page with the plan, the missing counts and the log" loading="lazy"><figcaption><b>Tidy</b>The dry run, its plan and report, Apply on the yes with every deletion named first. Below, what the player shows and the library lacks, counted per kind, with a Fill for each.</figcaption></figure>
-      <figure class="shot" hidden><img src="img/ui-queue.jpg" alt="The queue and the now-playing bar" loading="lazy"><figcaption><b>Queue</b>Euphonica's queue and transport, dressed by the theme. Playback, outputs, the visualiser and the dynamic playlists are upstream's and untouched.</figcaption></figure>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="flacli">
-    <div class="sec__head"><span class="sec__num">II</span><h2 class="sec__title">Files beside the music, and flacli</h2></div>
-    <div class="guide">
-      <div class="g">
-        <h4>What the player reads</h4>
-        <p>A bio under each artist and a wiki under each album, and most libraries have neither. Before asking Last.fm or MusicBrainz, Flaclify looks next to the files: <code>&lt;Artist&gt;/artist.md</code> (or <code>.wiki/&lt;Artist&gt;.md</code> for an artist without a folder), <code>&lt;Artist&gt;/&lt;Album&gt;/wiki.md</code>, and <code>&lt;Artist&gt;/artist.jpg</code> for the picture. A text file is optional front matter between <code>---</code> rules (<code>attribution</code> and <code>url</code> are used) and plain prose below.</p>
-        <p>The file is handed to the provider chain as the starting document, so a refresh keeps its text and only fills in tags and images from the providers you have enabled. It is read again whenever it is newer than the cached copy, so an edit on disk shows on the next visit. The switch and the music directory are under Preferences → Integrations → <em>Library files</em>; the directory defaults to the XDG music folder.</p>
-      </div>
-      <div class="g">
-        <h4>flacli</h4>
-        <p><a href="https://flacli.vercel.app">flacli</a> is the other half: a command line any agent can drive that fetches named songs, albums or whole playlists and files them as <code>Artist/Album/NN - Title</code>. It writes exactly the files above (<code>flacli wiki</code>, <code>flacli avatar</code>), asks MPD to rescan just the folders it filed downloads into, and stores each synced playlist in MPD by name. What an agent fetches is in this window, with its bio and its playlist, without a rescan and without anything written into the player's database.</p>
-        <p>The player reads the shell's state and drives it, through the same command line an agent uses. An Incoming section in the sidebar follows the downloads; a synced playlist shows ghost rows for the tracks it still lacks; doubtful matches are reviewed in a dialog with the <em>why</em> the shell computed. The four pages above cover the rest, and Ask flacli covers anything they do not: whatever would follow <code>flacli</code> on the command line, run as typed. What comes next is set out in the <a href="#roadmap">roadmap</a> below.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="themes">
-    <div class="sec__head"><span class="sec__num">III</span><h2 class="sec__title">The bundled themes</h2></div>
-    <p class="lede">A theme is one CSS file with a short header. It can recolour the window, square or round every corner, swap the typefaces, bring its own icon set and album-art plate, and decide whether album art may tint the accent or wash the background. Themes apply while the music plays: from the menu, with <code>Ctrl+T</code>, from <code>gsettings</code>, or by saving a file. Two, Broadsheet and Reversed Spine, are directions 1a and 1b of the <em>Euphonica × Moirai Digital</em> canvas; the rest prove the range.</p>
-    <div class="strip">
-    <div class="strip__nav"><button type="button" data-strip="-1" aria-label="Previous themes">← Prev</button><button type="button" data-strip="1" aria-label="Next themes">Next →</button></div>
-    <div class="plates strip__track">
-      <figure class="plate"><img class="plate__img" src="img/broadsheet.jpg" alt="Broadsheet theme" loading="lazy"><div class="plate__t">Broadsheet<small>1a · light</small></div><p class="plate__d">Toner on paper. Typewriter labels, Old Standard titles, a blackletter masthead, one-pixel line-ink rules, no rounding. Red is one gesture, held to the seekbar. Typewriter glyph icons.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/reversed-spine.jpg" alt="Reversed Spine theme" loading="lazy"><div class="plate__t">Reversed Spine<small>1b · light</small></div><p class="plate__d">Imports Broadsheet and reverses the spine: a toner sidebar with paper knocked out of it, the current view reversed back to paper, a black transport band, titles set in inline toner chips.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/folio.jpg" alt="Folio theme" loading="lazy"><div class="plate__t">Folio<small>light</small></div><p class="plate__d">Laid paper, engraver's ink, a little gilt. Serif throughout, square plates, double rules for the masthead and the transport. Hairline icons with round terminals.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/terminal.jpg" alt="Terminal theme" loading="lazy"><div class="plate__t">Terminal<small>dark</small></div><p class="plate__d">Phosphor on black. Monospace, one-pixel rules, hover and selection invert instead of tinting. Icons are ASCII wherever ASCII reads: <code>&lt; &gt; + - / x * ♪ @</code>.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/neon.jpg" alt="Neon theme" loading="lazy"><div class="plate__t">Neon<small>dark</small></div><p class="plate__d">Violet ground, magenta and cyan light, pill buttons and glow. The one theme that lets album art take the accent, so the glow follows the cover.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/bauhaus.jpg" alt="Bauhaus theme" loading="lazy"><div class="plate__t">Bauhaus<small>light</small></div><p class="plate__d">Off-white, primary blocks, two-pixel black rules and hard offset shadows. Icons are solid geometry; the placeholder is a black disc, a red square and a yellow bar.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/blueprint.jpg" alt="Blueprint theme" loading="lazy"><div class="plate__t">Blueprint<small>dark</small></div><p class="plate__d">Chalk line-work on Prussian blue. One hairline weight, butt caps, nothing rounded, nothing floats. The current view and selections reverse to chalk; red pencil is held to the seekbar slider and destructive actions. Labels are title-block annotations in mono caps.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/nocturne.jpg" alt="Nocturne theme" loading="lazy"><div class="plate__t">Nocturne<small>dark</small></div><p class="plate__d">Dark academia: lamplit charcoal, parchment serif, one brass amber. Two-pixel chamfers, umber hairlines, selection warms with a candle tint instead of reversing. The album-art wash stays available. Placeholder is a bookplate.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/cassette.jpg" alt="Cassette theme" loading="lazy"><div class="plate__t">Cassette<small>light</small></div><p class="plate__d">A '70s deck: cream fascia, walnut side panel, a charcoal faceplate for the transport, VU-meter orange on the seek. Raised keys with a top-light, machined four-pixel bezels, tape-counter numerals in mono.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/marshmallow.jpg" alt="Marshmallow theme" loading="lazy"><div class="plate__t">Marshmallow<small>light</small></div><p class="plate__d">Warm white, plush radii, pill buttons, a single rose accent. Shadows are wide and faint, like things resting on felt. Icons are plump rounded strokes with closed shapes filled.</p></figure>
-      <figure class="plate"><img class="plate__img" src="img/default.jpg" alt="Adwaita, the stock look" loading="lazy"><div class="plate__t">Adwaita<small>stock</small></div><p class="plate__d">Euphonica as it ships: libadwaita's own palette, the blurred album-art wash, accents lifted from the cover. Kept as the baseline every theme is measured against.</p></figure>
-    </div>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="guide">
-    <div class="sec__head"><span class="sec__num">IV</span><h2 class="sec__title">Making a theme</h2></div>
-    <p class="lede">Drop a file into <code>~/.config/flaclify/themes/</code>. The directory is watched, so the theme appears under <b>Custom</b> and every save re-applies it. The full guideline, with the selector table and the developer notes, is <a href="https://github.com/h-3303/flaclify/blob/main/docs/THEMING.md"><code>docs/THEMING.md</code></a> in the repository. What follows is the part you must not skip.</p>
-
-    <div class="guide">
-      <div class="g">
-        <h4>Anatomy</h4>
-<pre><code>/* @name: Midnight
- * @scheme: dark
- * @auto-accent: off
- * @art-background: off
- * @icons: terminal
- */
-:root {
-  --window-bg-color: #101418;
-  --window-fg-color: #e6edf3;
-  --accent-bg-color: #6fb3ff;
-  --accent-fg-color: #08111c;
-}
-window { font-family: "Inter", sans-serif; }
-button { border-radius: 0; }</code></pre>
-        <table>
-          <tr><th>Key</th><th>Values</th><th>Does</th></tr>
-          <tr><td><code>@name</code></td><td>text</td><td>Menu label. Defaults to the file stem.</td></tr>
-          <tr><td><code>@scheme</code></td><td><code>light</code> <code>dark</code> <code>follow</code></td><td>Forces the colour scheme. Set it whenever the palette is hard-coded.</td></tr>
-          <tr><td><code>@auto-accent</code></td><td><code>off</code> <code>on</code></td><td><code>off</code> keeps album art and the system accent from overriding yours.</td></tr>
-          <tr><td><code>@art-background</code></td><td><code>off</code> <code>on</code></td><td><code>off</code> hides the blurred album-art wash without touching the user's setting.</td></tr>
-          <tr><td><code>@icons</code></td><td>set name</td><td>A bundled icon set, searched before the stock icons; also supplies the placeholder plate.</td></tr>
-        </table>
-        <p>A theme may build on a bundled one: <code>@import url("resource:///io/github/h3303/Flaclify/themes/broadsheet.css");</code> and then override only what differs. That is how Reversed Spine is made.</p>
-      </div>
-
-      <div class="g">
-        <h4>Rules of the hand</h4>
-        <ul>
-          <li><b>Own every variable you rely on.</b> Set the libadwaita colours on <code>:root</code>: window, view, headerbar, sidebar, card, popover, dialog, accent, border and shade. Give each <code>*-shade-color</code> a translucent version of its pane; that is what shows through the album-art wash.</li>
-          <li><b>Never track an ellipsizing label.</b> GTK measures ellipsized labels without their <code>letter-spacing</code>, so tracked text gets cut short. Sidebar labels, cell captions, window titles and the player bar all ellipsize. Tracking is safe on buttons, tooltips and toasts.</li>
-          <li><b>Reversed states set their own colours.</b> Captions carry their own ink; inside a checked button or a selected row they inherit nothing and vanish. End the theme with a contrast block for <code>:checked</code>, <code>:active</code> and <code>:selected</code>.</li>
-          <li><b>Scope the masthead to <code>.light-right-edge</code>.</b> The queue's "Now Playing" pane is also a <code>.sidebar-pane</code> and will take the blackletter if you let it.</li>
-          <li><b>One vertical rule, two equal headers.</b> If you draw rules, silence libadwaita's inset sidebar line and the pane border, let the page edge draw the divider, and pin both header bars to measured heights so the rules cross once.</li>
-          <li><b>Long-form text has its own font.</b> Wikis and bios use libadwaita's document style; set <code>--document-font-family</code> or they stay in the system face.</li>
-        </ul>
-        <h4>Before you ship</h4>
-        <ul class="check">
-          <li>Checked nav, selected album, selected queue row, active toggle: all readable.</li>
-          <li>Album-art wash on <em>and</em> off both look intentional.</li>
-          <li>Popovers, tooltips, toasts, preferences and the queue view checked, not only the grid.</li>
-          <li>Header rules meet the divider in a single cross.</li>
-        </ul>
-        <span class="stamp">Then pass it on</span>
-      </div>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="icons">
-    <div class="sec__head"><span class="sec__num">V</span><h2 class="sec__title">Icons and plates</h2></div>
-    <p class="lede">Each theme names an icon set. The set is searched ahead of the stock icons while the theme is active, so a theme can differ in concept and not only in weight: the broadsheet sets use real Special Elite glyphs, Terminal uses ASCII, Bauhaus fills its shapes. Every set is generated from one geometry spec per icon by <code>tools/gen_icons.py</code>, rendered as fill-only paths so GTK's symbolic recolouring always applies. Each set also ships a 512-pixel album-art plate in its own idiom, and the artist avatar becomes a themed mark on a themed plate instead of a random-colour initial.</p>
-    <div class="sheets">
-      <figure><img src="sheets/dttw.png" alt="Broadsheet and Reversed Spine icon set" loading="lazy"><figcaption><b>dttw</b> · Broadsheet, Reversed Spine · typewriter glyphs, hairline rules, ✦ stars, hatched plates</figcaption></figure>
-      <figure><img src="sheets/terminal.png" alt="Terminal icon set" loading="lazy"><figcaption><b>terminal</b> · one-pixel, square caps, ASCII where it reads</figcaption></figure>
-      <figure><img src="sheets/neon.png" alt="Neon icon set" loading="lazy"><figcaption><b>neon</b> · two-pixel strokes, round caps and joins</figcaption></figure>
-      <figure><img src="sheets/bauhaus.png" alt="Bauhaus icon set" loading="lazy"><figcaption><b>bauhaus</b> · solid geometry, heavy bars</figcaption></figure>
-      <figure><img src="sheets/folio.png" alt="Folio icon set" loading="lazy"><figcaption><b>folio</b> · engraver's hairlines, round terminals</figcaption></figure>
-      <figure><img src="sheets/blueprint.png" alt="Blueprint icon set" loading="lazy"><figcaption><b>blueprint</b> · pen-plotter hairlines, butt caps</figcaption></figure>
-      <figure><img src="sheets/nocturne.png" alt="Nocturne icon set" loading="lazy"><figcaption><b>nocturne</b> · inked hairlines, round terminals, engraved bust avatar</figcaption></figure>
-      <figure><img src="sheets/cassette.png" alt="Cassette icon set" loading="lazy"><figcaption><b>cassette</b> · silk-screened pictograms, filled and rounded</figcaption></figure>
-      <figure><img src="sheets/marshmallow.png" alt="Marshmallow icon set" loading="lazy"><figcaption><b>marshmallow</b> · plump strokes, closed shapes filled</figcaption></figure>
-    </div>
-    <div class="label" style="margin-top:22px">Album-art plates</div>
-    <div class="plc">
-      <img src="sheets/placeholder-dttw.svg" alt="Broadsheet placeholder">
-      <img src="sheets/placeholder-terminal.svg" alt="Terminal placeholder">
-      <img src="sheets/placeholder-neon.svg" alt="Neon placeholder">
-      <img src="sheets/placeholder-bauhaus.svg" alt="Bauhaus placeholder">
-      <img src="sheets/placeholder-folio.svg" alt="Folio placeholder">
-      <img src="sheets/placeholder-blueprint.svg" alt="Blueprint placeholder">
-      <img src="sheets/placeholder-nocturne.svg" alt="Nocturne placeholder">
-      <img src="sheets/placeholder-cassette.svg" alt="Cassette placeholder">
-      <img src="sheets/placeholder-marshmallow.svg" alt="Marshmallow placeholder">
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="dev">
-    <div class="sec__head"><span class="sec__num">VI</span><h2 class="sec__title">For developers</h2></div>
-    <div class="guide">
-      <div class="g">
-        <h4>The engine</h4>
-        <p><code>src/theme/mod.rs</code> owns one <code>CssProvider</code> at user priority, installed from the app's startup handler before any window exists. The window's accent provider is added later at the same priority, so it cascades over the theme; that is what lets album-art accents win when a theme allows them.</p>
-        <p><code>apply(id)</code> loads the CSS, switches the icon set, forces the colour scheme if declared, saves the id and notifies listeners. The window refreshes its accent provider and re-evaluates the album-art wash; the application keeps the stateful <code>app.theme</code> action in step so the menu's radio mark follows whatever changed the theme. The user directory is watched with a debounced <code>GFileMonitor</code>; the settings key is watched so <code>gsettings</code> writes apply live.</p>
-        <h4>Icon sets</h4>
-        <p><code>apply_icon_set()</code> puts <code>/iconsets/&lt;set&gt;/icons</code> first in the display's icon-theme resource path. Names that Adwaita also provides carry an <code>fl-</code> prefix in the UI files, because the system theme is searched before app resources and an unprefixed override is never picked. Placeholders go through a <code>ThemedPlaceholder</code> paintable that swaps its texture and invalidates itself, so cells already showing one repaint on their own.</p>
-      </div>
-      <div class="g">
-        <h4>Build and run</h4>
-<pre><code>meson setup build -Dprofile=dev -Dprefix=$HOME/.local
-ninja -C build install
-flaclify</code></pre>
-        <p>The app ID is <code>io.github.h3303.Flaclify</code> with its own settings, cache and config, so it does not interfere with a system Euphonica. The one thing deliberately shared is the MPD password in the keyring, and the MPD sticker keys, so metadata still round-trips with other Euphonica clients.</p>
-        <h4>Adding a bundled theme</h4>
-        <ul>
-          <li><code>src/themes/&lt;stem&gt;.css</code> with the header keys.</li>
-          <li>A <code>&lt;file&gt;</code> entry in the <code>/themes/</code> block of <code>src/flaclify.gresource.xml</code>.</li>
-          <li>Own icons: a new style in <code>gen_icons.py</code>, regenerate, <code>@icons: &lt;style&gt;</code>.</li>
-          <li>Rebuild and walk the checklist with the album-art wash on and off.</li>
-        </ul>
-<pre><code>python3 -m venv build/venv &amp;&amp; build/venv/bin/pip install fonttools
-build/venv/bin/python tools/gen_icons.py</code></pre>
-        <p>Screenshots beat trusting CSS. Views can be switched from outside the app over D-Bus (<code>org.gtk.Actions.Activate view-albums</code> on the window object) so a script can walk every theme through every view.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="ornament"><span></span><i></i><span></span></div>
-
-  <section class="sec" id="roadmap">
-    <div class="sec__head"><span class="sec__num">VII</span><h2 class="sec__title">The roadmap</h2></div>
-    <p class="lede">Flaclify and flacli are one stack. The shell fetches and files; the player shows. What remains is laid out in tiers: first the player reflects what the shell has done, then it drives the shell, then, if ever, a model sits inside the player, and last the whole stack leaves the desk for a device in the pocket. Each tier is a label on the issue tracker and every line below is an issue, so the boxes here follow the tracker and not the other way round. No dates are promised.</p>
-
-    <ol class="tiers">
-      <li class="tier tier--done">
-        <div>
-          <span class="tier__num">Tier 0</span>
-          <h4 class="tier__t">Files and playlists arrive on their own</h4>
-          <p class="tier__d">Nothing written into the player's database; the player reads what the shell leaves beside the music.</p>
-          <span class="stamp">Done</span>
+  <section class="aged" id="get">
+    <div class="wrap">
+      <div class="sec-head"><span class="sec-num">§</span><h2 class="h2">Get it.</h2></div>
+      <div class="get" style="margin-top: 22px;">
+        <div class="box r-n04">
+          <div class="box__label box__label--ruled">One file, three steps</div>
+          <a class="btn btn--toner" href="https://github.com/h-3303/flaclify/releases/latest/download/flaclify.flatpak" download>flaclify.flatpak</a>
+          <p class="get__note">The bundle carries its own Music Player Daemon, so there is nothing to set up: point it at a folder and it plays. Wants the GNOME 50 runtime, which the install fetches from Flathub. All releases, with notes: <a href="https://github.com/h-3303/flaclify/releases">github.com/h-3303/flaclify/releases</a>.</p>
+          <p class="get__note"><span class="get__soon">Next</span>Windows. The player is GTK4 and builds there; the daemon and the audio path are the work. Nothing to download yet.</p>
         </div>
-        <ul>
-          <li><span>MPD rescans only the folders flacli filed downloads into.</span></li>
-          <li><span>Each synced playlist is stored in MPD under its own name.</span></li>
-          <li><span>Bios, wikis and artist pictures kept beside the music are read by the player.</span></li>
-        </ul>
-      </li>
-
-      <li class="tier tier--done">
         <div>
-          <span class="tier__num">Tier 1</span>
-          <h4 class="tier__t">Flaclify reads flacli state</h4>
-          <p class="tier__d">Read-only surfaces fed by <code>flacli --compact status</code>, the JSON contract the shell already keeps for agents. Polled only while a job is running.</p>
-          <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/2">a stable status summary for players</a> · <a href="https://github.com/h-3303/flacli/issues/3">one installer for the whole stack</a></p>
-          <span class="stamp">Done</span>
+          <ol class="get__steps">
+            <li><span>Open the downloaded <code>flaclify.flatpak</code>. Software, Discover and the like install it; from a terminal, <code>flatpak install flaclify.flatpak</code>. If Flathub is not yet a remote on your machine, <a href="https://flathub.org/setup">flathub.org/setup</a> is one line.</span></li>
+            <li><span>Launch Flaclify. The first run asks where your music is (it offers your Music folder), whether each album has its own folder, and whether you want <a href="https://flacli.vercel.app">flacli</a> beside it. flacli is optional: with it the player fetches music by name; without it, it is a player.</span></li>
+            <li><span>The library scans while you look around. Ctrl+T changes the theme. Everything the first run set is under Preferences.</span></li>
+          </ol>
+          <p class="get__note">Already run MPD? Say so on the first page and give the socket or the host; the built-in daemon is then never started. Built from source instead: see <a href="developers.html">Developers</a>.</p>
         </div>
-        <ul>
-          <li><span>Gate every flacli feature on the MPD library being the one flacli files into, and on <code>flacli</code> being on the path with the Nicotine+ bridge reachable.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/8">№ 8</a></li>
-          <li><span>An incoming indicator: per playlist, the job state and the counts that matter, downloading, done, candidates awaiting review.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/1">№ 1</a></li>
-          <li><span>Ghost rows in a synced playlist for the tracks it still lacks, greyed, in their original positions, with the reason.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/2">№ 2</a></li>
-          <li><span>Under an artist's discography, the releases MusicBrainz knows and the library does not.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/3">№ 3</a></li>
-        </ul>
-      </li>
-
-      <li class="tier tier--done">
-        <div>
-          <span class="tier__num">Tier 2</span>
-          <h4 class="tier__t">Flaclify drives flacli</h4>
-          <p class="tier__d">The first write actions from the player into the shell. The shell's rules hold: naming the music is the yes, a playlist is never queued until the totals have been seen, and Soulseek code stays out of this repository.</p>
-          <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/1"><code>flacli serve</code>, a session D-Bus interface with signals</a></p>
-          <span class="stamp">Done</span>
-        </div>
-        <ul>
-          <li><span>"Get this" on a missing release, and a Get page: search MusicBrainz for songs, albums and artists, tick what is wanted, or name it as the shell takes it, and flacli fetches it.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/4">№ 4</a></li>
-          <li><span>Import a playlist from TIDAL, Deezer or YouTube Music from the playlist view: sync in the background, show the totals, queue on the yes.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/5">№ 5</a></li>
-          <li><span>Review doubtful matches as a dialog, approve or skip per track, with the <em>why</em> the shell already computes.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/6">№ 6</a></li>
-          <li><span>A Requests page: what was asked and not yet landed, one row per track with where it stands; a track leaves as it is filed. Never an MPD playlist.</span></li>
-          <li><span>A Tidy page: the library tidied as a dry run then applied on the yes, new arrivals filed, and the missing bios, wikis, artist pictures and covers filled, each with its count.</span></li>
-          <li><span>Transport: spawn the CLI and parse its JSON first; move to D-Bus when polling gets clumsy or Flatpak needs it.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/7">№ 7</a></li>
-        </ul>
-      </li>
-
-      <li class="tier">
-        <div>
-          <span class="tier__num">Tier 3</span>
-          <h4 class="tier__t">An agent inside the player</h4>
-          <p class="tier__d">Optional, and opened only once Tiers 1 and 2 are in. Claude Code with the flacli plugin, or any MCP client, already is this agent; the cheaper version of "all in one" is the player reflecting state well.</p>
-        </div>
-        <ul>
-          <li><span>A chat pane where a model drives flacli from inside Flaclify, with <code>flacli guide</code> as its instructions. First cut in place: a sentence on the Ask flacli page goes to Claude Code in print mode with the flacli plugin's tools, and the command is a setting, so any agent that takes the sentence as its last argument will do. A proper pane, and a local model through Ollama, remain.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/9">№ 9</a></li>
-        </ul>
-      </li>
-
-      <li class="tier">
-        <div>
-          <span class="tier__num">Tier 4</span>
-          <h4 class="tier__t">One device</h4>
-          <p class="tier__d">The stack off the desk. A digital audio player that carries MPD, a Nicotine+ core with the bridge, and flacli, so a device in a pocket fetches, files and plays with no service behind it. Adapt a player that boots Linux, or build one from a board, a DAC and a battery. Nothing hosted, nothing bought from anyone, nothing that phones home.</p>
-          <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/4">a headless Nicotine+ runtime, aarch64</a></p>
-        </div>
-        <ul>
-          <li><span>The hardware: an existing player that boots a Linux we can install, against a board build with a DAC HAT, a battery and a small touch display. Decided by whether it runs Python, a headless Nicotine+ core and MPD; a written comparison and one chosen target.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/10">№ 10</a></li>
-          <li><span>The device image from one script: MPD, the headless core with the bridge, <code>flacli serve</code> as a service, the front end on login. The device's storage is the library, synced both ways with the desktop over the LAN, sidecar files included.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/11">№ 11</a></li>
-          <li><span>Flaclify on the device's own screen, in a compact layout for a small touch display; a leaner front end only if GTK proves too heavy for the chosen board.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/12">№ 12</a></li>
-        </ul>
-      </li>
-    </ol>
-    <p class="tw" style="margin-top:14px">The live list, with discussion, is <a href="https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap">label:roadmap</a> on GitHub.</p>
+      </div>
+    </div>
   </section>
 
-  <footer class="colophon">
-    <span>Flaclify · GPL-3.0-or-later · forked from Euphonica by htkhiem</span>
-    <span>Type: Pirata One, Old Standard TT, Special Elite, IM Fell English SC · OFL</span>
-    <span>One sheet · photocopied · pass it on</span>
+  <section class="band">
+    <div class="wrap">
+      <div class="band__head">
+        <div class="kicker kicker--on-black">I · The player drives the shell — four pages of its own</div>
+        <a class="band__link" href="stack.html">The whole stack →</a>
+      </div>
+      <div class="cells">
+        <div class="cell"><div class="cell__num">i</div><h3>Get</h3><p>One search, three pages: songs, albums, artists, from MusicBrainz. An artist opens onto their albums, an album onto its tracklist. Every tick is one name to flacli, listed before it goes.</p></div>
+        <div class="cell"><div class="cell__num">ii</div><h3>Requests</h3><p>What was asked for and has not landed: one row per track with where it stands, a skip each and one for the rest. A track leaves the list as it is filed. Never a playlist in MPD.</p></div>
+        <div class="cell"><div class="cell__num">iii</div><h3>Tidy</h3><p>The dry run, its plan and report, Apply on the yes with every deletion named first. Below, what the player shows and the library lacks, counted per kind, with a Fill for each.</p></div>
+        <div class="cell"><div class="cell__num">iv</div><h3>Ask flacli</h3><p>A console for the cases the buttons do not cover. A command runs as typed; anything else is a sentence for an agent, read, looked into and answered. It stops before anything destructive.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sheet" id="themes">
+    <div class="dtw-xerox sheet__in">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-num">II</span><h2 class="h2">It changes its <span class="redword">clothes</span>.</h2></div>
+        <p class="para">A theme is one CSS file with a short header. It can recolour the window, square or round every corner, swap the typefaces, and bring its own icon set and album-art plate. Themes apply while the music plays. Pick one below; <a href="theming.html">making your own</a> takes an evening.</p>
+        <div class="picker">
+          <div class="picker__list" role="tablist" aria-label="Bundled themes" id="picker-list"></div>
+          <figure>
+            <div class="picker__plate"><img id="picker-img" src="img/broadsheet.jpg" width="1200" height="768" alt="Broadsheet theme, the album grid"></div>
+            <figcaption>
+              <span class="picker__name" id="picker-name">Broadsheet</span>
+              <span class="picker__desc" id="picker-desc">Toner on paper. Typewriter labels, Old Standard titles, a blackletter masthead, one-pixel rules, no rounding. Red is one gesture, held to the seekbar.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="aged">
+    <div class="wrap">
+      <div class="teasers">
+        <a class="teaser r-n05" href="theming.html">
+          <div class="teaser__k">For theme authors</div>
+          <div class="teaser__t">Making a theme</div>
+          <p>One CSS file, five header keys, a watched folder that re-applies every save. The anatomy, the rules of the hand, and the icon sets.</p>
+          <span class="teaser__cta">Read the guide →</span>
+        </a>
+        <a class="teaser r-p04" href="roadmap.html">
+          <div class="teaser__k">Where this goes</div>
+          <div class="teaser__t">The roadmap</div>
+          <p>Five tiers, three done. Next: an agent inside the player, and the whole stack on a device in the pocket. Every line is an issue on the tracker.</p>
+          <span class="teaser__cta">See the tiers →</span>
+        </a>
+        <a class="teaser r-n03" href="developers.html">
+          <div class="teaser__k">Under the hood</div>
+          <div class="teaser__t">For developers</div>
+          <p>One CssProvider at user priority, an icon-theme resource path per set, a debounced file monitor. Build it, and add a bundled theme of your own.</p>
+          <span class="teaser__cta">Developer notes →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Flaclify · GPL-3.0-or-later · forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> by htkhiem</span>
+      <span>Type: Pirata One · Old Standard TT · Special Elite · IM Fell English SC · OFL</span>
+      <span>One stack · photocopied · pass it on</span>
+    </div>
   </footer>
-</main>
+</div>
+
 <script>
-  document.querySelectorAll('[data-strip]').forEach(function (button) {
-    button.addEventListener('click', function () {
-      var track = button.closest('.strip').querySelector('.strip__track');
-      var step = track.querySelector('.plate').getBoundingClientRect().width + 18;
-      track.scrollBy({ left: step * 2 * Number(button.dataset.strip), behavior: 'smooth' });
+(function () {
+  var themes = [
+    { name: 'Broadsheet', tag: '1a · light', img: 'img/broadsheet.jpg', desc: 'Toner on paper. Typewriter labels, Old Standard titles, a blackletter masthead, one-pixel rules, no rounding. Red is one gesture, held to the seekbar.' },
+    { name: 'Reversed Spine', tag: '1b · light', img: 'img/reversed-spine.jpg', desc: 'Imports Broadsheet and reverses the spine: a toner sidebar with paper knocked out of it, the current view reversed back to paper, a black transport band.' },
+    { name: 'Folio', tag: 'light', img: 'img/folio.jpg', desc: "Laid paper, engraver's ink, a little gilt. Serif throughout, square plates, double rules for the masthead and the transport. Hairline icons with round terminals." },
+    { name: 'Terminal', tag: 'dark', img: 'img/terminal.jpg', desc: 'Phosphor on black. Monospace, one-pixel rules, hover and selection invert instead of tinting. Icons are ASCII wherever ASCII reads.' },
+    { name: 'Neon', tag: 'dark', img: 'img/neon.jpg', desc: 'Violet ground, magenta and cyan light, pill buttons and glow. The one theme that lets album art take the accent, so the glow follows the cover.' },
+    { name: 'Bauhaus', tag: 'light', img: 'img/bauhaus.jpg', desc: 'Off-white, primary blocks, two-pixel black rules and hard offset shadows. Icons are solid geometry; the placeholder is a black disc, a red square and a yellow bar.' },
+    { name: 'Blueprint', tag: 'dark', img: 'img/blueprint.jpg', desc: 'Chalk line-work on Prussian blue. One hairline weight, butt caps, nothing rounded, nothing floats. Red pencil is held to the seekbar and destructive actions.' },
+    { name: 'Nocturne', tag: 'dark', img: 'img/nocturne.jpg', desc: 'Dark academia: lamplit charcoal, parchment serif, one brass amber. Selection warms with a candle tint instead of reversing. The placeholder is a bookplate.' },
+    { name: 'Cassette', tag: 'light', img: 'img/cassette.jpg', desc: "A '70s deck: cream fascia, walnut side panel, a charcoal faceplate for the transport, VU-meter orange on the seek. Raised keys with a top-light." },
+    { name: 'Marshmallow', tag: 'light', img: 'img/marshmallow.jpg', desc: 'Warm white, plush radii, pill buttons, a single rose accent. Shadows are wide and faint, like things resting on felt.' },
+    { name: 'Adwaita', tag: 'stock', img: 'img/default.jpg', desc: "Euphonica as it ships: libadwaita's own palette, the blurred album-art wash, accents lifted from the cover. The baseline every theme is measured against." }
+  ];
+  var list = document.getElementById('picker-list');
+  var img = document.getElementById('picker-img');
+  var name = document.getElementById('picker-name');
+  var desc = document.getElementById('picker-desc');
+  var tabs = [];
+  function pick(i) {
+    var t = themes[i];
+    img.src = t.img;
+    img.alt = t.name + ' theme, the album grid';
+    name.textContent = t.name;
+    desc.textContent = t.desc;
+    tabs.forEach(function (b, j) { b.setAttribute('aria-selected', j === i ? 'true' : 'false'); b.tabIndex = j === i ? 0 : -1; });
+  }
+  themes.forEach(function (t, i) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'picker__tab';
+    b.setAttribute('role', 'tab');
+    b.innerHTML = '<span></span><small></small>';
+    b.firstChild.textContent = t.name;
+    b.lastChild.textContent = t.tag;
+    b.addEventListener('click', function () { pick(i); });
+    b.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); pick((i + 1) % themes.length); tabs[(i + 1) % themes.length].focus(); }
+      if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); pick((i + themes.length - 1) % themes.length); tabs[(i + themes.length - 1) % themes.length].focus(); }
     });
+    list.appendChild(b);
+    tabs.push(b);
   });
+  themes.forEach(function (t) { var p = new Image(); p.src = t.img; });
+  pick(0);
+})();
 </script>
 </body>
 </html>

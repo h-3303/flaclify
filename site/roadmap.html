@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadmap — Flaclify</title>
+<meta name="description" content="Five tiers, three done. First the player reflects the shell, then drives it, then an agent inside the player, and last the whole stack on a device in the pocket. Every line is an issue on the tracker.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  .tiers { list-style: none; margin: 0; padding: 0; }
+  .tier { background: var(--dtw-paper); border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); margin-bottom: 26px; display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); gap: 8px 36px; padding: 24px 26px 22px; }
+  @media (max-width: 720px) { .tier { grid-template-columns: 1fr; padding: 20px 18px; } }
+  .tier__num { font: 400 9.5px/1.4 var(--dtw-font-typewriter); letter-spacing: .22em; text-transform: uppercase; color: var(--dtw-label); }
+  .tier__t { margin: 6px 0 8px; font: 700 19px/1.15 var(--dtw-font-serif); text-transform: uppercase; letter-spacing: .03em; }
+  .tier__d { margin: 0 0 10px; font-size: 13px; line-height: 1.5; color: var(--dtw-label); text-align: justify; }
+  .tier__side { margin: 12px 0 0; font: 400 10.5px/1.6 var(--dtw-font-typewriter); letter-spacing: .04em; color: var(--dtw-label); }
+  .tier__side a { text-decoration: none; border-bottom: 1px solid var(--dtw-grey-2); }
+  .tier ul { margin: 0; padding: 0; list-style: none; align-self: center; }
+  .tier li { display: flex; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px dotted var(--dtw-grey-2); font-size: 14px; line-height: 1.5; }
+  .tier li::before { content: "\2610"; flex: none; }
+  .tier--done li::before { content: "\2611"; }
+  .tier li > span { flex: 1; }
+  .tier__ref { font: 400 9.5px/1.4 var(--dtw-font-typewriter); letter-spacing: .12em; color: var(--dtw-label-faint); text-decoration: none; white-space: nowrap; padding-left: 12px; }
+</style>
+</head>
+<body>
+<div class="page dtw-xerox">
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="topbar__brand" href="./">Flaclify</a>
+      <span class="topbar__issue">MMXXVI · № 2</span>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="./">Home</a>
+        <a href="stack.html">The stack</a>
+        <a href="theming.html">Making a theme</a>
+        <a href="roadmap.html" aria-current="page">Roadmap</a>
+        <a href="developers.html">Developers</a>
+        <a href="https://github.com/h-3303/flaclify">GitHub</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="dtw-xerox hero__in">
+      <div class="wrap">
+        <div class="kicker">Where this goes · no dates are promised</div>
+        <h1 class="h1">Five tiers, three done.</h1>
+        <p class="lede">First the player reflects what the shell has done, then it drives the shell, then, if ever, a model sits inside the player — and last the whole stack leaves the desk for a device in the pocket. Each tier is a label on the issue tracker and every line below is an issue, so the boxes here follow the tracker and not the other way round. The live list is <a href="https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap">label:roadmap</a>.</p>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap" style="padding-top: 44px; padding-bottom: 64px;">
+      <ol class="tiers">
+
+        <li class="tier tier--done r-n03">
+          <div>
+            <span class="tier__num">Tier 0</span>
+            <h4 class="tier__t">Files and playlists arrive on their own</h4>
+            <p class="tier__d">Nothing written into the player's database; the player reads what the shell leaves beside the music.</p>
+            <span class="stamp stamp--small r-n3">Done</span>
+          </div>
+          <ul>
+            <li><span>MPD rescans only the folders flacli filed downloads into.</span></li>
+            <li><span>Each synced playlist is stored in MPD under its own name.</span></li>
+            <li><span>Bios, wikis and artist pictures kept beside the music are read by the player.</span></li>
+          </ul>
+        </li>
+
+        <li class="tier tier--done r-p025">
+          <div>
+            <span class="tier__num">Tier 1</span>
+            <h4 class="tier__t">Flaclify reads flacli state</h4>
+            <p class="tier__d">Read-only surfaces fed by flacli --compact status, the JSON contract the shell already keeps for agents. Polled only while a job is running.</p>
+            <span class="stamp stamp--small r-n3">Done</span>
+            <p class="tier__side">flacli side: a stable status summary for players · one installer for the whole stack</p>
+          </div>
+          <ul>
+            <li><span>Gate every flacli feature on the MPD library being the one flacli files into, and on flacli being on the path with the Nicotine+ bridge reachable.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/8">№ 8</a></li>
+            <li><span>An incoming indicator: per playlist, the job state and the counts that matter.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/1">№ 1</a></li>
+            <li><span>Ghost rows in a synced playlist for the tracks it still lacks, greyed, with the reason.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/2">№ 2</a></li>
+            <li><span>Under an artist's discography, the releases MusicBrainz knows and the library does not.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/3">№ 3</a></li>
+          </ul>
+        </li>
+
+        <li class="tier tier--done r-n02">
+          <div>
+            <span class="tier__num">Tier 2</span>
+            <h4 class="tier__t">Flaclify drives flacli</h4>
+            <p class="tier__d">The first write actions from the player into the shell. The shell's rules hold: naming the music is the yes, and Soulseek code stays out of this repository.</p>
+            <span class="stamp stamp--small r-n3">Done</span>
+            <p class="tier__side">flacli side: flacli serve, a session D-Bus interface with signals</p>
+          </div>
+          <ul>
+            <li><span>"Get this" on a missing release, and a Get page: search MusicBrainz, tick what is wanted, and flacli fetches it.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/4">№ 4</a></li>
+            <li><span>Import a playlist from TIDAL, Deezer or YouTube Music: sync in the background, show the totals, queue on the yes.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/5">№ 5</a></li>
+            <li><span>Review doubtful matches as a dialog, approve or skip per track, with the why the shell computes.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/6">№ 6</a></li>
+            <li><span>A Requests page: what was asked and not yet landed; a track leaves as it is filed. Never an MPD playlist.</span></li>
+            <li><span>A Tidy page: the dry run then Apply on the yes, new arrivals filed, the missing bios, wikis, pictures and covers filled.</span></li>
+            <li><span>Transport: spawn the CLI and parse its JSON first; move to D-Bus when polling gets clumsy or Flatpak needs it.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/7">№ 7</a></li>
+          </ul>
+        </li>
+
+        <li class="tier r-p03">
+          <div>
+            <span class="tier__num">Tier 3</span>
+            <h4 class="tier__t">An agent inside the player</h4>
+            <p class="tier__d">Optional, and opened only once Tiers 1 and 2 are in. Claude Code with the flacli plugin, or any MCP client, already is this agent.</p>
+          </div>
+          <ul>
+            <li><span>A chat pane where a model drives flacli from inside Flaclify, with flacli guide as its instructions. First cut in place: a sentence on Ask flacli goes to Claude Code in print mode. A proper pane, and a local model through Ollama, remain.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/9">№ 9</a></li>
+          </ul>
+        </li>
+
+        <li class="tier r-n025">
+          <div>
+            <span class="tier__num">Tier 4</span>
+            <h4 class="tier__t">One device</h4>
+            <p class="tier__d">The stack off the desk: a digital audio player that carries MPD, a Nicotine+ core with the bridge, and flacli. Nothing hosted, nothing bought from anyone, nothing that phones home.</p>
+            <p class="tier__side">flacli side: <a href="https://github.com/h-3303/flacli/issues/4">a headless Nicotine+ runtime, aarch64</a></p>
+          </div>
+          <ul>
+            <li><span>The hardware: an existing player that boots Linux, against a board build with a DAC HAT, a battery and a small touch display. A written comparison and one chosen target.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/10">№ 10</a></li>
+            <li><span>The device image from one script: MPD, the headless core, flacli serve as a service, the front end on login. The device's storage is the library, synced both ways over the LAN.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/11">№ 11</a></li>
+            <li><span>Flaclify on the device’s own screen, in a compact layout for a small touch display.</span><a class="tier__ref" href="https://github.com/h-3303/flaclify/issues/12">№ 12</a></li>
+          </ul>
+        </li>
+
+      </ol>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Flaclify · GPL-3.0-or-later · forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> by htkhiem</span>
+      <span><a href="https://github.com/h-3303/flaclify/issues?q=label%3Aroadmap">label:roadmap on GitHub →</a></span>
+      <span>No dates · promised · pass it on</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

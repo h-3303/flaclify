@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The stack — Flaclify</title>
+<meta name="description" content="One stack, two halves: flacli fetches and files, Flaclify reads the files beside the music and drives the shell through the same commands an agent uses.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23141412'/%3E%3Cpath d='M4 3l9 5-9 5z' fill='%23e8e5dc'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/dtw/dtw.css">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="preload" href="assets/dtw/fonts/pirata-one-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/special-elite-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/dtw/fonts/old-standard-tt-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+  .files { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 40px; align-items: start; }
+  .files > * { min-width: 0; }
+  @media (max-width: 800px) { .files { grid-template-columns: 1fr; } }
+  .files__tree { box-shadow: var(--dtw-shadow-slip); }
+  .files__foot { border-top: 1px solid var(--dtw-grey-2); margin-top: 14px; padding-top: 10px; font: 400 10px/1.7 var(--dtw-font-typewriter); letter-spacing: .08em; color: var(--dtw-label); }
+  .rules { margin-top: 24px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .rule { flex: 1 1 240px; background: var(--dtw-paper); border: 1px solid var(--dtw-ink); box-shadow: var(--dtw-shadow-paste); padding: 16px 18px; font-size: 14px; line-height: 1.5; }
+  .rule .xrow__x { font-size: 20px; margin-right: 8px; }
+</style>
+</head>
+<body>
+<div class="page dtw-xerox">
+
+  <div class="topbar">
+    <div class="wrap">
+      <a class="topbar__brand" href="./">Flaclify</a>
+      <span class="topbar__issue">MMXXVI · № 2</span>
+      <nav class="topbar__nav" aria-label="Site">
+        <a href="./">Home</a>
+        <a href="stack.html" aria-current="page">The stack</a>
+        <a href="theming.html">Making a theme</a>
+        <a href="roadmap.html">Roadmap</a>
+        <a href="developers.html">Developers</a>
+        <a href="https://github.com/h-3303/flaclify">GitHub</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="dtw-xerox hero__in">
+      <div class="wrap">
+        <div class="kicker">Fetch · File · Play</div>
+        <h1 class="h1" style="max-width: 20ch;">One stack, two halves.</h1>
+        <p class="lede lede--wide"><span class="dropcap">T</span>he back is <a href="https://flacli.vercel.app">flacli</a>, a command line any agent can drive: it fetches named songs, albums or whole playlists from Soulseek and files them as <code>Artist/Album/NN - Title</code>, with the bio, the wiki and the pictures beside the music. The front is Flaclify: it reads those files before asking any online provider, shows what the shell is doing, and drives it through the same commands an agent uses. Nothing is ever written into the player's database.</p>
+      </div>
+    </div>
+  </header>
+
+  <section class="aged">
+    <div class="wrap">
+      <div class="files">
+        <div>
+          <div class="sec-head"><span class="sec-num">I</span><h2 class="h2">Files beside the music.</h2></div>
+          <p class="para" style="line-height: 1.55;">A bio under each artist, a wiki under each album — and most libraries have neither. Flaclify looks next to the files first. A text file is optional front matter between <code>---</code> rules (<code>attribution</code> and <code>url</code> are used) followed by plain prose.</p>
+          <p class="para" style="margin-top: 14px; line-height: 1.55;">The file is handed to the provider chain as the starting document, so a refresh keeps its text and only fills in tags and images. It is read again whenever it is newer than the cached copy — an edit on disk shows on the next visit. The switch and the music directory live under Preferences → Integrations → <em>Library files</em>.</p>
+          <table class="spec">
+            <thead><tr><th>File</th><th>Shown as</th></tr></thead>
+            <tbody>
+              <tr><td><code>&lt;Artist&gt;/artist.md</code></td><td>the artist's bio (or <code>.wiki/&lt;Artist&gt;.md</code> when the artist has no folder)</td></tr>
+              <tr><td><code>&lt;Artist&gt;/&lt;Album&gt;/wiki.md</code></td><td>the album's wiki</td></tr>
+              <tr><td><code>&lt;Artist&gt;/artist.jpg · .png · .webp</code></td><td>the artist's picture</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="r-p09">
+          <div class="box files__tree">
+            <div class="box__label box__label--ruled">As flacli files it</div>
+<pre class="light">Music/
+└── Alice in Chains/
+    ├── artist.md      ← the bio
+    ├── artist.jpg     ← the picture
+    └── Dirt/
+        ├── wiki.md    ← the wiki
+        └── 01 - Them Bones.flac</pre>
+            <div class="files__foot">flacli wiki · flacli avatar → written<br>Flaclify → read, before any provider</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="kicker kicker--on-black" style="margin-bottom: 22px;">II · Three read-only surfaces, fed by flacli --compact status</div>
+      <div class="cells cells--wide">
+        <div class="cell"><div class="cell__num">i</div><h3 style="font-size: 20px;">Incoming</h3><p>In the sidebar: each playlist flacli is working on, with the job state and the counts that matter — downloading, done, candidates awaiting review.</p></div>
+        <div class="cell"><div class="cell__num">ii</div><h3 style="font-size: 20px;">Ghost rows</h3><p>In a synced playlist, the tracks flacli has not fetched yet: greyed, in their original positions, with the reason — not found, needs a decision, queued, skipped.</p></div>
+        <div class="cell"><div class="cell__num">iii</div><h3 style="font-size: 20px;">Not in the library</h3><p>Under an artist's discography, the studio albums and EPs MusicBrainz credits to the artist that the library lacks. Each carries a Get this.</p></div>
+      </div>
+      <p class="band__note">All gated the same way: flacli on the PATH, its music_dir the folder MPD serves, the Nicotine+ bridge answering. Preferences → Integrations → flacli shows the verdict. Polled only while a job runs or downloads are in flight.</p>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <div class="dtw-xerox sheet__in">
+      <div class="wrap">
+        <div class="sec-head"><span class="sec-num">III</span><h2 class="h2">The shell's rules hold.</h2></div>
+        <p class="para" style="max-width: 70ch;">The player drives flacli through the CLI — <code>get</code>, <code>sync</code>, <code>queue</code>, <code>review</code>, <code>approve</code>, <code>skip</code>, <code>cancel</code> — and the rules the shell keeps for agents hold for the player too.</p>
+        <div class="rules">
+          <div class="rule r-n04"><span class="xrow__x">x</span>Naming the music is the yes. MusicBrainz supplies names only; nothing is fetched that has not been named.</div>
+          <div class="rule r-p05"><span class="xrow__x">x</span>A playlist is never queued until the totals have been seen: tracks, folders, size and users, before the yes.</div>
+          <div class="rule r-n03"><span class="xrow__x">x</span>Doubtful matches are reviewed with the why the shell computed — title, artist, album and duration agreement — approve or skip per track.</div>
+          <div class="rule r-p04"><span class="xrow__x">x</span>The agent behind Ask flacli fetches on a plain request and stops before anything destructive, saying what it would run.</div>
+        </div>
+        <p class="tw" style="margin: 26px 0 0;">The shell itself: <a href="https://flacli.vercel.app">flacli.vercel.app</a> · every fetch first checks that the Nicotine+ bridge answers · no Soulseek code lives in this repository</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>Flaclify · GPL-3.0-or-later · forked from <a href="https://github.com/htkhiem/euphonica">Euphonica</a> by htkhiem</span>
+      <span><a href="roadmap.html">Next: the roadmap →</a></span>
+      <span>One stack · photocopied · pass it on</span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
