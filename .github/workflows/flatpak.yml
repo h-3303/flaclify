@@ -1,0 +1,49 @@
+# Builds the Flatpak bundle people download from the site. Every push to main and every pull
+# request builds it as an artifact; a tag starting with v also attaches it to a GitHub release,
+# which is what https://github.com/h-3303/flaclify/releases/latest/download/flaclify.flatpak
+# resolves to.
+name: Flatpak
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bundle:
+    name: Bundle (x86_64)
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/flathub-infra/flatpak-github-actions:gnome-49
+      options: --privileged
+    steps:
+      - uses: actions/checkout@v4
+      - uses: flatpak/flatpak-github-actions/flatpak-builder@v6
+        with:
+          bundle: flaclify.flatpak
+          manifest-path: io.github.h3303.Flaclify.json
+          cache-key: flatpak-builder-${{ github.sha }}
+          arch: x86_64
+          upload-artifact: true
+
+  release:
+    name: Attach to the release
+    needs: bundle
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: flaclify-x86_64.flatpak
+          path: dist
+      - name: Rename the bundle
+        run: ls -R dist && mv "$(find dist -name '*.flatpak' | head -n1)" flaclify.flatpak
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: flaclify.flatpak
+          generate_release_notes: true

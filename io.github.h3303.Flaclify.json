@@ -1,0 +1,161 @@
+{
+    "id": "io.github.h3303.Flaclify",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "49",
+    "sdk": "org.gnome.Sdk",
+    "sdk-extensions": [
+        "org.freedesktop.Sdk.Extension.rust-stable",
+        "org.freedesktop.Sdk.Extension.llvm21"
+    ],
+    "command": "flaclify",
+    "finish-args": [
+        "--share=network",
+        "--share=ipc",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--socket=pulseaudio",
+        "--device=dri",
+        "--filesystem=xdg-run/pipewire-0",
+        "--filesystem=xdg-music",
+        "--talk-name=org.freedesktop.Flatpak"
+    ],
+    "add-extensions": {
+        "org.freedesktop.Platform.ffmpeg-full": {
+            "directory": "lib/ffmpeg",
+            "version": "25.08",
+            "add-ld-path": ".",
+            "no-autodownload": false,
+            "autodelete": false
+        }
+    },
+    "build-options": {
+        "append-path": "/usr/lib/sdk/rust-stable/bin:/usr/lib/sdk/llvm21/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/llvm21/lib",
+        "build-args": [
+            "--share=network"
+        ]
+    },
+    "cleanup": [
+        "/include",
+        "/lib/pkgconfig",
+        "/lib/cmake",
+        "/man",
+        "/share/doc",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/pkgconfig",
+        "*.la",
+        "*.a"
+    ],
+    "cleanup-commands": [
+        "mkdir -p /app/lib/ffmpeg"
+    ],
+    "modules": [
+        {
+            "name": "fmt",
+            "buildsystem": "cmake-ninja",
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DBUILD_SHARED_LIBS=OFF",
+                "-DCMAKE_POSITION_INDEPENDENT_CODE=ON",
+                "-DFMT_TEST=OFF",
+                "-DFMT_DOC=OFF"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/fmtlib/fmt/archive/refs/tags/12.2.0.tar.gz",
+                    "sha256": "8b852bb5aa6e7d8564f9e81394055395dd1d1936d38dfd3a17792a02bebd7af0"
+                }
+            ]
+        },
+        {
+            "name": "mpd",
+            "buildsystem": "meson",
+            "config-opts": [
+                "--buildtype=release",
+                "-Ddocumentation=disabled",
+                "-Dhtml_manual=false",
+                "-Dmanpages=false",
+                "-Dtest=false",
+                "-Dsystemd=disabled",
+                "-Dio_uring=disabled",
+                "-Ddaemon=true",
+                "-Dinotify=true",
+                "-Dlocal_socket=true",
+                "-Ddatabase=true",
+                "-Dsqlite=enabled",
+                "-Dcurl=enabled",
+                "-Dupnp=disabled",
+                "-Dlibmpdclient=disabled",
+                "-Dneighbor=false",
+                "-Dzeroconf=disabled",
+                "-Ddbus=disabled",
+                "-Dnfs=disabled",
+                "-Dsmbclient=disabled",
+                "-Dmms=disabled",
+                "-Dqobuz=disabled",
+                "-Dbzip2=disabled",
+                "-Diso9660=disabled",
+                "-Dzzip=disabled",
+                "-Did3tag=disabled",
+                "-Dchromaprint=disabled",
+                "-Dffmpeg=enabled",
+                "-Dflac=enabled",
+                "-Dvorbis=enabled",
+                "-Dopus=enabled",
+                "-Dmad=disabled",
+                "-Dmpg123=auto",
+                "-Dwavpack=auto",
+                "-Dvorbisenc=disabled",
+                "-Dlame=disabled",
+                "-Dlibsamplerate=disabled",
+                "-Dsoxr=disabled",
+                "-Dalsa=auto",
+                "-Dpipewire=enabled",
+                "-Dpulse=enabled",
+                "-Djack=disabled",
+                "-Doss=disabled",
+                "-Dsndio=disabled",
+                "-Dshout=disabled",
+                "-Dfifo=true",
+                "-Dhttpd=true",
+                "-Dpipe=false",
+                "-Drecorder=false",
+                "-Dsnapcast=false",
+                "-Dpcre=disabled",
+                "-Dnlohmann_json=disabled",
+                "-Dzlib=enabled"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.musicpd.org/download/mpd/0.24/mpd-0.24.15.tar.xz",
+                    "sha256": "524c70bce3fcd268016156bdc97abcf5be1904f0c6fd622688999123e3c4c457"
+                }
+            ]
+        },
+        {
+            "name": "flaclify",
+            "builddir": true,
+            "buildsystem": "meson",
+            "config-opts": [
+                "--buildtype=release",
+                "-Dprofile=default"
+            ],
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": ".",
+                    "skip": [
+                        "./build",
+                        "./build-flatpak",
+                        "./.flatpak-builder",
+                        "./target",
+                        "./site"
+                    ]
+                }
+            ]
+        }
+    ]
+}
