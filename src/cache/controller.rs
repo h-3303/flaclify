@@ -1213,12 +1213,14 @@ impl Cache {
         }
 
         // A picture beside the music (artist.jpg, as flacli files it) wins, even after an earlier
-        // lookup found nothing.
-        if external && local::enabled() && let Some(picture) = local::artist_picture(artist) {
+        // lookup found nothing. It is a read from disk, not a call to a provider, so the artist
+        // grid (`external == false`) gets it too, and an emptied cache refills without opening
+        // each artist's page.
+        if local::enabled() && let Some(picture) = local::artist_picture(artist) {
             let name = artist.name.clone();
             let images = vec![local::picture_meta(&picture)];
             return self
-                .external
+                .local
                 .call(move |_| {
                     download_image_from_provider(&name, Some("avatar"), &images, thumbnail, None)
                 })
