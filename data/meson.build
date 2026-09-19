@@ -1,5 +1,15 @@
+# Exec carries the full path: a launcher inherits the session's PATH, not the shell's, and a
+# prefix such as ~/.local is rarely on it.
+desktop_conf = configuration_data()
+desktop_conf.set('BINDIR', get_option('prefix') / get_option('bindir'))
+desktop_in = configure_file(
+          input: 'io.github.h3303.Flaclify.desktop.in',
+         output: 'io.github.h3303.Flaclify.desktop.in',
+  configuration: desktop_conf
+)
+
 desktop_file = i18n.merge_file(
-        input: 'io.github.h3303.Flaclify.desktop.in',
+        input: desktop_in,
        output: 'io.github.h3303.Flaclify.desktop',
          type: 'desktop',
        po_dir: '../po',

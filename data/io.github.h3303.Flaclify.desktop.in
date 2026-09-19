@@ -8,5 +8,5 @@ Categories=AudioVideo;Player;
 Keywords=Music;Player;MPD
 
 Icon=io.github.h3303.Flaclify
-Exec=flaclify
+Exec=@BINDIR@/flaclify
 Terminal=false
